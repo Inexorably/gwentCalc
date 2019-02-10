@@ -137,6 +137,8 @@ void DeckEditorWindow::on_actionSave_deck_as_triggered(){
 void DeckEditorWindow::on_actionOpen_deck_triggered(){
     //Get the filename.
     QString filename = QFileDialog::getOpenFileName(this, tr("CSV file"), qApp->applicationDirPath (),tr("CSV File (*.csv)"));
+    if (filename.isEmpty())
+        return;
     importCsvToTable(*ui->deckTableWidget, filename);
     this->setWindowTitle(DECKBUILDERWINDOWTITLE + filename);
     currentDeckFilename = filename;

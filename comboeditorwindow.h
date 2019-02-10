@@ -3,10 +3,12 @@
 
 #include "globals.h"
 #include "utilities.h"
+#include "settingswindow.h"
 
 #include <QDialog>
 #include <QMainWindow>
 #include <QToolBar>
+#include <QCompleter>
 
 
 
@@ -26,8 +28,10 @@ public:
     ComboEditorWindow(std::vector<QString> deck, QString filename, QWidget *parent = nullptr);
     ~ComboEditorWindow();
 
-private slots:
+public slots:
+    void on_cardSelectionChanged();
 
+private slots:
     void on_addComboButton_clicked();
 
     void on_removeComboButton_clicked();
@@ -39,6 +43,14 @@ private slots:
     void on_actionSave_as_triggered();
 
     void on_actionOpen_triggered();
+
+    void on_actionNew_triggered();
+
+    void on_actionSettings_triggered();
+
+signals:
+
+    void textChanged(const QString &arg1);
 
 private:
     Ui::ComboEditorWindow *ui;

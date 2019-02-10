@@ -9,11 +9,19 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
 {
     ui->setupUi(this);
 
+    //Set up cardSelectionLineEdit as a QCompleter.
+    QStringList wordList;
+    wordList << "Behemoth" << "Old Speartip: Asleep" << "Obelisk the Tormenter";
+    QCompleter *completer = new QCompleter(wordList, this);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    ui->cardSelectionLineEdit->setCompleter(completer);
+
     //On startup, add the cards in the deck currently to the comboBox.
     for (size_t i = 0; i < deck.size(); ++i){
         ui->comboCardSelectionComboBox->addItem(deck[i]);
     }
 
+    ui->cardSelectionLineEdit->setPlaceholderText("Card Name");
     this->setWindowTitle(COMBOWINDOWTITLE + passedFilename);
     filename = passedFilename;
     filename.chop(4);   //Remove the extension from the filename.
@@ -21,6 +29,7 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
     ui->valueTableWidget->setRowCount(1);
 
     //The user needs to be able to click the first cell to add a card.
+    ui->comboTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->comboTableWidget->setRowCount(1);
     ui->comboTableWidget->setColumnCount(1);
 
@@ -249,6 +258,9 @@ void ComboEditorWindow::on_actionOpen_triggered(){
     //Get the filename.
     QString openName = QFileDialog::getOpenFileName(this, tr("GWC file"), qApp->applicationDirPath (),tr("GWC File (*.gwc)"));
 
+    if (openName.isEmpty())
+        return;
+
     QString data;
     QFile infile(openName);
     QStringList fileList;
@@ -263,4 +275,29 @@ void ComboEditorWindow::on_actionOpen_triggered(){
     importCsvToTable(*ui->comboTableWidget, fileList[0]);
     importCsvToTable(*ui->valueTableWidget, fileList[1]);
 
+}
+
+void ComboEditorWindow::on_actionNew_triggered(){
+    //Set table sizes to 1.
+    ui->valueTableWidget->setColumnCount(1);
+    ui->valueTableWidget->setRowCount(1);
+    ui->comboTableWidget->setRowCount(1);
+    ui->comboTableWidget->setColumnCount(1);
+
+    //Clear the items at 0,0 in each table.
+    ui->valueTableWidget->setItem(0, 0, new QTableWidgetItem(""));
+    ui->comboTableWidget->setItem(0, 0, new QTableWidgetItem(""));
+
+    //Force the user to save new file as.
+    on_actionSave_as_triggered();
+}
+
+void ComboEditorWindow::on_actionSettings_triggered(){
+    SettingsWindow *settings = new SettingsWindow();
+    settings->setModal(true);
+    settings->exec();
+}
+
+void ComboEditorWindow::on_cardSelectionChanged(){
+    qDebug() << "poggers";
 }

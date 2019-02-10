@@ -30,17 +30,20 @@ SOURCES += \
         main.cpp \
         deckeditorwindow.cpp \
     comboeditorwindow.cpp \
-    utilities.cpp
+    utilities.cpp \
+    settingswindow.cpp
 
 HEADERS += \
         deckeditorwindow.h \
     comboeditorwindow.h \
     utilities.h \
-    globals.h
+    globals.h \
+    settingswindow.h
 
 FORMS += \
         deckeditorwindow.ui \
-    comboeditorwindow.ui
+    comboeditorwindow.ui \
+    settingswindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
