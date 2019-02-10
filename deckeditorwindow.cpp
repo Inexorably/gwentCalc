@@ -16,7 +16,8 @@ std::vector<QString> DeckEditorWindow::getDeck() const{
 
 DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::DeckEditorWindow){
+    ui(new Ui::DeckEditorWindow)
+{
     ui->setupUi(this);
 
     //*****************Base Widget Setup****************************
@@ -43,11 +44,10 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
     if (ui->deckTableWidget->rowCount() == 0)
         return;
 
-    this->hide();
-    ComboEditorWindow comboEditor(this->getDeck(), currentDeckFilename);
-    comboEditor.setModal(true);
-    comboEditor.exec();
-    this->show();
+    //this->hide();
+    ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), currentDeckFilename);
+    comboEditor->show();
+
 }
 
 void DeckEditorWindow::on_cardSelectionLineEdit_editingFinished(){

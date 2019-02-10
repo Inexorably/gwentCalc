@@ -4,7 +4,7 @@
 #include <QDebug>
 
 ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString filename, QWidget *parent) :
-    QDialog(parent),
+    QMainWindow(parent),
     ui(new Ui::ComboEditorWindow)
 {
     ui->setupUi(this);
@@ -28,7 +28,7 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString filename
 
 
 ComboEditorWindow::ComboEditorWindow(QWidget *parent) :
-    QDialog(parent),
+    QMainWindow(parent),
     ui(new Ui::ComboEditorWindow)
 {
     ui->setupUi(this);

@@ -16,7 +16,7 @@ namespace Ui {
 class ComboEditorWindow;
 }
 
-class ComboEditorWindow : public QDialog
+class ComboEditorWindow : public QMainWindow
 {
     Q_OBJECT
 

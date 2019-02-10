@@ -1,90 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ComboEditorWindow</class>
- <widget class="QDialog" name="ComboEditorWindow">
+ <widget class="QMainWindow" name="ComboEditorWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>388</height>
+    <width>917</width>
+    <height>555</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>MainWindow</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>gwentcalc.ico</normaloff>gwentcalc.ico</iconset>
-  </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QComboBox" name="comboBox">
-     <item>
-      <property name="text">
-       <string>Save</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Load</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QTableWidget" name="comboTableWidget"/>
-     </item>
-     <item>
-      <widget class="QTableWidget" name="valueTableWidget">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QComboBox" name="comboCardSelectionComboBox"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="addComboButton">
-       <property name="text">
-        <string>Add Selected Card</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="removeComboButton">
-       <property name="text">
-        <string>Remove Selected Card</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Est. Combo Value: </string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
-     </item>
-    </layout>
-   </item>
-  </layout>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTableWidget" name="comboTableWidget"/>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="valueTableWidget">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QComboBox" name="comboCardSelectionComboBox"/>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="addComboButton">
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="removeComboButton">
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Est. Combo Value: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>917</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save...</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

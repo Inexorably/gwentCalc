@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ComboEditorWindow</class>
+ <widget class="QMainWindow" name="ComboEditorWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>675</width>
+    <height>388</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>gwentcalc.ico</normaloff>gwentcalc.ico</iconset>
+  </property>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>675</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menut">
+    <property name="title">
+     <string>t</string>
+    </property>
+   </widget>
+   <addaction name="menut"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
