@@ -16,12 +16,15 @@ void importCsvToTable(QTableWidget &table, const QString &filename){
         importedCSV.close();
     }
 
-    //Allocate memory for table.
+    //Allocate memory for table (rows).  Columns are allocated when we split the first row.
     table.setRowCount(rowOfData.size()-1);
-    table.setColumnCount(2);
 
     for (int x = 0; x < rowOfData.size(); x++){
         rowData = rowOfData.at(x).split(",");
+        //Allocate width axis memory now that we know how many columns there are.
+        if (x == 0){
+            table.setColumnCount(rowData.size()-1);
+        }
         for (int y = 0; y < rowData.size(); y++){
             table.setItem(x, y, new QTableWidgetItem(rowData[y]));
         }
@@ -33,8 +36,11 @@ void exportTableToCsv(const QTableWidget &table, const QString &filename){
     QString textData;
     for (int i = 0; i < table.rowCount(); i++) {
         for (int j = 0; j < table.columnCount(); j++) {
+            //Account for the possibility of an empty cell, in which case checking item->text() will cause a crash.
+            if (table.item(i, j)){
                 textData += table.item(i, j)->text();
-                textData += ",";
+            }
+            textData += ",";
         }
         textData += "\n";
     }
@@ -42,7 +48,6 @@ void exportTableToCsv(const QTableWidget &table, const QString &filename){
     //Write to csv file.
     QFile csvFile(filename);
     if(csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-
         QTextStream out(&csvFile);
         out << textData;
 

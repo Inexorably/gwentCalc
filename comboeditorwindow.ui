@@ -91,7 +91,16 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
    </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Simulation</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionRun"/>
+    <addaction name="actionSettings"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuRun"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
@@ -112,6 +121,16 @@
   <action name="actionNew">
    <property name="text">
     <string>New...</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

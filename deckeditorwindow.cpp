@@ -40,12 +40,40 @@ DeckEditorWindow::~DeckEditorWindow()
 }
 
 void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
-    //If the deck list is empty in the table widget, just return.
-    if (ui->deckTableWidget->rowCount() == 0)
-        return;
+    //Save the deck if it's not empty.
+    if (ui->deckTableWidget->rowCount() != 0){
+        on_actionSave_deck_triggered();
+    }
+
+    QString passedFilename = currentDeckFilename;
+
+
+    //If the deck list is empty in the table widget, force the user to open a .gwc.  Load the csv from the gwc into the deckEditorWindow, and the gwc into the comboEditorWindow.
+    if (ui->deckTableWidget->rowCount() == 0){
+        //We need to load the .gwc file, and then import the filenames from it to import the needed information.
+
+        //Get the filename.
+        QString openName = QFileDialog::getOpenFileName(this, tr("GWC file"), qApp->applicationDirPath (),tr("GWC File (*.gwc)"));
+
+        QString data;
+        QFile infile(openName);
+        QStringList fileList;
+
+        if (infile.open(QFile::ReadOnly)){
+            data = infile.readAll();
+            fileList = data.split("\n");
+            infile.close();
+        }
+
+        //Order (see save function) is combo, value, deck.
+        importCsvToTable(*ui->deckTableWidget, fileList[2]);
+        this->setWindowTitle(DECKBUILDERWINDOWTITLE + fileList[2]);
+        currentDeckFilename = fileList[2];
+        passedFilename = openName;
+    }
 
     //this->hide();
-    ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), currentDeckFilename);
+    ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), passedFilename);
     comboEditor->show();
 
 }
@@ -115,7 +143,7 @@ void DeckEditorWindow::on_actionOpen_deck_triggered(){
 }
 
 void DeckEditorWindow::on_actionSave_deck_triggered(){
-    if (currentDeckFilename.isEmpty()){
+    if (currentDeckFilename == "untitled deck"){
         QString filename = QFileDialog::getSaveFileName(this, tr("CSV file"), qApp->applicationDirPath (),tr("CSV File (*.csv)"));
         exportTableToCsv(*ui->deckTableWidget, filename);
         this->setWindowTitle(DECKBUILDERWINDOWTITLE + filename);

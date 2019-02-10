@@ -61,7 +61,11 @@
      </layout>
     </item>
     <item row="1" column="0" colspan="2">
-     <widget class="QTableWidget" name="deckTableWidget"/>
+     <widget class="QTableWidget" name="deckTableWidget">
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0" colspan="2">
      <widget class="QPushButton" name="spawnComboWindowButton">
@@ -78,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>988</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

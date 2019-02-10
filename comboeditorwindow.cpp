@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString filename, QWidget *parent) :
+ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFilename, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ComboEditorWindow)
 {
@@ -14,7 +14,9 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString filename
         ui->comboCardSelectionComboBox->addItem(deck[i]);
     }
 
-    this->setWindowTitle(COMBOWINDOWTITLE + filename);
+    this->setWindowTitle(COMBOWINDOWTITLE + passedFilename);
+    filename = passedFilename;
+    filename.chop(4);   //Remove the extension from the filename.
     ui->valueTableWidget->setColumnCount(1);
     ui->valueTableWidget->setRowCount(1);
 
@@ -24,6 +26,23 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString filename
 
     //Set the card combo table widget to stretch.
     ui->comboTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    //If the filetype (last 4 chars) of the passedFilename variable is .gwc, then we can load information based on that gwc file.
+    if (passedFilename.right(4) == ".gwc"){
+        QString data;
+        QFile infile(passedFilename);
+        QStringList fileList;
+
+        if (infile.open(QFile::ReadOnly)){
+            data = infile.readAll();
+            fileList = data.split("\n");
+            infile.close();
+        }
+
+        //Order (see save function) is combo, value, deck.
+        importCsvToTable(*ui->comboTableWidget, fileList[0]);
+        importCsvToTable(*ui->valueTableWidget, fileList[1]);
+    }
 }
 
 
@@ -168,5 +187,80 @@ void ComboEditorWindow::on_doubleSpinBox_editingFinished(){
 
     ui->valueTableWidget->setItem(row, col, new QTableWidgetItem(QString::number(ui->doubleSpinBox->value())));
 
+
+}
+
+void ComboEditorWindow::on_actionSave_triggered(){
+    //We need to save the combo table and the value table.
+    //The current filename is stored in the member variable "filename".  This does not include the file extension.
+    //Save the combo table first, then the value table.
+    exportTableToCsv(*ui->comboTableWidget, filename+EXTENSIONCOMBO);
+    exportTableToCsv(*ui->valueTableWidget, filename+EXTENSIONVALUE);
+
+    QString textData = filename+EXTENSIONCOMBO + "\n" + filename+EXTENSIONVALUE + "\n" + filename+EXTENSIONDECK;
+
+    //Write to the .gwc file which tracks all files.
+    QFile outfile(filename+EXTENSIONSET);
+    if(outfile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QTextStream out(&outfile);
+        out << textData;
+
+        outfile.close();
+    }
+
+    //Update the working title to the .gwc.
+    this->setWindowTitle(COMBOWINDOWTITLE + filename + EXTENSIONSET);
+}
+
+void ComboEditorWindow::on_actionSave_as_triggered(){
+    //We choose a new name for the file set, and then do the same as the on_actionSave_triggered() function.
+    //Do the file prompt for selecting a name.
+    //Get the filename.
+    QString saveasName = QFileDialog::getSaveFileName(this, tr("GWC file"), qApp->applicationDirPath (),tr("GWC File (*.gwc)"));
+    //We chop the file extension of of filename now.
+    saveasName.chop(4);
+    //We need to save the deck (.csv) file with the new name.  Old name is currently in filename member, and new name is saveasName.
+    QFile::copy(filename+EXTENSIONDECK, saveasName+EXTENSIONDECK);
+
+    //Now we can just paste from the save function.
+    filename = saveasName;
+    //Copy the other files from the ui widgets.
+    exportTableToCsv(*ui->comboTableWidget, filename+EXTENSIONCOMBO);
+    exportTableToCsv(*ui->valueTableWidget, filename+EXTENSIONVALUE);
+
+    QString textData = filename+EXTENSIONCOMBO + "\n" + filename+EXTENSIONVALUE + "\n" + filename+EXTENSIONDECK;
+
+    //Write to the .gwc file which tracks all files.
+    QFile outfile(filename+EXTENSIONSET);
+    if(outfile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QTextStream out(&outfile);
+        out << textData;
+
+        outfile.close();
+    }
+
+    //Update the working title to the .gwc.
+    this->setWindowTitle(COMBOWINDOWTITLE + filename + EXTENSIONSET);
+}
+
+void ComboEditorWindow::on_actionOpen_triggered(){
+    //We need to load the .gwc file, and then import the filenames from it to import the needed information.
+
+    //Get the filename.
+    QString openName = QFileDialog::getOpenFileName(this, tr("GWC file"), qApp->applicationDirPath (),tr("GWC File (*.gwc)"));
+
+    QString data;
+    QFile infile(openName);
+    QStringList fileList;
+
+    if (infile.open(QFile::ReadOnly)){
+        data = infile.readAll();
+        fileList = data.split("\n");
+        infile.close();
+    }
+
+    //Order (see save function) is combo, value, deck.
+    importCsvToTable(*ui->comboTableWidget, fileList[0]);
+    importCsvToTable(*ui->valueTableWidget, fileList[1]);
 
 }

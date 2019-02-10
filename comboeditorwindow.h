@@ -2,6 +2,7 @@
 #define COMBOEDITORWINDOW_H
 
 #include "globals.h"
+#include "utilities.h"
 
 #include <QDialog>
 #include <QMainWindow>
@@ -33,8 +34,16 @@ private slots:
 
     void on_doubleSpinBox_editingFinished();
 
+    void on_actionSave_triggered();
+
+    void on_actionSave_as_triggered();
+
+    void on_actionOpen_triggered();
+
 private:
     Ui::ComboEditorWindow *ui;
+
+    QString filename;
 };
 
 #endif // COMBOEDITORWINDOW_H
