@@ -40,6 +40,8 @@ private slots:
 
     void on_actionSave_deck_triggered();
 
+    void on_actionNew_deck_triggered();
+
 private:
     Ui::DeckEditorWindow *ui;
 };

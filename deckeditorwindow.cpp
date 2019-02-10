@@ -5,6 +5,7 @@
 
 std::vector<QString> DeckEditorWindow::getDeck() const{
     std::vector<QString> deck;
+
     for (int i = 0; i < ui->deckTableWidget->rowCount(); ++i){
         //qDebug() << ui->deckTableWidget->item(i, 1)->text();
         deck.push_back(ui->deckTableWidget->item(i, 1)->text());
@@ -38,6 +39,10 @@ DeckEditorWindow::~DeckEditorWindow()
 }
 
 void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
+    //If the deck list is empty in the table widget, just return.
+    if (ui->deckTableWidget->rowCount() == 0)
+        return;
+
     this->hide();
     ComboEditorWindow comboEditor(this->getDeck(), currentDeckFilename);
     comboEditor.setModal(true);
@@ -118,4 +123,12 @@ void DeckEditorWindow::on_actionSave_deck_triggered(){
     }
     else
         exportTableToCsv(*ui->deckTableWidget, currentDeckFilename);
+}
+
+void DeckEditorWindow::on_actionNew_deck_triggered()
+{
+    currentDeckFilename = "untitled deck";
+    this->setWindowTitle(DECKBUILDERWINDOWTITLE + currentDeckFilename);
+    ui->deckTableWidget->clear();
+    ui->deckTableWidget->setRowCount(0);
 }
