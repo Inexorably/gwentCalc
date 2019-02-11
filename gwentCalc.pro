@@ -37,7 +37,9 @@ SOURCES += \
     dialog.cpp \
     simthread.cpp \
     progressdialog.cpp \
-    gwentscenario.cpp
+    gwentscenario.cpp \
+    gwentgame.cpp \
+    gwentsimresults.cpp
 
 HEADERS += \
         deckeditorwindow.h \
@@ -50,7 +52,9 @@ HEADERS += \
     dialog.h \
     simthread.h \
     progressdialog.h \
-    gwentscenario.h
+    gwentscenario.h \
+    gwentgame.h \
+    gwentsimresults.h
 
 FORMS += \
         deckeditorwindow.ui \

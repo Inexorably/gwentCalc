@@ -39,6 +39,15 @@ void SimThread::stop(){
     stopBool = true;
 }
 
+int SimThread::randomInt(const double &min, const double &max){
+    static std::random_device randDev;
+    static std::mt19937 twister(randDev());
+    static std::uniform_int_distribution<int> dist;
+
+    dist.param(std::uniform_int_distribution<int>::param_type(static_cast<int>(min), static_cast<int>(max)));
+    return dist(twister);
+}
+
 void SimThread::run(){
     //Implementing iteration based run first.
 
@@ -47,8 +56,14 @@ void SimThread::run(){
     //Update the progress bar every 1%.
     int onePercent = n/100;
 
-    for (int g = 0; g < n; g++){
+    //Create the base GwentGame to reload every loop / simulation iteration.
+    GwentGame baseGame = GwentGame(pkg);
 
+    //Store the simulation results.  Have a member int n which tracks number of simulations, so we can merge the iteration
+    //simulation result (n = 1) with the overall storage result (which could be quite large).
+    GwentSimResults results;
+
+    for (int g = 0; g < n; g++){
         //I have no idea what this is for, this is a remnant of old code (see above github link).
         //Avoid crashing.
         QMutex mutex;
@@ -57,10 +72,12 @@ void SimThread::run(){
             break;
         mutex.unlock();
 
+        //Run the simulation and track the results.
+        results.merge(simulate(baseGame));
+
 
 
         if (true || g % onePercent == 0){
-            qDebug() << g;
             emit percentChanged(static_cast<double>(g)/n*100);
         }
     }
@@ -70,5 +87,12 @@ void SimThread::run(){
 
     //We will update the results to the table now.
     emit runComplete(1);
+
+}
+
+GwentSimResults SimThread::simulate(GwentGame game){
+    qDebug() << randomInt(0,100);
+    GwentSimResults results;
+    return results;
 
 }

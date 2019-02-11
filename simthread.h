@@ -2,8 +2,12 @@
 #define SIMTHREAD_H
 
 #include "gwentscenario.h"
+#include "gwentgame.h"
+#include "gwentsimresults.h"
 
 #include <QtCore>
+
+#include <random>
 
 //Stealing this from my Hearthstone Conquest Sim as apparently I figured out how to use QThread at the time.
 //Source with reference code in other files:
@@ -18,6 +22,7 @@ class SimThread :public QThread{
         void run();
         void stop();
         bool stopBool;
+        GwentSimResults simulate(GwentGame game);  //Run one iteration of the simulation.  We pass a copy not by reference so we can modify it.
 
     private:
         //Run for n iterations or until relative error is acceptable.  Error is in percent (p).
@@ -26,8 +31,11 @@ class SimThread :public QThread{
         bool nChecked;
         bool pChecked;
         bool multithread;
+        int randomInt(const double &min, const double &max);
 
         GwentScenario pkg;  //Bundled deck and combo information.
+
+
 
     signals:
         void percentChanged(int);
