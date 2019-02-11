@@ -363,7 +363,7 @@ void ComboEditorWindow::on_actionRun_triggered(){
 
     //Preprocessing has been completed, and now the simulations will be ran.  This should occur on a worker thread to avoid crashing the gui thread.
     //Also occurs in ProgressDialog so that we can show progress bar.
-    ProgressDialog *progressBar = new ProgressDialog(deck, combos);
+    ProgressDialog *progressBar = new ProgressDialog(filename, deck, combos);
     progressBar->setModal(true);
     progressBar->exec();
 

@@ -1,11 +1,13 @@
 #include "progressdialog.h"
 #include "ui_progressdialog.h"
 
-ProgressDialog::ProgressDialog(const std::vector<GwentCard> &deckTemp, const std::vector<GwentCardCombo> &combosTemp, QWidget *parent) :
-    QDialog(parent),
+ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &deckTemp, const std::vector<GwentCardCombo> &combosTemp, QWidget *parent) :
+    QDialog(parent), filename(f),
     ui(new Ui::ProgressDialog)
 {
     ui->setupUi(this);
+
+    this->setWindowTitle("Running simulation: " + filename);
 
     deck = deckTemp;
     combos = combosTemp;

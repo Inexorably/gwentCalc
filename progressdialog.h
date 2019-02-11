@@ -21,11 +21,12 @@ class ProgressDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ProgressDialog(const std::vector<GwentCard> &deckTemp, const std::vector<GwentCardCombo> &combosTemp, QWidget *parent = nullptr);
+    explicit ProgressDialog(const QString &f, const std::vector<GwentCard> &deckTemp, const std::vector<GwentCardCombo> &combosTemp, QWidget *parent = nullptr);
     ~ProgressDialog();
 
     std::vector<GwentCard> deck;
     std::vector<GwentCardCombo> combos;
+    const QString filename;
 
 private:
     Ui::ProgressDialog *ui;
