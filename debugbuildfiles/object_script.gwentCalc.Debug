@@ -1,0 +1,17 @@
+debug/main.o
+debug/deckeditorwindow.o
+debug/comboeditorwindow.o
+debug/utilities.o
+debug/settingswindow.o
+debug/gwentcard.o
+debug/gwentcardcombo.o
+debug/dialog.o
+debug/simthread.o
+debug/progressdialog.o
+debug/gwentscenario.o
+debug/moc_deckeditorwindow.o
+debug/moc_comboeditorwindow.o
+debug/moc_settingswindow.o
+debug/moc_dialog.o
+debug/moc_simthread.o
+debug/moc_progressdialog.o
