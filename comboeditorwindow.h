@@ -7,6 +7,8 @@
 #include "gwentcard.h"
 #include "gwentcardcombo.h"
 #include "dialog.h"
+#include "simthread.h"
+#include "progressdialog.h"
 
 #include <QDialog>
 #include <QMainWindow>
@@ -29,7 +31,7 @@ class ComboEditorWindow : public QMainWindow
 
 public:
     explicit ComboEditorWindow(QWidget *parent = nullptr);
-    ComboEditorWindow(std::vector<QString> deck, QString filename, std::vector<gwentCard> passedCards, QWidget *parent = nullptr);
+    ComboEditorWindow(std::vector<QString> deck, QString filename, std::vector<GwentCard> passedCards, QWidget *parent = nullptr);
     ~ComboEditorWindow();
 
 public slots:
@@ -66,7 +68,7 @@ private:
     QString filename;
     std::vector<QString> cardsInDeck;
 
-    std::vector<gwentCard> allCards;    //All cards in game, including ones not present in deck.
+    std::vector<GwentCard> allCards;    //All cards in game, including ones not present in deck.
 
 };
 

@@ -54,7 +54,7 @@ private:
     void loadCards();
 
     //Card list does not currently need to be public -- combo editor does not need access to it.  In future if auto-optimisation implemented, can move to public.
-    std::vector<gwentCard> cardList;
+    std::vector<GwentCard> cardList;
 };
 
 #endif // DECKEDITORWINDOW_H

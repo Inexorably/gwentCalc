@@ -35,8 +35,12 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
          *int n iterations default 5000
          *bool run until error default 1
          *double error default 1
+         * int r1 length
+         * int r2 length
+         * bool vary round
+         * bool vary round length
         */
-        QString settings = "1\n0\n5000\n1\n1";
+        QString settings = "1\n0\n5000\n1\n1\n6\n4\n1\n3";
         if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&outSettings);
             out << settings;
@@ -224,7 +228,7 @@ void DeckEditorWindow::loadCards(){
         //We are now in a row separated by | chars.
         rowData = tempCardList[i].split("|");
         ui->cardSelectionComboBox->addItem(rowData[0]);
-        cardList.push_back(gwentCard(rowData[0], rowData[1].toInt(), rowData[2].toDouble()));
+        cardList.push_back(GwentCard(rowData[0], rowData[1].toInt(), rowData[2].toDouble()));
     }
 }
 

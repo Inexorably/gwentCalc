@@ -6,6 +6,7 @@ Dialog::Dialog(const QString s, QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
+    ui->messageLabel->setAlignment(Qt::AlignCenter);
     ui->messageLabel->setText(s);
 }
 

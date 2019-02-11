@@ -3,10 +3,10 @@
 
 #include <QString>
 
-class gwentCard
+class GwentCard
 {
 public:
-    gwentCard(QString tempName, int tempProvisions, double tempUnconditionalPoints);
+    GwentCard(QString tempName, int tempProvisions, double tempUnconditionalPoints);
 
     QString name;
     int provisions;

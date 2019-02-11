@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFilename, std::vector<gwentCard> passedCards, QWidget *parent) :
+ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFilename, std::vector<GwentCard> passedCards, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ComboEditorWindow)
 {
@@ -306,7 +306,7 @@ void ComboEditorWindow::on_actionRun_triggered(){
     //*******************************************************************************************************************************************
 
     //Create the std:vector<gwentCard> deck from cardsInDeck and all cards (basically convert from std::vector<QString>).
-    std::vector<gwentCard> deck;
+    std::vector<GwentCard> deck;
     //This is inefficient but finishes so quickly that it shouldn't matter. O(n2).
     for (size_t i = 0; i < cardsInDeck.size(); ++i){
         for (size_t j = 0; j < allCards.size(); ++j){
@@ -320,10 +320,10 @@ void ComboEditorWindow::on_actionRun_triggered(){
         }
     }
 
-    //We now create a vector gwentCardCombos.
-    std::vector<gwentCardCombo> combos;
+    //We now create a vector GwentCardCombo.
+    std::vector<GwentCardCombo> combos;
     for (int row = 0; row < ui->comboTableWidget->rowCount()-1; ++row){
-        gwentCardCombo tempCombo;
+        GwentCardCombo tempCombo;
 
         //Set the unconditional combo value from the table.  Make sure that the value table is valid, and return if not.
         //TODO: Account for double returning infinite?
@@ -359,6 +359,12 @@ void ComboEditorWindow::on_actionRun_triggered(){
     //***************************************PREPROCESSING COMPLETE******************************************************************************
     //*******************************************************************************************************************************************
 
+    //We now have the deck and combos variables.
+
     //Preprocessing has been completed, and now the simulations will be ran.  This should occur on a worker thread to avoid crashing the gui thread.
+    //Also occurs in ProgressDialog so that we can show progress bar.
+    ProgressDialog *progressBar = new ProgressDialog(deck, combos);
+    progressBar->setModal(true);
+    progressBar->exec();
 
 }

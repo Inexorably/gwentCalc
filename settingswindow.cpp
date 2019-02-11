@@ -36,10 +36,16 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->nIterationsSpinBox->setValue(settingsList[2].toInt());
     ui->percentCheckBox->setChecked(static_cast<bool>(settingsList[3].toInt()));
     ui->percentSpinBox->setValue(settingsList[4].toDouble());
+    ui->r1SpinBox->setValue(settingsList[5].toInt());
+    ui->r2SpinBox->setValue(settingsList[6].toInt());
+    ui->r3SpinBox->setValue(16-settingsList[5].toInt()-settingsList[6].toInt());
+    ui->varyRoundCheckBox->setChecked(static_cast<bool>(settingsList[7].toInt()));
+    ui->varyRoundSpinBox->setValue(settingsList[8].toInt());
 
     //Enable / disable interdependant widgets such as nIterations / percent.
     ui->nIterationsSpinBox->setEnabled(ui->nIterationsCheckBox->isChecked());
     ui->percentSpinBox->setEnabled(ui->percentCheckBox->isChecked());
+    ui->varyRoundSpinBox->setEnabled(ui->varyRoundCheckBox->isChecked());
 }
 
 SettingsWindow::~SettingsWindow()
@@ -65,7 +71,11 @@ void SettingsWindow::on_okButton_clicked(){
     settings += QString::number(static_cast<int>(ui->nIterationsCheckBox->isChecked()))+"\n";
     settings += QString::number(ui->nIterationsSpinBox->value())+"\n";
     settings += QString::number(static_cast<int>(ui->percentCheckBox->isChecked()))+"\n";
-    settings += QString::number(ui->percentSpinBox->value());
+    settings += QString::number(ui->percentSpinBox->value())+"\n";
+    settings += QString::number(ui->r1SpinBox->value())+"\n";
+    settings += QString::number(ui->r2SpinBox->value())+"\n";
+    settings += QString::number(static_cast<int>(ui->varyRoundCheckBox->isChecked()))+"\n";
+    settings += QString::number(ui->varyRoundSpinBox->value());
 
 
     if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)){
@@ -102,4 +112,16 @@ void SettingsWindow::on_percentCheckBox_clicked(){
         ui->percentSpinBox->setEnabled(false);
         ui->nIterationsSpinBox->setEnabled(true);
     }
+}
+
+void SettingsWindow::on_r1SpinBox_valueChanged(int arg1){
+    ui->r3SpinBox->setValue(16-ui->r2SpinBox->value()-arg1);
+}
+
+void SettingsWindow::on_r2SpinBox_valueChanged(int arg1){
+    ui->r3SpinBox->setValue(16-ui->r1SpinBox->value()-arg1);
+}
+
+void SettingsWindow::on_varyRoundCheckBox_clicked(){
+    ui->varyRoundSpinBox->setEnabled(ui->varyRoundCheckBox->isChecked());
 }

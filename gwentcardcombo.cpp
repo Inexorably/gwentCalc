@@ -1,6 +1,6 @@
 #include "gwentcardcombo.h"
 
-gwentCardCombo::gwentCardCombo()
+GwentCardCombo::GwentCardCombo()
 {
 
 }

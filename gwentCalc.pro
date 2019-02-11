@@ -34,7 +34,10 @@ SOURCES += \
     settingswindow.cpp \
     gwentcard.cpp \
     gwentcardcombo.cpp \
-    dialog.cpp
+    dialog.cpp \
+    simthread.cpp \
+    progressdialog.cpp \
+    gwentscenario.cpp
 
 HEADERS += \
         deckeditorwindow.h \
@@ -44,13 +47,17 @@ HEADERS += \
     settingswindow.h \
     gwentcard.h \
     gwentcardcombo.h \
-    dialog.h
+    dialog.h \
+    simthread.h \
+    progressdialog.h \
+    gwentscenario.h
 
 FORMS += \
         deckeditorwindow.ui \
     comboeditorwindow.ui \
     settingswindow.ui \
-    dialog.ui
+    dialog.ui \
+    progressdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

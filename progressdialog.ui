@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>ProgressDialog</class>
+ <widget class="QDialog" name="ProgressDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>234</width>
-    <height>66</height>
+    <width>311</width>
+    <height>118</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,9 +15,16 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="messageLabel">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pushButton">
      <property name="text">
-      <string>Error: .....overwritten when called.</string>
+      <string>Cancel</string>
      </property>
     </widget>
    </item>

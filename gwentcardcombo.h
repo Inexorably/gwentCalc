@@ -7,12 +7,12 @@
 
 //For storing combinations of gwentCards and the combined points power.
 
-class gwentCardCombo
+class GwentCardCombo
 {
 public:
-    gwentCardCombo();
+    GwentCardCombo();
 
-    std::vector<gwentCard> cards;
+    std::vector<GwentCard> cards;
 
     //Can add more types of points such as bloodlust / assumed turns in future.
     double unconditionalPoints;

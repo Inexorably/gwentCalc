@@ -28,6 +28,12 @@ private slots:
 
     void on_percentCheckBox_clicked();
 
+    void on_r1SpinBox_valueChanged(int arg1);
+
+    void on_r2SpinBox_valueChanged(int arg1);
+
+    void on_varyRoundCheckBox_clicked();
+
 private:
     Ui::SettingsWindow *ui;
 };
