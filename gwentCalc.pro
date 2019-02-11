@@ -32,7 +32,8 @@ SOURCES += \
     comboeditorwindow.cpp \
     utilities.cpp \
     settingswindow.cpp \
-    gwentcard.cpp
+    gwentcard.cpp \
+    gwentcardcombo.cpp
 
 HEADERS += \
         deckeditorwindow.h \
@@ -40,7 +41,8 @@ HEADERS += \
     utilities.h \
     globals.h \
     settingswindow.h \
-    gwentcard.h
+    gwentcard.h \
+    gwentcardcombo.h
 
 FORMS += \
         deckeditorwindow.ui \

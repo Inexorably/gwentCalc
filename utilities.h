@@ -1,6 +1,8 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
+#include "globals.h"
+
 #include <QTableWidget>
 #include <QString>
 #include <QFile>

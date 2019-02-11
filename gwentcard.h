@@ -6,7 +6,7 @@
 class gwentCard
 {
 public:
-    gwentCard(QString s);
+    gwentCard(QString tempName, int tempProvisions, double tempUnconditionalPoints);
 
     QString name;
     int provisions;

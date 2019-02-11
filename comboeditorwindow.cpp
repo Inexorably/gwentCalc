@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFilename, QWidget *parent) :
+ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFilename, std::vector<gwentCard> passedCards, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ComboEditorWindow)
 {
@@ -11,6 +11,7 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
 
     //Add the cards in the deck.
     cardsInDeck = deck;
+    allCards = passedCards;
 
     //On startup, add the cards in the deck currently to the comboBox.
     for (size_t i = 0; i < deck.size(); ++i){
@@ -48,6 +49,9 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
         importCsvToTable(*ui->comboTableWidget, fileList[0]);
         importCsvToTable(*ui->valueTableWidget, fileList[1]);
     }
+
+    //Fix label position.
+    ui->comboValueLabel->setAlignment(Qt::AlignRight);
 }
 
 
@@ -175,30 +179,6 @@ void ComboEditorWindow::on_removeComboButton_clicked(){
     ui->valueTableWidget->setItem(ui->valueTableWidget->rowCount()-1, 0, new QTableWidgetItem(""));
 }
 
-void ComboEditorWindow::on_doubleSpinBox_editingFinished(){
-    //Set the selected cell in the value tab to the spinbox value.
-    //Get the current index of the selected cell.
-    QModelIndexList indexList = ui->valueTableWidget->selectionModel()->selectedIndexes();
-    int row = 0;
-    int col = 0;
-    if (indexList.empty())
-        return;
-    foreach(QModelIndex index, indexList){
-        row = index.row();
-        col = index.column();
-        break;  //bigThonkers use of foreach and break right here.
-    }
-
-    //The bottom row is empty.  If this is the bottom row, return.
-    if (ui->valueTableWidget->rowCount() == row + 1){
-        return;
-    }
-
-    ui->valueTableWidget->setItem(row, col, new QTableWidgetItem(QString::number(ui->doubleSpinBox->value())));
-
-
-}
-
 void ComboEditorWindow::on_actionSave_triggered(){
     //We need to save the combo table and the value table.
     //The current filename is stored in the member variable "filename".  This does not include the file extension.
@@ -226,6 +206,9 @@ void ComboEditorWindow::on_actionSave_as_triggered(){
     //Do the file prompt for selecting a name.
     //Get the filename.
     QString saveasName = QFileDialog::getSaveFileName(this, tr("GWC file"), qApp->applicationDirPath (),tr("GWC File (*.gwc)"));
+    if (saveasName.isEmpty())
+        return;
+
     //We chop the file extension of of filename now.
     saveasName.chop(4);
     //We need to save the deck (.csv) file with the new name.  Old name is currently in filename member, and new name is saveasName.
@@ -315,4 +298,55 @@ void ComboEditorWindow::on_cardSelectionLineEdit_textChanged(const QString &arg1
             ui->comboCardSelectionComboBox->addItem(cardsInDeck[i]);
         }
     }
+}
+
+void ComboEditorWindow::on_actionRun_triggered(){
+    //****************************PREPROCESSING -- THIS CAN OCCUR ON THE MAIN GUI THREAD***********************************
+
+    //Create the std:vector<gwentCard> deck from cardsInDeck and all cards (basically convert from std::vector<QString>).
+    std::vector<gwentCard> deck;
+    //This is inefficient but finishes so quickly that it shouldn't matter. O(n2).
+    for (size_t i = 0; i < cardsInDeck.size(); ++i){
+        for (size_t j = 0; j < allCards.size(); ++j){
+            //Remove the escape character from the cardsInDeck entry.
+            QString temp = cardsInDeck[i];
+            //temp.chop(1);
+            if (allCards[j].name == temp){
+                deck.push_back(allCards[j]);
+                break;
+            }
+        }
+    }
+
+    //We now create a vector gwentCardCombos.
+    std::vector<gwentCardCombo> combos;
+    for (int row = 0; row < ui->comboTableWidget->rowCount(); ++row){
+        gwentCardCombo tempCombo;
+
+        //Set the unconditional combo value from the table.
+        tempCombo.unconditionalPoints = ui->valueTableWidget->item(row, 0)->text().toDouble();
+
+        for (int col = 0; col < ui->comboTableWidget->columnCount(); ++col){
+            //If the item at row, col is empty or null, we continue.
+            if (!ui->comboTableWidget->item(row, col) || ui->comboTableWidget->item(row, col)->text().isEmpty()){
+                continue;
+            }
+
+            //We iterate through each item in the combo table widget.  As we move through the row, push cards onto the combo.cards member.  Then, push the tempCombo onto combos.
+            //Find the gwentCard with the same name as the item at row, col.
+            //TODO: Can improve efficiency with buckets / hash / dict.
+            for (size_t i = 0; i < allCards.size(); ++i){
+                if (ui->comboTableWidget->item(row, col)->text() == allCards[i].name){
+                    tempCombo.cards.push_back(allCards[i]);
+                }
+            }
+        }
+        //Could fix this by doing row < rowCount() - 1, but this is more generalised and performance here doesn't matter.
+        if (tempCombo.cards.size() != 0){
+            combos.push_back(tempCombo);
+        }
+        qDebug() << tempCombo.cards.size();
+    }
+    qDebug() << combos.size();
+
 }

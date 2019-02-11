@@ -7,10 +7,8 @@ std::vector<QString> DeckEditorWindow::getDeck() const{
     std::vector<QString> deck;
 
     for (int i = 0; i < ui->deckTableWidget->rowCount(); ++i){
-        //qDebug() << ui->deckTableWidget->item(i, 1)->text();
         deck.push_back(ui->deckTableWidget->item(i, 1)->text());
     }
-    //qDebug() << deck.size();
     return deck;
 }
 
@@ -84,6 +82,10 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
         //Get the filename.
         QString openName = QFileDialog::getOpenFileName(this, tr("GWC file"), qApp->applicationDirPath (),tr("GWC File (*.gwc)"));
 
+        if (openName.isEmpty()){
+            return;
+        }
+
         QString data;
         QFile infile(openName);
         QStringList fileList;
@@ -102,7 +104,7 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
     }
 
     //this->hide();
-    ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), passedFilename);
+    ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), passedFilename, cardList);
     comboEditor->show();
 
 }
@@ -156,6 +158,8 @@ void DeckEditorWindow::on_removePushButton_clicked(){
 void DeckEditorWindow::on_actionSave_deck_as_triggered(){
     //Get the filename.
     QString filename = QFileDialog::getSaveFileName(this, tr("CSV file"), qApp->applicationDirPath (),tr("CSV File (*.csv)"));
+    if (filename.isEmpty())
+        return;
     exportTableToCsv(*ui->deckTableWidget, filename);
     this->setWindowTitle(DECKBUILDERWINDOWTITLE + filename);
     currentDeckFilename = filename;
@@ -200,6 +204,7 @@ void DeckEditorWindow::loadCards(){
     QString data;
     QFile infile(CARDLISTFILENAME);
     QStringList tempCardList;
+    QStringList rowData;
 
     if (infile.open(QFile::ReadOnly)){
         data = infile.readAll();
@@ -211,11 +216,15 @@ void DeckEditorWindow::loadCards(){
     tempCardList.sort(Qt::CaseInsensitive);
 
     //Push the cards into the cardList vector, and update the comboBox with the list of cards.
+    //columns in cards.crd should be: name, provisions, basePoints... adding more as implement simulation.
+    //commas appear in some names, so a different char should be used to seperate values.  Using '|' tentatively.
     cardList.clear();
     ui->cardSelectionComboBox->clear();
     for (int i = 0; i < tempCardList.size(); ++i){
-        cardList.push_back(gwentCard(tempCardList[i]));
-        ui->cardSelectionComboBox->addItem(tempCardList[i]);
+        //We are now in a row separated by | chars.
+        rowData = tempCardList[i].split("|");
+        ui->cardSelectionComboBox->addItem(rowData[0]);
+        cardList.push_back(gwentCard(rowData[0], rowData[1].toInt(), rowData[2].toDouble()));
     }
 }
 

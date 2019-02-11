@@ -13,6 +13,7 @@ const QString EXTENSIONDECK = ".csv";   //Note: file saving and opening is curre
 const QString EXTENSIONSET = ".gwc";
 const QString SETTINGSFILENAME = "gwentcalc.set";
 const QString CARDLISTFILENAME = "cards.crd";
+const QString CARDLISTSEPARATOR = "|";  //Can't use comma as appears in some names.
 
 
 static QString currentDeckFilename;

@@ -4,6 +4,8 @@
 #include "globals.h"
 #include "utilities.h"
 #include "settingswindow.h"
+#include "gwentcard.h"
+#include "gwentcardcombo.h"
 
 #include <QDialog>
 #include <QMainWindow>
@@ -25,7 +27,7 @@ class ComboEditorWindow : public QMainWindow
 
 public:
     explicit ComboEditorWindow(QWidget *parent = nullptr);
-    ComboEditorWindow(std::vector<QString> deck, QString filename, QWidget *parent = nullptr);
+    ComboEditorWindow(std::vector<QString> deck, QString filename, std::vector<gwentCard> passedCards, QWidget *parent = nullptr);
     ~ComboEditorWindow();
 
 public slots:
@@ -35,8 +37,6 @@ private slots:
     void on_addComboButton_clicked();
 
     void on_removeComboButton_clicked();
-
-    void on_doubleSpinBox_editingFinished();
 
     void on_actionSave_triggered();
 
@@ -52,6 +52,8 @@ private slots:
 
     void on_cardSelectionLineEdit_textChanged(const QString &arg1);
 
+    void on_actionRun_triggered();
+
 signals:
 
     void textChanged(const QString &arg1);
@@ -61,6 +63,9 @@ private:
 
     QString filename;
     std::vector<QString> cardsInDeck;
+
+    std::vector<gwentCard> allCards;    //All cards in game, including ones not present in deck.
+
 };
 
 #endif // COMBOEDITORWINDOW_H

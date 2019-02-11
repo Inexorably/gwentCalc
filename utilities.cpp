@@ -20,7 +20,7 @@ void importCsvToTable(QTableWidget &table, const QString &filename){
     table.setRowCount(rowOfData.size()-1);
 
     for (int x = 0; x < rowOfData.size(); x++){
-        rowData = rowOfData.at(x).split(",");
+        rowData = rowOfData.at(x).split(CARDLISTSEPARATOR);
         //Allocate width axis memory now that we know how many columns there are.
         if (x == 0){
             table.setColumnCount(rowData.size()-1);
@@ -40,7 +40,7 @@ void exportTableToCsv(const QTableWidget &table, const QString &filename){
             if (table.item(i, j)){
                 textData += table.item(i, j)->text();
             }
-            textData += ",";
+            textData += CARDLISTSEPARATOR;
         }
         textData += "\n";
     }
