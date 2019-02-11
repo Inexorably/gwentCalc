@@ -94,7 +94,14 @@
     <addaction name="actionSave_deck"/>
     <addaction name="actionSave_deck_as"/>
    </widget>
+   <widget class="QMenu" name="menuSimulation">
+    <property name="title">
+     <string>Simulation</string>
+    </property>
+    <addaction name="actionSettings"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuSimulation"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -123,6 +130,16 @@
   <action name="actionNew_deck">
    <property name="text">
     <string>New deck...</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionReload_Card_List">
+   <property name="text">
+    <string>Reload Card List</string>
    </property>
   </action>
  </widget>

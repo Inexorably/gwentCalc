@@ -9,12 +9,8 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
 {
     ui->setupUi(this);
 
-    //Set up cardSelectionLineEdit as a QCompleter.
-    QStringList wordList;
-    wordList << "Behemoth" << "Old Speartip: Asleep" << "Obelisk the Tormenter";
-    QCompleter *completer = new QCompleter(wordList, this);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    ui->cardSelectionLineEdit->setCompleter(completer);
+    //Add the cards in the deck.
+    cardsInDeck = deck;
 
     //On startup, add the cards in the deck currently to the comboBox.
     for (size_t i = 0; i < deck.size(); ++i){
@@ -68,6 +64,10 @@ ComboEditorWindow::~ComboEditorWindow(){
 }
 
 void ComboEditorWindow::on_addComboButton_clicked(){
+    //If nothing in comboBox selection, return.
+    if (ui->comboCardSelectionComboBox->currentText().isNull() || ui->comboCardSelectionComboBox->currentText().isEmpty())
+        return;
+
     //Get the current index of the selected cell.
     QModelIndexList indexList = ui->comboTableWidget->selectionModel()->selectedIndexes();
     int row = 0;
@@ -298,6 +298,21 @@ void ComboEditorWindow::on_actionSettings_triggered(){
     settings->exec();
 }
 
-void ComboEditorWindow::on_cardSelectionChanged(){
-    qDebug() << "poggers";
+void ComboEditorWindow::on_cardSelectionLineEdit_editingFinished(){
+    //When editing is finished, reduce the list of cards in the comboBox to ones that have the lineEdit text as a substr.
+    ui->comboCardSelectionComboBox->clear();
+    for (size_t i = 0; i < cardsInDeck.size(); ++i){
+        if (cardsInDeck[i].contains(ui->cardSelectionLineEdit->text(), Qt::CaseInsensitive)){
+            ui->comboCardSelectionComboBox->addItem(cardsInDeck[i]);
+        }
+    }
+}
+
+void ComboEditorWindow::on_cardSelectionLineEdit_textChanged(const QString &arg1){
+    ui->comboCardSelectionComboBox->clear();
+    for (size_t i = 0; i < cardsInDeck.size(); ++i){
+        if (cardsInDeck[i].contains(arg1, Qt::CaseInsensitive)){
+            ui->comboCardSelectionComboBox->addItem(cardsInDeck[i]);
+        }
+    }
 }

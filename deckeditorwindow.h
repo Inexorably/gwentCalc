@@ -7,6 +7,7 @@
 #include "comboeditorwindow.h"
 #include "utilities.h"
 #include "globals.h"
+#include "gwentcard.h"
 
 #include <vector>
 
@@ -42,8 +43,18 @@ private slots:
 
     void on_actionNew_deck_triggered();
 
+    void on_actionSettings_triggered();
+
+    void on_cardSelectionLineEdit_textChanged(const QString &arg1);
+
 private:
     Ui::DeckEditorWindow *ui;
+
+    //Load from the cards.crd file.
+    void loadCards();
+
+    //Card list does not currently need to be public -- combo editor does not need access to it.  In future if auto-optimisation implemented, can move to public.
+    std::vector<gwentCard> cardList;
 };
 
 #endif // DECKEDITORWINDOW_H

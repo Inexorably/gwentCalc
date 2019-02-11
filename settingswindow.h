@@ -1,7 +1,11 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include "globals.h"
+
 #include <QDialog>
+#include <QFile>
+#include <QDebug>
 
 namespace Ui {
 class SettingsWindow;
@@ -17,6 +21,12 @@ public:
 
 private slots:
     void on_cancelButton_clicked();
+
+    void on_okButton_clicked();
+
+    void on_nIterationsCheckBox_clicked();
+
+    void on_percentCheckBox_clicked();
 
 private:
     Ui::SettingsWindow *ui;

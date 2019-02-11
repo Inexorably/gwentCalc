@@ -31,14 +31,16 @@ SOURCES += \
         deckeditorwindow.cpp \
     comboeditorwindow.cpp \
     utilities.cpp \
-    settingswindow.cpp
+    settingswindow.cpp \
+    gwentcard.cpp
 
 HEADERS += \
         deckeditorwindow.h \
     comboeditorwindow.h \
     utilities.h \
     globals.h \
-    settingswindow.h
+    settingswindow.h \
+    gwentcard.h
 
 FORMS += \
         deckeditorwindow.ui \

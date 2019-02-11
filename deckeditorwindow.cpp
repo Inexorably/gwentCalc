@@ -20,6 +20,35 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //*****************Settings creation on first time run**********
+    QFile inSettings(SETTINGSFILENAME);
+
+    if (inSettings.open(QFile::ReadOnly)){
+        inSettings.close();
+    }
+    else{
+        //Need to create the settings file as this is the first run and no settings file exists.
+        //Write to csv file.
+        //Forr some reason, if we don't specify the directory, this will save in the build folder, not in \debug.
+        QFile outSettings(SETTINGSFILENAME);
+        //Settings are seperated by newlines.
+        /*bool multithread default 1
+         *bool run n iterations default 0
+         *int n iterations default 5000
+         *bool run until error default 1
+         *double error default 1
+        */
+        QString settings = "1\n0\n5000\n1\n1";
+        if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            QTextStream out(&outSettings);
+            out << settings;
+            outSettings.close();
+        }
+    }
+
+    //*****************Load Card List*******************************
+    loadCards();
+
     //*****************Base Widget Setup****************************
 
     //Set default text on QLineEdit object on search bar.
@@ -79,9 +108,7 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
 }
 
 void DeckEditorWindow::on_cardSelectionLineEdit_editingFinished(){
-    ui->cardSelectionComboBox->addItem("Old Speartip: Asleep");
-    ui->cardSelectionComboBox->addItem("Behemoth");
-    ui->cardSelectionComboBox->addItem("Obelisk the Tormenter");
+
 }
 
 void DeckEditorWindow::on_addPushButton_clicked(){
@@ -155,10 +182,48 @@ void DeckEditorWindow::on_actionSave_deck_triggered(){
         exportTableToCsv(*ui->deckTableWidget, currentDeckFilename);
 }
 
-void DeckEditorWindow::on_actionNew_deck_triggered()
-{
+void DeckEditorWindow::on_actionNew_deck_triggered(){
     currentDeckFilename = "untitled deck";
     this->setWindowTitle(DECKBUILDERWINDOWTITLE + currentDeckFilename);
     ui->deckTableWidget->clear();
     ui->deckTableWidget->setRowCount(0);
+}
+
+void DeckEditorWindow::on_actionSettings_triggered(){
+    SettingsWindow *settings = new SettingsWindow();
+    settings->setModal(true);
+    settings->exec();
+}
+
+//Load the cards from cards.crd into the cardList member variable.
+void DeckEditorWindow::loadCards(){
+    QString data;
+    QFile infile(CARDLISTFILENAME);
+    QStringList tempCardList;
+
+    if (infile.open(QFile::ReadOnly)){
+        data = infile.readAll();
+        tempCardList = data.split("\n");
+        infile.close();
+    }
+
+    //Sort the cardList alphabetically (lmao).
+    tempCardList.sort(Qt::CaseInsensitive);
+
+    //Push the cards into the cardList vector, and update the comboBox with the list of cards.
+    cardList.clear();
+    ui->cardSelectionComboBox->clear();
+    for (int i = 0; i < tempCardList.size(); ++i){
+        cardList.push_back(gwentCard(tempCardList[i]));
+        ui->cardSelectionComboBox->addItem(tempCardList[i]);
+    }
+}
+
+void DeckEditorWindow::on_cardSelectionLineEdit_textChanged(const QString &arg1){
+    ui->cardSelectionComboBox->clear();
+    for (size_t i = 0; i < cardList.size(); ++i){
+        if (cardList[i].name.contains(arg1, Qt::CaseInsensitive)){
+            ui->cardSelectionComboBox->addItem(cardList[i].name);
+        }
+    }
 }

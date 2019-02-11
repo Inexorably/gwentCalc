@@ -29,7 +29,7 @@ public:
     ~ComboEditorWindow();
 
 public slots:
-    void on_cardSelectionChanged();
+
 
 private slots:
     void on_addComboButton_clicked();
@@ -48,6 +48,10 @@ private slots:
 
     void on_actionSettings_triggered();
 
+    void on_cardSelectionLineEdit_editingFinished();
+
+    void on_cardSelectionLineEdit_textChanged(const QString &arg1);
+
 signals:
 
     void textChanged(const QString &arg1);
@@ -56,6 +60,7 @@ private:
     Ui::ComboEditorWindow *ui;
 
     QString filename;
+    std::vector<QString> cardsInDeck;
 };
 
 #endif // COMBOEDITORWINDOW_H
