@@ -6,11 +6,13 @@
 #include "settingswindow.h"
 #include "gwentcard.h"
 #include "gwentcardcombo.h"
+#include "dialog.h"
 
 #include <QDialog>
 #include <QMainWindow>
 #include <QToolBar>
 #include <QCompleter>
+#include <QtMath>
 
 
 

@@ -301,7 +301,9 @@ void ComboEditorWindow::on_cardSelectionLineEdit_textChanged(const QString &arg1
 }
 
 void ComboEditorWindow::on_actionRun_triggered(){
-    //****************************PREPROCESSING -- THIS CAN OCCUR ON THE MAIN GUI THREAD***********************************
+    //*******************************************************************************************************************************************
+    //****************************PREPROCESSING -- THIS CAN OCCUR ON THE MAIN GUI THREAD*********************************************************
+    //*******************************************************************************************************************************************
 
     //Create the std:vector<gwentCard> deck from cardsInDeck and all cards (basically convert from std::vector<QString>).
     std::vector<gwentCard> deck;
@@ -320,10 +322,18 @@ void ComboEditorWindow::on_actionRun_triggered(){
 
     //We now create a vector gwentCardCombos.
     std::vector<gwentCardCombo> combos;
-    for (int row = 0; row < ui->comboTableWidget->rowCount(); ++row){
+    for (int row = 0; row < ui->comboTableWidget->rowCount()-1; ++row){
         gwentCardCombo tempCombo;
 
-        //Set the unconditional combo value from the table.
+        //Set the unconditional combo value from the table.  Make sure that the value table is valid, and return if not.
+        //TODO: Account for double returning infinite?
+        if (!ui->valueTableWidget->item(row, 0) || ui->valueTableWidget->item(row, 0)->text().toDouble() < ALLOWEDFLOATERROR){
+            //The value table is invalid.  Make a popup to inform the user, and return the function.
+            Dialog *dialog = new Dialog("Error: Unconditional table is invalid at row : " + QString::number(row+1));
+            dialog->setModal(true);
+            dialog->exec();
+            return;
+        }
         tempCombo.unconditionalPoints = ui->valueTableWidget->item(row, 0)->text().toDouble();
 
         for (int col = 0; col < ui->comboTableWidget->columnCount(); ++col){
@@ -341,12 +351,14 @@ void ComboEditorWindow::on_actionRun_triggered(){
                 }
             }
         }
-        //Could fix this by doing row < rowCount() - 1, but this is more generalised and performance here doesn't matter.
-        if (tempCombo.cards.size() != 0){
-            combos.push_back(tempCombo);
-        }
-        qDebug() << tempCombo.cards.size();
     }
-    qDebug() << combos.size();
+
+    //TODO: When accounting for more forms of conditional points (ie bloodthirst), add them to the gwentCardCombo and gwentCard classes.
+
+    //*******************************************************************************************************************************************
+    //***************************************PREPROCESSING COMPLETE******************************************************************************
+    //*******************************************************************************************************************************************
+
+    //Preprocessing has been completed, and now the simulations will be ran.  This should occur on a worker thread to avoid crashing the gui thread.
 
 }

@@ -14,6 +14,7 @@ const QString EXTENSIONSET = ".gwc";
 const QString SETTINGSFILENAME = "gwentcalc.set";
 const QString CARDLISTFILENAME = "cards.crd";
 const QString CARDLISTSEPARATOR = "|";  //Can't use comma as appears in some names.
+const double ALLOWEDFLOATERROR = 0.0001; //When comparing doubles to int.
 
 
 static QString currentDeckFilename;
