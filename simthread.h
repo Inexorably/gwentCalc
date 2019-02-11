@@ -16,7 +16,8 @@ class SimThread :public QThread{
 
         SimThread(const GwentScenario &gs);
         void run();
-        bool stop;
+        void stop();
+        bool stopBool;
 
     private:
         //Run for n iterations or until relative error is acceptable.  Error is in percent (p).

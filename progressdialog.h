@@ -28,8 +28,12 @@ public:
     std::vector<GwentCardCombo> combos;
     const QString filename;
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::ProgressDialog *ui;
+    SimThread *sim;
 
 };
 

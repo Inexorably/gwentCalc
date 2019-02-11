@@ -10,7 +10,7 @@
 //https://github.com/Inexorably/Hearthstone-Conquest-Sim/blob/master/simthread.cpp
 
 SimThread::SimThread(const GwentScenario &gs) : pkg(gs){
-    stop = false;
+    stopBool = false;
 
     //Initalise based on the settings in gwentCalc.set.
     QString data;
@@ -35,6 +35,10 @@ void SimThread::percentChanged(int num){
     return;
 }*/
 
+void SimThread::stop(){
+    stopBool = true;
+}
+
 void SimThread::run(){
     //Implementing iteration based run first.
 
@@ -49,7 +53,7 @@ void SimThread::run(){
         //Avoid crashing.
         QMutex mutex;
         mutex.lock();
-        if (this->stop)
+        if (stopBool)
             break;
         mutex.unlock();
 

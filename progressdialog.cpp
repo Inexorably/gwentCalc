@@ -15,7 +15,7 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     GwentScenario pkg(deck, combos);
 
     //Begin worker thread for simulations.  Initalize, and then call start which calls run().
-    SimThread *sim = new SimThread(pkg);
+    sim = new SimThread(pkg);
 
     //Connect the signal for updating the progress bar to the signals emited by the thread.
     connect(sim, SIGNAL(percentChanged(int)), ui->progressBar, SLOT(setValue(int)));
@@ -27,4 +27,9 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
 ProgressDialog::~ProgressDialog()
 {
     delete ui;
+}
+
+void ProgressDialog::on_pushButton_clicked(){
+    sim->stop();
+    close();
 }
