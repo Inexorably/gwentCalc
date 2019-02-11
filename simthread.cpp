@@ -39,6 +39,11 @@ void SimThread::stop(){
     stopBool = true;
 }
 
+void SimThread::shuffle(std::vector<GwentCard> &v){
+    static auto rng = std::default_random_engine {};
+    std::shuffle(std::begin(v), std::end(v), rng);
+}
+
 int SimThread::randomInt(const double &min, const double &max){
     static std::random_device randDev;
     static std::mt19937 twister(randDev());
@@ -91,8 +96,15 @@ void SimThread::run(){
 }
 
 GwentSimResults SimThread::simulate(GwentGame game){
-    qDebug() << randomInt(0,100);
     GwentSimResults results;
+
+    //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
+    //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
+    shuffle(game.deck);
+    qDebug() << game.deck.back().name;
+
+
+
     return results;
 
 }

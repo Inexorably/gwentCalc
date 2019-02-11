@@ -7,6 +7,7 @@
 
 #include <QtCore>
 
+#include <algorithm>
 #include <random>
 
 //Stealing this from my Hearthstone Conquest Sim as apparently I figured out how to use QThread at the time.
@@ -31,6 +32,7 @@ class SimThread :public QThread{
         bool nChecked;
         bool pChecked;
         bool multithread;
+        void shuffle(std::vector<GwentCard> &v);
         int randomInt(const double &min, const double &max);
 
         GwentScenario pkg;  //Bundled deck and combo information.
