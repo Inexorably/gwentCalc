@@ -26,18 +26,30 @@ class SimThread :public QThread{
         GwentSimResults simulate(GwentGame game);  //Run one iteration of the simulation.  We pass a copy not by reference so we can modify it.
 
     private:
+        //**************************Variables**************************************************
         //Run for n iterations or until relative error is acceptable.  Error is in percent (p).
         int n;
         double p;
         bool nChecked;
         bool pChecked;
         bool multithread;
-        void shuffle(std::vector<GwentCard> &v);
-        int randomInt(const double &min, const double &max);
+        GwentScenario pkg;  //Bundled deck and combo information.
 
+        //***********************Utility functions*********************************************
+        int randomInt(const double &min, const double &max);
+        bool isSubset(const std::vector<GwentCard> &sub, const std::vector<GwentCard> &super);
         bool trueWithProbability(const double &prob);
 
-        GwentScenario pkg;  //Bundled deck and combo information.
+
+        //***********************Top level game relevant functions****************************
+        void shuffle(std::vector<GwentCard> &v);
+        void removeCard(const GwentCard &c, std::vector<GwentCard> &v);
+        void mulligan(GwentGame &game, const int initialMulligans);
+
+        //***********************Debug related functions**************************************
+        void printCards(const std::vector<GwentCard> &v);   //Print all cards to qDebug().
+
+
 
 
 

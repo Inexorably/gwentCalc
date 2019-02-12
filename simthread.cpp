@@ -104,13 +104,108 @@ void SimThread::run(){
 
 }
 
+bool SimThread::isSubset(const std::vector<GwentCard> &sub, const std::vector<GwentCard> &super){
+    if (sub.size() > super.size()){
+        return false;
+    }
+
+    //Check each member of the subset.
+    for (size_t i = 0; i < sub.size(); ++i){
+        //For each member of the subset, check if it exists in the superset.  If it does not exist in the super set, return false.
+        for (size_t j = 0; j < super.size(); ++j){
+            //Once we that sub[i] exists in super, we continue to the next ++i.
+            if (sub[i].name == super[j].name){
+                break;
+            }
+            if (j + 1 == super.size()){
+                return false;
+            }
+        }
+    }
+
+    return true;
+
+}
+
+void SimThread::removeCard(const GwentCard &c, std::vector<GwentCard> &v){
+    for (size_t i = 0; i < v.size(); ++i){
+        if (v[i].name == c.name){
+            v.erase(v.begin()+static_cast<int>(i));
+            return;
+        }
+    }
+}
+
+//Note: Garauntee that combos are sorted in order from greatest to least.
+void SimThread::mulligan(GwentGame &game, const int initialMulligans){
+    //Sort the combos.  TODO: Combo sort inefficient?
+    std::sort(game.combos.begin(), game.combos.end());
+    std::reverse(game.combos.begin(), game.combos.end());
+
+    //Can't mulligan with an empty deck or hand.
+    if (game.deck.empty() || game.hand.empty()){
+        return;
+    }
+    //I am retarded.  Just check all combos that are valid subsets (combos are ordered from greatest to least).  Remove from game.hand until no more valid subsets exist.
+    //If game.hand.empty(), exist mulligan phase.
+    //If at least one element left in game.hand, mulligan the first card in hand (ordered from least to most unconditionalPoints), increment usedMulligans.  Re-enter loop if mulligans remain.
+    std::vector<GwentCard> comboPiecesInHand;   //The combo pieces we don't want to mulligan.
+    for (int usedMulligans = 0; usedMulligans < initialMulligans; ++usedMulligans){
+        //Ensure hand is least to greatest.
+        std::sort(game.hand.begin(), game.hand.end());
+
+        //Remove all combo subsets from the game.hand superset.
+        for (size_t i = 0; i < game.combos.size(); ++i){
+            if (isSubset(game.combos[i].cards, game.hand)){
+                //If the combo is a subset, remove all components from the hand, and store them temporarily in the comboPiecesInHand vector.
+                for (size_t j = 0; j < game.combos[i].cards.size(); ++j){
+                    comboPiecesInHand.push_back(game.combos[i].cards[j]);
+                    removeCard(game.combos[i].cards[j], game.hand);
+                }
+            }
+        }
+        //All valid combo subsets have been removed from the superset game.hand.  Make sure that game.hand is not empty.
+        if (game.hand.empty()){
+            std::sort(game.hand.begin(), game.hand.end());
+            return;
+        }
+        //Mulligan the first card in hand, and increment usedMulligans (in loop condition now).
+        //Take the card out of hand, draw a card, put the card back in deck and shuffle.  Add the comboPiecesInHand back into game.hand, and clear().
+        GwentCard temp = game.hand.front();
+        game.hand.erase(game.hand.begin());
+        game.draw(1);
+        game.deck.push_back(temp);
+        shuffle(game.deck);
+        for (size_t i = 0; i < comboPiecesInHand.size(); ++i){
+            game.hand.push_back(comboPiecesInHand[i]);
+        }
+        comboPiecesInHand.clear();
+    }
+    std::sort(game.hand.begin(), game.hand.end());
+    return;
+}
+
+void SimThread::printCards(const std::vector<GwentCard> &v){
+    QString temp;
+    for (size_t i = 0; i < v.size(); ++i){
+        temp += v[i].name + ", ";
+    }
+    qDebug() << temp;
+}
+
 GwentSimResults SimThread::simulate(GwentGame game){
+    //Initialise the struct holding our results for this simulation.
     GwentSimResults results;
+
+    //**************************************************************************************************************************************
+    //************************************************Round 1*******************************************************************************
+    //**************************************************************************************************************************************
 
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);
     game.draw(10);
+
 
     //Loop two or three times (based on first or second, 50% chance).
     //Find the lowest unconditionalPoints card.  If it is part of a completed combo in hand, find the next lowest.
@@ -120,45 +215,16 @@ GwentSimResults SimThread::simulate(GwentGame game){
     if (trueWithProbability(0.5)){
         initialMulligans = 3;
     }
-    //We would like to sort from lowest to highest by unconditionalPoints for this approach.
-    //<operator is overloaded in GwentCard to compare unconditionalPoints.
-    std::sort(game.hand.begin(), game.hand.end());
-    for (int i = 0; i < initialMulligans; ++i){
-        //Hand is sorted from lowest to highest.  If card is part of completed combo continue, else break.
-        for (size_t j = 0; j < game.hand.size(); ++j){
-            bool mulliganSelectedCard = true;
-            //Loop through combos and check if game.hand[j] is not part of a completed combo.  If it is not, break.
-            //Combos are sorted from highest to lowest point values.
-            for (size_t k = 0; k < game.combos.size(); ++k){
-                //We are now iterating through each combo.  Loop through and see if game.hand[j] is in the combo.  If so, check for all other combo pieces.
-                //If all other combo pieces are in hand, set mulliganSelectedCard to false.
-                for (size_t x = 0; x < game.combos[k].cards.size(); ++x){
-                    bool deadCombo = false;
-                    if (game.combos[k].cards[x].name == game.hand[j].name){
-                        for (size_t y = 0; y < game.combos[k].cards.size() && !deadCombo; ++y){
-                            //Check the hand to see if the yth combo card is in hand.  If it is not, break.
-                            for (size_t z = 0; z < game.hand.size(); ++z){
-                                if (game.hand[z].name == game.combos[k].cards[y].name){
-                                    break;
-                                }
-                                if (z + 1 == game.hand.size()){
-                                    deadCombo = true;
-                                }
-                            }
-                        }
-                    }
-                    //If the deadCombo is false (meaning that this is a live combo using game.hand[j]) then remove all the pieces of this combo from hand.
-                    //store them in a temp std::vector<GwentCard> variable so we can add them back to hand next time.
-                    if (!deadCombo){
-                        for (size_t y = 0; y < game.combos[k].cards.size(); ++y){
-                            //Remove cards from hand that are in the combo and store them on the temp vector.
-                        }
-                    }
-                }
-            }
-        }
-    }
 
+    //Conduct mulligans.
+    mulligan(game, initialMulligans);
+
+    //We have now mulliganned.  Play out the cards according to turn length.
+    //Figure out how long this round will be.
+    int r1Turns = game.r1BaseTurns;
+    if (game.turnVariationBool){
+        r1Turns += game.turnVariationInt;
+    }
 
 
 

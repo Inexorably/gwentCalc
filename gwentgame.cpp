@@ -28,7 +28,7 @@ void GwentGame::draw(const int &n){
         if (deck.empty()){
             return;
         }
-        if (hand.size() > 10){
+        if (hand.size() < 10){
             hand.push_back(deck.back());
         }
         deck.pop_back();
