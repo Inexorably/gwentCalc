@@ -4,8 +4,10 @@
 #include "gwentscenario.h"
 #include "gwentgame.h"
 #include "gwentsimresults.h"
+#include "dialog.h"
 
 #include <QtCore>
+#include <QtMath>
 
 #include <algorithm>
 #include <random>
@@ -44,7 +46,8 @@ class SimThread :public QThread{
         //***********************Top level game relevant functions****************************
         void shuffle(std::vector<GwentCard> &v);
         void removeCard(const GwentCard &c, std::vector<GwentCard> &v);
-        void mulligan(GwentGame &game, const int initialMulligans);
+        void mulligan(GwentGame &game, const int &initialMulligans);
+        int playRound(GwentGame &game, const int &r1Turns);
 
         //***********************Debug related functions**************************************
         void printCards(const std::vector<GwentCard> &v);   //Print all cards to qDebug().

@@ -63,11 +63,6 @@ int SimThread::randomInt(const double &min, const double &max){
 void SimThread::run(){
     //Implementing iteration based run first.
 
-    //The current progress, varies [0 100].
-    //int prog = 0;
-    //Update the progress bar every 1%.
-    int onePercent = n/100;
-
     //Create the base GwentGame to reload every loop / simulation iteration, and sort the combos vector for efficiency reasons in the simul function.
     GwentGame baseGame = GwentGame(pkg);
     std::sort(pkg.combos.begin(), pkg.combos.end());
@@ -77,23 +72,72 @@ void SimThread::run(){
     //simulation result (n = 1) with the overall storage result (which could be quite large).
     GwentSimResults results;
 
-    for (int g = 0; g < n; g++){
-        //I have no idea what this is for, this is a remnant of old code (see above github link).
-        //Avoid crashing.
-        QMutex mutex;
-        mutex.lock();
-        if (stopBool)
-            break;
-        mutex.unlock();
+    //Can either run based on iterations or based on relative error.
+    if (nChecked){
+        //Update the progress bar every 1%.
+        int ticker = n/100;
+        for (int g = 0; g < n; g++){
+            //I have no idea what this is for, this is a remnant of old code (see above github link).
+            //Avoid crashing.
+            QMutex mutex;
+            mutex.lock();
+            if (stopBool)
+                break;
+            mutex.unlock();
 
-        //Run the simulation and track the results.
-        results.merge(simulate(baseGame));
+            //Run the simulation and track the results.
+            results.merge(simulate(baseGame));
 
 
-
-        if (true || g % onePercent == 0){
-            emit percentChanged(static_cast<double>(g)/n*100);
+            if (g == ticker){
+                ticker += n/100;
+                qDebug() << results.n << ": " << results.score();
+                emit percentChanged((g)/n*100);
+            }
         }
+    }
+    else if (pChecked){
+         //Update dialog every tick.
+        int ticker = 100;
+
+
+        //Keep a temp variable so we can track the result every tick and check if within error percent.
+        double previousScore = 0;
+
+        for (;;){
+            //I have no idea what this is for, this is a remnant of old code (see above github link).
+            //Avoid crashing.
+            QMutex mutex;
+            mutex.lock();
+            if (stopBool)
+                break;
+            mutex.unlock();
+
+            //Run the simulation and track the results.
+            results.merge(simulate(baseGame));
+
+
+            if (results.n == ticker){
+                ticker += 100;
+                //qDebug() << results.n << ": " << results.score();
+                emit percentChanged((results.n)/n*100);
+
+                //Check if we are in acceptable error.
+                if (qFabs((results.score()-previousScore)/results.score()*100) < p){
+                    //qDebug() << qFabs((results.score()-previousScore)/results.score()*100);
+                    break;
+                }
+                else{
+                    previousScore = results.score();
+                }
+            }
+        }
+    }
+    else{
+        Dialog *dialog = new Dialog("void SimThread::run(): neither nChecked nor pChecked true");
+        dialog->setModal(true);
+        dialog->exec();
+        return;
     }
 
     //Done.
@@ -137,7 +181,7 @@ void SimThread::removeCard(const GwentCard &c, std::vector<GwentCard> &v){
 }
 
 //Note: Garauntee that combos are sorted in order from greatest to least.
-void SimThread::mulligan(GwentGame &game, const int initialMulligans){
+void SimThread::mulligan(GwentGame &game, const int &initialMulligans){
     //Sort the combos.  TODO: Combo sort inefficient?
     std::sort(game.combos.begin(), game.combos.end());
     std::reverse(game.combos.begin(), game.combos.end());
@@ -193,9 +237,63 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
     qDebug() << temp;
 }
 
+int SimThread::playRound(GwentGame &game, const int &r1Turns){
+    //This follows the same trend of mulligans function, where we play out the highest valid subset combos in order.
+    //Only adjustment is that if combo.size() > remainingTurns, then we choose the next highest valid subset combo.
+    //If not valid combos remain, play out the highest conditional cards in order.
+    int score = 0;
+
+    //Sort the combos.  TODO: Combo sort inefficient?
+    std::sort(game.combos.begin(), game.combos.end());
+    std::reverse(game.combos.begin(), game.combos.end());
+
+    //Can't play with an empty hand.
+    if (game.hand.empty()){
+        return score;
+    }
+    //I am retarded.  Just check all combos that are valid subsets (combos are ordered from greatest to least).  Remove from game.hand until no more valid subsets exist.
+    //If game.hand.empty(), exist mulligan phase.
+    //If at least one element left in game.hand, mulligan the first card in hand (ordered from least to most unconditionalPoints), increment usedMulligans.  Re-enter loop if mulligans remain.
+    for (int cardsPlayed = 0; cardsPlayed < r1Turns; ++cardsPlayed){
+        //If hand is empty, break.
+        if (game.hand.empty()){
+            break;
+        }
+
+        //Ensure hand is least to greatest.
+        std::sort(game.hand.begin(), game.hand.end());
+
+        //Play all valid subset combos (which have combo.cards.size() <= r1Turns) in order from highest to greatest.
+        //This loop will continue until no valid combo subsets are left, so if it is not the first cardsPlayed loop iteration then
+        //we have already attempted all combos and we can skip this loop.
+        for (size_t i = 0; cardsPlayed != 0 && i < game.combos.size(); ++i){
+            //If the combo is a valid subset and we have enough turns to play the combo.
+            if (game.combos[i].cards.size() <= static_cast<size_t>(r1Turns) && isSubset(game.combos[i].cards, game.hand)){
+                //If the combo is a subset, remove all components from the hand, place them in the graveyard,
+                for (size_t j = 0; j < game.combos[i].cards.size(); ++j){
+                    game.graveyard.push_back(game.combos[i].cards[j]);
+                    removeCard(game.combos[i].cards[j], game.hand);
+                }
+                score += game.combos[i].unconditionalPoints;
+                cardsPlayed += game.combos[i].cards.size();
+            }
+        }
+
+        //We have ran out of valid combo subsets, and now we play single cards in order of unconditionalProvision.
+        //game.hand is still sorted from least to greatest.  Note that cardsPlayed is incremented in the loop condition, not here.
+        score += game.hand.front().unconditionalPoints;
+        game.hand.erase(game.hand.begin());
+    }
+    std::sort(game.hand.begin(), game.hand.end());
+    return score;
+}
+
 GwentSimResults SimThread::simulate(GwentGame game){
     //Initialise the struct holding our results for this simulation.
     GwentSimResults results;
+    int scoreR1 = 0;
+    int scoreR2 = 0;
+    int scoreR3 = 0;
 
     //**************************************************************************************************************************************
     //************************************************Round 1*******************************************************************************
@@ -211,24 +309,89 @@ GwentSimResults SimThread::simulate(GwentGame game){
     //Find the lowest unconditionalPoints card.  If it is part of a completed combo in hand, find the next lowest.
     //I.e find the lowest conditionalPoints card in hand that is not part of a completed combo.
         //Draw another card and then mulligan the selected card back into the deck.
-    int initialMulligans = 2;
+    int mulliganInt = 2;
     if (trueWithProbability(0.5)){
-        initialMulligans = 3;
+        mulliganInt = 3;
     }
 
     //Conduct mulligans.
-    mulligan(game, initialMulligans);
+    mulligan(game, mulliganInt);
 
     //We have now mulliganned.  Play out the cards according to turn length.
     //Figure out how long this round will be.
     int r1Turns = game.r1BaseTurns;
     if (game.turnVariationBool){
-        r1Turns += game.turnVariationInt;
+        r1Turns += randomInt(-1*game.turnVariationInt, game.turnVariationInt);
     }
+    if (r1Turns < 3){
+        r1Turns = 3;
+    }
+    else if (r1Turns > 10){
+        r1Turns = 10;
+    }
+    scoreR1 += playRound(game, r1Turns);
+
+    //**************************************************************************************************************************************
+    //************************************************Round 2*******************************************************************************
+    //**************************************************************************************************************************************
+
+    //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
+    //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
+    shuffle(game.deck);
+    game.draw(3);
 
 
+    //Loop two or three times (based on first or second, 50% chance).
+    //Find the lowest unconditionalPoints card.  If it is part of a completed combo in hand, find the next lowest.
+    //I.e find the lowest conditionalPoints card in hand that is not part of a completed combo.
+        //Draw another card and then mulligan the selected card back into the deck.
+    mulliganInt = 2;
+
+    //Conduct mulligans.
+    mulligan(game, mulliganInt);
+
+    //We have now mulliganned.  Play out the cards according to turn length.
+    //Figure out how long this round will be.
+    int r2Turns = game.r2BaseTurns;
+    if (game.turnVariationBool){
+        r2Turns += randomInt(-1*game.turnVariationInt, game.turnVariationInt);
+    }
+    if (r2Turns < 1){
+        r2Turns = 1;
+    }
+    else if (r2Turns > 10){
+        r2Turns = 10;
+    }
+    scoreR2 += playRound(game, r2Turns);
+
+    //**************************************************************************************************************************************
+    //************************************************Round 2*******************************************************************************
+    //**************************************************************************************************************************************
+
+    //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
+    //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
+    shuffle(game.deck);
+    game.draw(3);
 
 
+    //Loop two or three times (based on first or second, 50% chance).
+    //Find the lowest unconditionalPoints card.  If it is part of a completed combo in hand, find the next lowest.
+    //I.e find the lowest conditionalPoints card in hand that is not part of a completed combo.
+        //Draw another card and then mulligan the selected card back into the deck.
+    mulliganInt = 2;
+
+    //Conduct mulligans.
+    mulligan(game, mulliganInt);
+
+    //We have now mulliganned.  Play out the cards according to turn length.
+    //Figure out how long this round will be.
+    int r3Turns = 16 - r1Turns - r2Turns;
+    scoreR3 += playRound(game, r3Turns);
+
+    //**************************************************************************************************************************************
+    //************************************************All Rounds Completed.  Compile information and return*********************************
+    //**************************************************************************************************************************************
+
+    results.scoreSum = scoreR1 + scoreR2 + scoreR3;
     return results;
-
 }

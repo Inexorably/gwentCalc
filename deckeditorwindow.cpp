@@ -34,13 +34,13 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
          *bool run n iterations default 0
          *int n iterations default 5000
          *bool run until error default 1
-         *double error default 1
+         *double error default .005 PERCENT
          * int r1 length
          * int r2 length
          * bool vary round
          * bool vary round length
         */
-        QString settings = "1\n0\n5000\n1\n1\n6\n4\n1\n3";
+        QString settings = "1\n0\n5000\n1\n0.005\n6\n4\n1\n3";
         if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&outSettings);
             out << settings;

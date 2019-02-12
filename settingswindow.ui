@@ -45,12 +45,12 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>31</y>
-     <width>274</width>
+     <width>298</width>
      <height>211</height>
     </rect>
    </property>
@@ -112,7 +112,7 @@
         <item>
          <widget class="QDoubleSpinBox" name="percentSpinBox">
           <property name="decimals">
-           <number>4</number>
+           <number>8</number>
           </property>
           <property name="maximum">
            <double>100.000000000000000</double>
