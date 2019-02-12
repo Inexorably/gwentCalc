@@ -3,11 +3,13 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QtCharts>
 
 #include "comboeditorwindow.h"
 #include "utilities.h"
 #include "globals.h"
 #include "gwentcard.h"
+#include "chartwindow.h"
 
 #include <vector>
 
@@ -46,6 +48,8 @@ private slots:
     void on_actionSettings_triggered();
 
     void on_cardSelectionLineEdit_textChanged(const QString &arg1);
+
+    void on_actionDebug_triggered();
 
 private:
     Ui::DeckEditorWindow *ui;

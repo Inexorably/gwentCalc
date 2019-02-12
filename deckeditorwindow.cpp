@@ -240,3 +240,8 @@ void DeckEditorWindow::on_cardSelectionLineEdit_textChanged(const QString &arg1)
         }
     }
 }
+
+void DeckEditorWindow::on_actionDebug_triggered(){
+    ChartWindow *chartWindow = new ChartWindow();
+    chartWindow->show();
+}

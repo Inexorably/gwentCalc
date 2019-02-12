@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -39,7 +40,8 @@ SOURCES += \
     progressdialog.cpp \
     gwentscenario.cpp \
     gwentgame.cpp \
-    gwentsimresults.cpp
+    gwentsimresults.cpp \
+    chartwindow.cpp
 
 HEADERS += \
         deckeditorwindow.h \
@@ -54,14 +56,16 @@ HEADERS += \
     progressdialog.h \
     gwentscenario.h \
     gwentgame.h \
-    gwentsimresults.h
+    gwentsimresults.h \
+    chartwindow.h
 
 FORMS += \
         deckeditorwindow.ui \
     comboeditorwindow.ui \
     settingswindow.ui \
     dialog.ui \
-    progressdialog.ui
+    progressdialog.ui \
+    chartwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

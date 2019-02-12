@@ -82,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>988</width>
-     <height>20</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -99,6 +99,7 @@
      <string>Simulation</string>
     </property>
     <addaction name="actionSettings"/>
+    <addaction name="actionDebug"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSimulation"/>
@@ -140,6 +141,11 @@
   <action name="actionReload_Card_List">
    <property name="text">
     <string>Reload Card List</string>
+   </property>
+  </action>
+  <action name="actionDebug">
+   <property name="text">
+    <string>Debug</string>
    </property>
   </action>
  </widget>

@@ -2,6 +2,7 @@
 #define PROGRESSDIALOG_H
 
 #include <QDialog>
+#include <QtCharts>
 
 #include <vector>
 
