@@ -92,11 +92,15 @@ void SimThread::run(){
             if (g == ticker){
                 ticker += n/100;
                 qDebug() << results.n << ": " << results.score();
-                emit percentChanged((g)/n*100);
+                emit percentChanged(static_cast<int>((static_cast<double>(g))/n*100));
             }
         }
     }
     else if (pChecked){
+        //Disable the progressBar because we don't know n and swap to display iterations.
+        emit hideProgressBar();
+        emit showLabel();
+
          //Update dialog every tick.
         int ticker = 100;
 
@@ -120,7 +124,7 @@ void SimThread::run(){
             if (results.n == ticker){
                 ticker += 100;
                 //qDebug() << results.n << ": " << results.score();
-                emit percentChanged((results.n)/n*100);
+                emit pIterationsChanged("Iteration: " + QString::number(results.n));
 
                 //Check if we are in acceptable error.
                 if (qFabs((results.score()-previousScore)/results.score()*100) < p){
@@ -144,7 +148,7 @@ void SimThread::run(){
     emit percentChanged(100);
 
     //We will update the results to the table now.
-    emit runComplete(1);
+    emit simulationComplete();
 
 }
 
