@@ -14,6 +14,9 @@ public:
 
     std::vector<GwentCard> cards;
 
+    //Comparison operator to sort by unconditionalPoints value.
+    bool operator<(const GwentCardCombo &c);
+
     //Can add more types of points such as bloodlust / assumed turns in future.
     double unconditionalPoints;
 };

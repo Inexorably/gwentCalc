@@ -35,6 +35,8 @@ class SimThread :public QThread{
         void shuffle(std::vector<GwentCard> &v);
         int randomInt(const double &min, const double &max);
 
+        bool trueWithProbability(const double &prob);
+
         GwentScenario pkg;  //Bundled deck and combo information.
 
 
