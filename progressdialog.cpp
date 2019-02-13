@@ -6,17 +6,20 @@ void ProgressDialog::appendPoint(const qreal &x, const qreal &y){
     //If points are out of bounds, add them to plot.
     if (x + 10 > xMax){
         xMax = x + 10;
-        chart->axisX()->setMax(xMax);
+        //chart->axisX()->setMax(xMax);
+        chart->axes(Qt::Horizontal).back()->setMax(xMax);
     }
 
     if (y + 10 > yMax){
         yMax = y + 10;
-        chart->axisY()->setMax(yMax);
+        //chart->axisY()->setMax(yMax);
+        chart->axes(Qt::Vertical).back()->setMax(yMax);
     }
 
     if (y - 10 < yMin){
         yMin = y - 10;
-        chart->axisY()->setMin(yMin);
+        //chart->axisY()->setMin(yMin);
+        chart->axes(Qt::Vertical).back()->setMin(yMin);
     }
 }
 
@@ -101,7 +104,13 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     sim->start();
 
     //Close on completion of sim.
-    connect(sim, SIGNAL(simulationComplete()), this, SLOT(close()));
+    connect(sim, SIGNAL(simulationComplete(GwentSimResults)), this, SLOT(simulationComplete(GwentSimResults)));
+}
+
+void ProgressDialog::simulationComplete(const GwentSimResults &g){
+    this->setWindowTitle("Simulation complete: " + filename);
+    ui->pushButton->setText("Close");
+    results = g;
 }
 
 ProgressDialog::~ProgressDialog()
@@ -110,6 +119,20 @@ ProgressDialog::~ProgressDialog()
 }
 
 void ProgressDialog::on_pushButton_clicked(){
-    sim->stop();
-    close();
+    //If we are still running the simulation.
+    if (ui->pushButton->text() == "Cancel"){
+        sim->stop();
+        close();
+    }
+    //Else, the simulation is complete.
+    else if (ui->pushButton->text() == "Close"){
+        //We now want to export the results for analysis.
+
+
+        close();
+    }
+    else{
+        qDebug() << "void ProgressDialog::on_pushButton_clicked(): invalid button text.";
+    }
+
 }

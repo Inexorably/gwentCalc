@@ -31,6 +31,7 @@ public:
 
 public slots:
     void appendPoint(const qreal &x, const qreal &y);
+    void simulationComplete(const GwentSimResults &r);
 
 private slots:
     void on_pushButton_clicked();
@@ -38,6 +39,9 @@ private slots:
 private:
     Ui::ProgressDialog *ui;
     SimThread *sim;
+
+    //Store the results.
+    GwentSimResults results;
 
     //Chart related members.
     QLineSeries *series;

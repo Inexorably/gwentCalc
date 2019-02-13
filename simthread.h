@@ -58,7 +58,7 @@ class SimThread :public QThread{
 
     signals:
         void percentChanged(int);
-        void simulationComplete();
+        void simulationComplete(GwentSimResults);
         void pIterationsChanged(QString);
         void hideProgressBar();
         void showLabel();

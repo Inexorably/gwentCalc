@@ -48,8 +48,11 @@ ChartWindow::~ChartWindow()
 void ChartWindow::on_pushButton_clicked(){
     series->append(11,11);
     qDebug() << series->count();
-    chart->axisX()->setMax(12);
-    chart->axisY()->setMax(12);
+    //chart->axisX()->setMax(12);
+    chart->axes(Qt::Horizontal).back()->setMax(12);
+    //chart->axisY()->setMax(12);
+    chart->axes(Qt::Vertical).back()->setMax(12);
+
     //chartView->repaint();
 
 }

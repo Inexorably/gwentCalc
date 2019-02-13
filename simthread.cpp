@@ -155,7 +155,7 @@ void SimThread::run(){
     emit percentChanged(100);
 
     //We will update the results to the table now.
-    //emit simulationComplete();
+    emit simulationComplete(results);
 
 }
 
