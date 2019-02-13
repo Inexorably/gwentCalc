@@ -1,6 +1,7 @@
 #ifndef DECKEDITORWINDOW_H
 #define DECKEDITORWINDOW_H
 
+#include <QMetaType>
 #include <QMainWindow>
 #include <QString>
 #include <QtCharts>
@@ -10,6 +11,7 @@
 #include "globals.h"
 #include "gwentcard.h"
 #include "chartwindow.h"
+#include "gwentsimresults.h"
 
 #include <vector>
 

@@ -10,6 +10,7 @@
 #include "gwentcardcombo.h"
 #include "simthread.h"
 #include "gwentscenario.h"
+#include "analysiswindow.h"
 
 //Note: This class will run simulations based on gwentcalc.set and passed decks / combos upon initalization in a worker thread.
 

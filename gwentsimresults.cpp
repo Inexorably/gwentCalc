@@ -16,4 +16,8 @@ void GwentSimResults::merge(const GwentSimResults &r){
     }
 
     scoreSum +=r.scoreSum;
+    roundOneScores = r.roundOneScores;
+    roundTwoScores = r.roundTwoScores;
+    roundThreeScores = r.roundThreeScores;
+
 }

@@ -92,10 +92,10 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     //Plotting
 
     //Update the series whenever we emit a signal.
-    qDebug() << "Attempting connection";
+    //qDebug() << "Attempting connection";
     connect(sim, SIGNAL(plotPoint(qreal,qreal)), this, SLOT(appendPoint(qreal,qreal)));
     //connect(sim, &SimThread::plotPoint, series, &QLineSeries::append);
-    qDebug() << "Connected";
+    //qDebug() << "Connected";
     //***********************************Testing***********************************
 
 
@@ -127,8 +127,8 @@ void ProgressDialog::on_pushButton_clicked(){
     //Else, the simulation is complete.
     else if (ui->pushButton->text() == "Close"){
         //We now want to export the results for analysis.
-
-
+        AnalysisWindow *analysisWindow = new AnalysisWindow(results);
+        analysisWindow->show();
         close();
     }
     else{

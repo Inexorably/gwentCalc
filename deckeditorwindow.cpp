@@ -18,6 +18,9 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //*****************meta type declaration************************
+    qRegisterMetaType<GwentSimResults>("GwentSimResults");
+
     //*****************Settings creation on first time run**********
     QFile inSettings(SETTINGSFILENAME);
 

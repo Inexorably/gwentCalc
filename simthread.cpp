@@ -76,7 +76,7 @@ void SimThread::run(){
     if (nChecked){
         //Update the progress bar every 1%.
         int ticker = n/100;
-        qDebug() << ticker;
+        //qDebug() << ticker;
         for (int g = 0; g < n; g++){
             //I have no idea what this is for, this is a remnant of old code (see above github link).
             //Avoid crashing.
@@ -94,7 +94,7 @@ void SimThread::run(){
                 if (g == ticker){
                     ticker += n/100;
                 }
-                qDebug() << results.n << ": " << results.score();
+                //qDebug() << results.n << ": " << results.score();
                 emit plotPoint(results.n, results.score());
                 emit percentChanged(static_cast<int>((static_cast<double>(g))/n*100));
             }

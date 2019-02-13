@@ -42,7 +42,8 @@ SOURCES += \
     gwentscenario.cpp \
     gwentgame.cpp \
     gwentsimresults.cpp \
-    chartwindow.cpp
+    chartwindow.cpp \
+    analysiswindow.cpp
 
 HEADERS += \
         deckeditorwindow.h \
@@ -58,7 +59,8 @@ HEADERS += \
     gwentscenario.h \
     gwentgame.h \
     gwentsimresults.h \
-    chartwindow.h
+    chartwindow.h \
+    analysiswindow.h
 
 FORMS += \
         deckeditorwindow.ui \
@@ -66,7 +68,8 @@ FORMS += \
     settingswindow.ui \
     dialog.ui \
     progressdialog.ui \
-    chartwindow.ui
+    chartwindow.ui \
+    analysiswindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
