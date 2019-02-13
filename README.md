@@ -15,6 +15,6 @@ After defining a deck, combos are defined in the combo editor.
 
 Settings can be accessed from simulation->settings.
 
-![r-t](https://cdn.discordapp.com/attachments/97095214153338880/545110397821255700/unknown.png?raw=true "Deck Editor"?raw=true "r-t")
+![Settings](https://cdn.discordapp.com/attachments/97095214153338880/545110524669460501/unknown.png?raw=true "Settings")
 
 When running the simulation, real time base score results are given to make you feel warm inside.
