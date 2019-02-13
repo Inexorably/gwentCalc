@@ -29,12 +29,24 @@ public:
     std::vector<GwentCardCombo> combos;
     const QString filename;
 
+public slots:
+    void appendPoint(const qreal &x, const qreal &y);
+
 private slots:
     void on_pushButton_clicked();
 
 private:
     Ui::ProgressDialog *ui;
     SimThread *sim;
+
+    //Chart related members.
+    QLineSeries *series;
+    QChart *chart;
+    QChartView *chartView;
+    qreal xMax; //Tracking the axis bounds so we can adjust when new point is out of bounds.
+    qreal yMax;//Tracking the axis bounds so we can adjust when new point is out of bounds.
+    //qreal xMin;   //Don't need xMin, doesnt change.
+    qreal yMin;
 
 };
 

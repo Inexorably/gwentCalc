@@ -1,6 +1,25 @@
 #include "progressdialog.h"
 #include "ui_progressdialog.h"
 
+void ProgressDialog::appendPoint(const qreal &x, const qreal &y){
+    series->append(x,y);
+    //If points are out of bounds, add them to plot.
+    if (x + 10 > xMax){
+        xMax = x + 10;
+        chart->axisX()->setMax(xMax);
+    }
+
+    if (y + 10 > yMax){
+        yMax = y + 10;
+        chart->axisY()->setMax(yMax);
+    }
+
+    if (y - 10 < yMin){
+        yMin = y - 10;
+        chart->axisY()->setMin(yMin);
+    }
+}
+
 ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &deckTemp, const std::vector<GwentCardCombo> &combosTemp, QWidget *parent) :
     QDialog(parent), filename(f),
     ui(new Ui::ProgressDialog)
@@ -8,43 +27,42 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     ui->setupUi(this);
 
     //*************************************Testing***********************************************
-    ui->setupUi(this);
+    xMax = -1;
+    yMax = -1;
+    //xMin = -1;
+    yMin = 999999;  //Initialise to some high value so we can compare with < to setMin and scale in r-t.
 
-    QLineSeries *series = new QLineSeries();
-    for (int i = 1; i < 10; i++)
-        series->append(i,i);
-    QLineSeries *seriesB = new QLineSeries();
-    for (int i = 1; i < 10; i++)
-        seriesB->append(i, 3);
+    series = new QLineSeries();
 
-    QChart *chart = new QChart();
+    chart = new QChart();
     chart->addSeries(series);
-    chart->addSeries(seriesB);
 
-    QValueAxis *axisX = new QValueAxis();
-    axisX->setTitleText("Data point");
-    axisX->setLabelFormat("%i");
-    axisX->setTickCount(series->count());
-    chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
-
-    QLogValueAxis *axisY = new QLogValueAxis();
-    axisY->setTitleText("Values");
-    axisY->setLabelFormat("%g");
-    axisY->setBase(8.0);
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setTitleText("Average Score");
+    axisY->setLabelFormat("%i");
+    axisY->setTickCount(10);
     axisY->setMinorTickCount(-1);
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
+
+    QLogValueAxis *axisX = new QLogValueAxis();
+    axisX->setTitleText("Iterations");
+    axisX->setLabelFormat("%g");
+    axisX->setBase(10.0);
+    axisX->setMinorTickCount(-1);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
 
     // Same formatting
     chart->setBackgroundVisible(false);
     chart->setMargins(QMargins(0,0,0,0));
     chart->layout()->setContentsMargins(0,0,0,0);
-    //chart->legend()->hide();
+    chart->legend()->hide();
     chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
     chart->setPlotAreaBackgroundVisible(true);
-    QChartView *chartView = new QChartView(chart);
+    chartView = new QChartView(chart);
     ui->gridLayout->addWidget(chartView);
+
     //*************************************Testing***********************************************
 
     this->setWindowTitle("Running simulation: " + filename);
@@ -66,6 +84,16 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     //Connect other relevant signals.
     connect(sim, SIGNAL(hideProgressBar()), ui->progressBar, SLOT(hide()));
     connect(sim, SIGNAL(showLabel()), ui->label, SLOT(show()));
+
+    //***********************************Testing***********************************
+    //Plotting
+
+    //Update the series whenever we emit a signal.
+    qDebug() << "Attempting connection";
+    connect(sim, SIGNAL(plotPoint(qreal,qreal)), this, SLOT(appendPoint(qreal,qreal)));
+    //connect(sim, &SimThread::plotPoint, series, &QLineSeries::append);
+    qDebug() << "Connected";
+    //***********************************Testing***********************************
 
 
 

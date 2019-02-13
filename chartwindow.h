@@ -18,8 +18,15 @@ public:
     explicit ChartWindow(QWidget *parent = nullptr);
     ~ChartWindow();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::ChartWindow *ui;
+
+    QLineSeries *series;
+    QChart *chart;
+    QChartView *chartView;
 };
 
 #endif // CHARTWINDOW_H

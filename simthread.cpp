@@ -76,6 +76,7 @@ void SimThread::run(){
     if (nChecked){
         //Update the progress bar every 1%.
         int ticker = n/100;
+        qDebug() << ticker;
         for (int g = 0; g < n; g++){
             //I have no idea what this is for, this is a remnant of old code (see above github link).
             //Avoid crashing.
@@ -85,13 +86,20 @@ void SimThread::run(){
                 break;
             mutex.unlock();
 
-            //Run the simulation and track the results.
-            results.merge(simulate(baseGame));
+            //Run the simulation and track the results.  On initial run, make results equal to avoid initial 0 score.
+            if (g == 0){
+                results = simulate(baseGame);
+            }
+            else{
+                results.merge(simulate(baseGame));
+            }
 
-
-            if (g == ticker){
-                ticker += n/100;
+            if (g == ticker || results.n < 100 /*We want to plot the initial data point.*/){
+                if (g == ticker){
+                    ticker += n/100;
+                }
                 qDebug() << results.n << ": " << results.score();
+                emit plotPoint(results.n, results.score());
                 emit percentChanged(static_cast<int>((static_cast<double>(g))/n*100));
             }
         }
@@ -117,17 +125,24 @@ void SimThread::run(){
                 break;
             mutex.unlock();
 
-            //Run the simulation and track the results.
-            results.merge(simulate(baseGame));
+            //Run the simulation and track the results.  On initial run, make results equal to avoid initial 0 score.
+            if (results.n == 1){
+                results = simulate(baseGame);
+            }
+            else{
+                results.merge(simulate(baseGame));
+            }
 
 
-            if (results.n == ticker){
+            if (results.n == ticker || results.n < 100 /*We want to plot the initial data points*/){
                 ticker += 100;
                 //qDebug() << results.n << ": " << results.score();
                 emit pIterationsChanged("Iteration: " + QString::number(results.n));
 
-                //Check if we are in acceptable error.
-                if (qFabs((results.score()-previousScore)/results.score()*100) < p){
+                emit plotPoint(results.n, results.score());
+
+                //Check if we are in acceptable error.  Prevent edge cases by requiring 100 runs.
+                if (results.n > 100 && qFabs((results.score()-previousScore)/results.score()*100) < p){
                     //qDebug() << qFabs((results.score()-previousScore)/results.score()*100);
                     break;
                 }
@@ -148,7 +163,7 @@ void SimThread::run(){
     emit percentChanged(100);
 
     //We will update the results to the table now.
-    emit simulationComplete();
+    //emit simulationComplete();
 
 }
 

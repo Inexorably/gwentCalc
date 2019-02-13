@@ -62,6 +62,9 @@ class SimThread :public QThread{
         void pIterationsChanged(QString);
         void hideProgressBar();
         void showLabel();
+
+        void plotPoint(qreal, qreal);    //Gives an x, y point (iteration, score) to the series object.
+        void refreshChart();
 };
 
 #endif // SIMTHREAD_H

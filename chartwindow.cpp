@@ -7,16 +7,12 @@ ChartWindow::ChartWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QLineSeries *series = new QLineSeries();
+    series = new QLineSeries();
     for (int i = 1; i < 10; i++)
         series->append(i,i);
-    QLineSeries *seriesB = new QLineSeries();
-    for (int i = 1; i < 10; i++)
-        seriesB->append(i, 3);
 
-    QChart *chart = new QChart();
+    chart = new QChart();
     chart->addSeries(series);
-    chart->addSeries(seriesB);
 
     QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("Data point");
@@ -40,11 +36,20 @@ ChartWindow::ChartWindow(QWidget *parent) :
     //chart->legend()->hide();
     chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
     chart->setPlotAreaBackgroundVisible(true);
-    QChartView *chartView = new QChartView(chart);
+    chartView = new QChartView(chart);
     ui->gridLayout->addWidget(chartView);
 }
 
 ChartWindow::~ChartWindow()
 {
     delete ui;
+}
+
+void ChartWindow::on_pushButton_clicked(){
+    series->append(11,11);
+    qDebug() << series->count();
+    chart->axisX()->setMax(12);
+    chart->axisY()->setMax(12);
+    //chartView->repaint();
+
 }
