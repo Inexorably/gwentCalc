@@ -7,6 +7,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //Disable resize.
+    setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
     //Set the title.
     this->setWindowTitle("Settings");
 

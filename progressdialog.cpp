@@ -29,6 +29,9 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
 {
     ui->setupUi(this);
 
+    //Disable resize.
+    setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+
     //*************************************Testing***********************************************
     xMax = -1;
     yMax = -1;
@@ -87,6 +90,11 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     //Connect other relevant signals.
     connect(sim, SIGNAL(hideProgressBar()), ui->progressBar, SLOT(hide()));
     connect(sim, SIGNAL(showLabel()), ui->label, SLOT(show()));
+    connect(sim, SIGNAL(hideLabel()), ui->label, SLOT(hide()));
+    connect(sim, SIGNAL(showProgressBar()), ui->progressBar, SLOT(show()));
+    connect(sim, SIGNAL(setMessageLabel(QString)), ui->messageLabel, SLOT(setText(QString)));
+
+
 
     //***********************************Testing***********************************
     //Plotting
@@ -109,7 +117,7 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
 
 void ProgressDialog::simulationComplete(const GwentSimResults &g){
     this->setWindowTitle("Simulation complete: " + filename);
-    ui->pushButton->setText("Close");
+    ui->pushButton->setText("View Results");
     results = g;
 }
 
@@ -125,7 +133,7 @@ void ProgressDialog::on_pushButton_clicked(){
         close();
     }
     //Else, the simulation is complete.
-    else if (ui->pushButton->text() == "Close"){
+    else if (ui->pushButton->text() == "View Results"){
         //We now want to export the results for analysis.
         AnalysisWindow *analysisWindow = new AnalysisWindow(results);
         analysisWindow->show();

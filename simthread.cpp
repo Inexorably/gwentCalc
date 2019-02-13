@@ -61,7 +61,8 @@ int SimThread::randomInt(const double &min, const double &max){
 }
 
 void SimThread::run(){
-    //Implementing iteration based run first.
+    //Let user know we started.
+    emit setMessageLabel("Running Simulations.");
 
     //Create the base GwentGame to reload every loop / simulation iteration, and sort the combos vector for efficiency reasons in the simul function.
     GwentGame baseGame = GwentGame(pkg);
@@ -154,7 +155,30 @@ void SimThread::run(){
     //Done.
     emit percentChanged(100);
 
+
+    //***************************Simulation Thread Post Processing**************************************
+    //Let the user know we need to post process.
+    emit setMessageLabel("Simulation complete.  Post Processing: ");
+    emit hideLabel();
+
+
+    //Compile needed data into results to submit to the progressDialog class in the main thread.
+
+    //Round scores (x == turns, y == scores).
+    //All are the same length so we can loop through all in one for loop.
+    //As we loop through, add the points to results.
+    //ticker
+    for (int i = 0; i < roundOneScores.count(); ++i){
+        //There's no copy constructor for QLineSeries... explicitly deleted.
+        results.roundOneScores.push_back(roundOneScores.points()[i]);
+        results.roundTwoScores.push_back(roundTwoScores.points()[i]);
+        results.roundThreeScores.push_back(roundThreeScores.points()[i]);
+    }
+
+    //***************************Post Processing Done**************************************************
+
     //We will update the results to the table now.
+    emit setMessageLabel("Post Processing Complete.");
     emit simulationComplete(results);
 
 }
@@ -402,6 +426,12 @@ GwentSimResults SimThread::simulate(GwentGame game){
     //**************************************************************************************************************************************
     //************************************************All Rounds Completed.  Compile information and return*********************************
     //**************************************************************************************************************************************
+
+    //Store individual round score information by appending the the QLineSeries member variables.
+    //We don't store this in a GwentSimResults
+    roundOneScores.append(static_cast<qreal>(r1Turns), static_cast<qreal>(scoreR1));
+    roundTwoScores.append(static_cast<qreal>(r2Turns), static_cast<qreal>(scoreR2));
+    roundThreeScores.append(static_cast<qreal>(r3Turns), static_cast<qreal>(scoreR3));
 
     results.scoreSum = scoreR1 + scoreR2 + scoreR3;
     return results;

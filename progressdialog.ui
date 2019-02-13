@@ -24,16 +24,23 @@
    </property>
    <layout class="QGridLayout" name="gridLayout"/>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>320</y>
      <width>731</width>
-     <height>63</height>
+     <height>86</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="messageLabel">
+      <property name="text">
+       <string>Running Simulation...</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>

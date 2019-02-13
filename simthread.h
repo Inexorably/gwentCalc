@@ -37,6 +37,13 @@ class SimThread :public QThread{
         bool multithread;
         GwentScenario pkg;  //Bundled deck and combo information.
 
+        //*************************Helper Variables for storing GwentSimResults related info***
+        QLineSeries roundOneScores; //x == number of rounds, y == score.  Updated in the playRound function.
+        QLineSeries roundTwoScores; //Not copied in the merge function, because that would mean we copy full length series every merge call (every sim loop iteration).
+        QLineSeries roundThreeScores;
+
+        //TODO: Most mulliganed cards.
+
         //***********************Utility functions*********************************************
         int randomInt(const double &min, const double &max);
         bool isSubset(const std::vector<GwentCard> &sub, const std::vector<GwentCard> &super);
@@ -62,6 +69,9 @@ class SimThread :public QThread{
         void pIterationsChanged(QString);
         void hideProgressBar();
         void showLabel();
+        void hideLabel();
+        void setMessageLabel(QString);
+        void showProgressBar();
 
         void plotPoint(qreal, qreal);    //Gives an x, y point (iteration, score) to the series object.
         void refreshChart();
