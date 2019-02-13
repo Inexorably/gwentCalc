@@ -87,12 +87,8 @@ void SimThread::run(){
             mutex.unlock();
 
             //Run the simulation and track the results.  On initial run, make results equal to avoid initial 0 score.
-            if (g == 0){
-                results = simulate(baseGame);
-            }
-            else{
-                results.merge(simulate(baseGame));
-            }
+            results.merge(simulate(baseGame));
+
 
             if (g == ticker || results.n < 100 /*We want to plot the initial data point.*/){
                 if (g == ticker){
@@ -126,12 +122,8 @@ void SimThread::run(){
             mutex.unlock();
 
             //Run the simulation and track the results.  On initial run, make results equal to avoid initial 0 score.
-            if (results.n == 1){
-                results = simulate(baseGame);
-            }
-            else{
-                results.merge(simulate(baseGame));
-            }
+            results.merge(simulate(baseGame));
+
 
 
             if (results.n == ticker || results.n < 100 /*We want to plot the initial data points*/){

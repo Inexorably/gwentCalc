@@ -10,6 +10,10 @@ double GwentSimResults::score() const{
 }
 
 void GwentSimResults::merge(const GwentSimResults &r){
-    n += r.n;
+    //This is initialised with a score of 0, so we do not increment n if score is 0.
+    if (scoreSum != 0){
+        n += r.n;
+    }
+
     scoreSum +=r.scoreSum;
 }
