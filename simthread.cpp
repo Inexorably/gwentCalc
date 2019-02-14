@@ -164,16 +164,18 @@ void SimThread::run(){
 
     //Compile needed data into results to submit to the progressDialog class in the main thread.
 
-    //Round scores (x == turns, y == scores).
-    //All are the same length so we can loop through all in one for loop.
-    //As we loop through, add the points to results.
-    //ticker
-    for (int i = 0; i < roundOneScores.count(); ++i){
-        //There's no copy constructor for QLineSeries... explicitly deleted.
-        results.roundOneScores.push_back(roundOneScores.points()[i]);
-        results.roundTwoScores.push_back(roundTwoScores.points()[i]);
-        results.roundThreeScores.push_back(roundThreeScores.points()[i]);
-    }
+    emit setMessageLabel("Simulation complete.  Post Processing: Compiling round score / turns.");
+    emit percentChanged(0);
+
+    results.roundOneScores = roundOneScores.points();
+    emit percentChanged(33);
+    results.roundTwoScores = roundTwoScores.points();
+    emit percentChanged(66);
+    results.roundThreeScores = roundThreeScores.points();
+    emit percentChanged(100);
+
+    //We also post process a bit.  We want to show roundScore/roundTurns vs roundTurns for rounds one, two, and three.
+    //Store as a QList<QPointF> for each round.  The
 
     //***************************Post Processing Done**************************************************
 

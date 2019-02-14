@@ -21,9 +21,9 @@ public:
 
     //Base implementation complete.  Now spam metrics.
     //Scores based on round, x is cards played and y is score.
-    std::vector<QPointF> roundOneScores;
-    std::vector<QPointF> roundTwoScores;
-    std::vector<QPointF> roundThreeScores;
+    QList<QPointF> roundOneScores;
+    QList<QPointF> roundTwoScores;
+    QList<QPointF> roundThreeScores;
 };
 
 Q_DECLARE_METATYPE(GwentSimResults)
