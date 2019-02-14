@@ -135,7 +135,7 @@ void ProgressDialog::on_pushButton_clicked(){
     //Else, the simulation is complete.
     else if (ui->pushButton->text() == "View Results"){
         //We now want to export the results for analysis.
-        AnalysisWindow *analysisWindow = new AnalysisWindow(results);
+        AnalysisWindow *analysisWindow = new AnalysisWindow(filename, results);
         analysisWindow->show();
         close();
     }

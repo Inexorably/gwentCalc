@@ -11,6 +11,7 @@
 
 SimThread::SimThread(const GwentScenario &gs) : pkg(gs){
     stopBool = false;
+    combos = gs.combos;
 
     //Initalise based on the settings in gwentCalc.set.
     QString data;
@@ -179,6 +180,9 @@ void SimThread::run(){
     //All of the QLineSeries are the same length.
     processRoundRatios(results);
 
+    //We save the combos with occurence data (on the GwentCardCombo class level) so we can process in the analysis window.
+    results.combos = combos;
+
     //***************************Post Processing Done**************************************************
 
     //We will update the results to the table now.
@@ -195,9 +199,9 @@ void SimThread::processRoundRatios(GwentSimResults &r){
     //For averaged score vs num turns.  See comments in loop.
     //TODO: Optimise by checking if we are row first / column first in memory.  Probably doesn't matter if random enough.
     //Probably should have encapsulated such round related stuff in a vector to iterate over.  Would have looked nicer, though this will be nicer to read when using QCharts.
-    double tempRoundOneScore[20][2];
-    double tempRoundTwoScore[20][2];
-    double tempRoundThreeScore[20][2];
+    double tempRoundOneScore[20][2] = {};
+    double tempRoundTwoScore[20][2] = {};
+    double tempRoundThreeScore[20][2] = {};
     for (int i = 0; i < r.roundOneScores.count() && !stopBool; ++i){
         //Calculate simple ratios of points/card for each round.
         r.roundOneRatios.append(QPointF(r.roundOneScores[i].x(), r.roundOneScores[i].y()/r.roundOneScores[i].x()));
@@ -227,7 +231,16 @@ void SimThread::processRoundRatios(GwentSimResults &r){
     //We now have QList<QPointF> objects of [x, y] [turns, ratio].
     //We also have our 2d temp arrays with [round length in turns][1] == score sum and [round length...][0] == number of occurences that we had this number of turns in the respective round.
     //So, we now convert this to a QLineSeries for each round with elements [turns, average score].
-
+    //To accomplish this, we loop through the arrays:
+    for (int i = 0; i < 20 && !stopBool; ++i){
+        //If we have no data points, skip it.
+        if (tempRoundOneScore[i][0] >=1)
+            r.roundOneScoresVsTurns.append(QPointF(i, tempRoundOneScore[i][1]/tempRoundOneScore[i][0]));
+        if (tempRoundTwoScore[i][0] >=1)
+            r.roundTwoScoresVsTurns.append(QPointF(i, tempRoundTwoScore[i][1]/tempRoundTwoScore[i][0]));
+        if (tempRoundThreeScore[i][0] >=1)
+            r.roundThreeScoresVsTurns.append(QPointF(i, tempRoundThreeScore[i][1]/tempRoundThreeScore[i][0]));
+    }
 
 
 
@@ -362,6 +375,7 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
                 }
                 score += game.combos[i].unconditionalPoints;
                 cardsPlayed += game.combos[i].cards.size();
+                ++combos[i].occurences;
             }
         }
 

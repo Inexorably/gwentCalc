@@ -8,9 +8,11 @@
 
 #include <QtCore>
 #include <QtMath>
+#include <QtCharts>
 
 #include <algorithm>
 #include <random>
+#include <vector>
 
 //Stealing this from my Hearthstone Conquest Sim as apparently I figured out how to use QThread at the time.
 //Source with reference code in other files:
@@ -36,6 +38,7 @@ class SimThread :public QThread{
         bool pChecked;
         bool multithread;
         GwentScenario pkg;  //Bundled deck and combo information.
+        std::vector<GwentCardCombo> combos; //So we can track the occurences of each combo over the lifetime of the SimThread object (over entire simulation).
 
         //*************************Helper Variables for storing GwentSimResults related info***
         QLineSeries roundOneScores; //x == number of rounds, y == score.  Updated in the playRound function.

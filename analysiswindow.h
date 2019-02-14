@@ -16,11 +16,12 @@ class AnalysisWindow : public QMainWindow
 
 public:
     explicit AnalysisWindow(QWidget *parent = nullptr);
-    AnalysisWindow(const GwentSimResults &g, QWidget *parent = nullptr);
+    AnalysisWindow(const QString &f, const GwentSimResults &r, QWidget *parent = nullptr);
     ~AnalysisWindow();
 
 private:
     Ui::AnalysisWindow *ui;
+    QString filename;
 };
 
 #endif // ANALYSISWINDOW_H

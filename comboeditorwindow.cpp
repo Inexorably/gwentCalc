@@ -351,6 +351,10 @@ void ComboEditorWindow::on_actionRun_triggered(){
                 }
             }
         }
+        //combos.push_back(tempCombo);
+        qDebug() << row;
+        GwentCardCombo test;
+        combos.push_back(test);
     }
 
     //TODO: When accounting for more forms of conditional points (ie bloodthirst), add them to the gwentCardCombo and gwentCard classes.
