@@ -347,12 +347,12 @@ void ComboEditorWindow::on_actionRun_triggered(){
             //TODO: Can improve efficiency with buckets / hash / dict.
             for (size_t i = 0; i < allCards.size(); ++i){
                 if (ui->comboTableWidget->item(row, col)->text() == allCards[i].name){
+                    qDebug() << i << allCards[i].name.size() << allCards[i].name;
                     tempCombo.cards.push_back(allCards[i]);
                 }
             }
         }
         //combos.push_back(tempCombo);
-        qDebug() << row;
         GwentCardCombo test;
         combos.push_back(test);
     }
