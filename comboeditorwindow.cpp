@@ -323,7 +323,9 @@ void ComboEditorWindow::on_actionRun_triggered(){
     //We now create a vector GwentCardCombo.
     std::vector<GwentCardCombo> combos;
     for (int row = 0; row < ui->comboTableWidget->rowCount()-1; ++row){
+        //qDebug() << "Creating tempCombo";
         GwentCardCombo tempCombo;
+        //tempCombo.cards.clear();
 
         //Set the unconditional combo value from the table.  Make sure that the value table is valid, and return if not.
         //TODO: Account for double returning infinite?
@@ -334,8 +336,10 @@ void ComboEditorWindow::on_actionRun_triggered(){
             dialog->exec();
             return;
         }
+        //qDebug() << "Assigning unconditional points";
         tempCombo.unconditionalPoints = ui->valueTableWidget->item(row, 0)->text().toDouble();
 
+        //qDebug() << "Entering name loop";
         for (int col = 0; col < ui->comboTableWidget->columnCount(); ++col){
             //If the item at row, col is empty or null, we continue.
             if (!ui->comboTableWidget->item(row, col) || ui->comboTableWidget->item(row, col)->text().isEmpty()){
@@ -347,15 +351,15 @@ void ComboEditorWindow::on_actionRun_triggered(){
             //TODO: Can improve efficiency with buckets / hash / dict.
             for (size_t i = 0; i < allCards.size(); ++i){
                 if (ui->comboTableWidget->item(row, col)->text() == allCards[i].name){
-                    qDebug() << i << allCards[i].name.size() << allCards[i].name;
                     tempCombo.cards.push_back(allCards[i]);
                 }
             }
         }
-        //combos.push_back(tempCombo);
-        GwentCardCombo test;
-        combos.push_back(test);
+        //qDebug() << "Entering assignment";
+        combos.push_back(tempCombo);
+        //qDebug() << "combos.size(): " << combos.size();
     }
+    //qDebug() << "Entering post processing";
 
     //TODO: When accounting for more forms of conditional points (ie bloodthirst), add them to the gwentCardCombo and gwentCard classes.
 

@@ -67,6 +67,7 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
     chart->setPlotAreaBackgroundVisible(true);
     chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartView);
 
     //*************************************Testing***********************************************
@@ -76,7 +77,10 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     ui->label->setAlignment(Qt::AlignCenter);
 
     deck = deckTemp;
+    //qDebug() << "\n";
+    //qDebug() << "Progress Dialog created.  Attempting to copy combosTemp";
     combos = combosTemp;
+    //qDebug() << "Copy complete";
 
     GwentScenario pkg(deck, combos);
 
@@ -119,6 +123,7 @@ void ProgressDialog::simulationComplete(const GwentSimResults &g){
     this->setWindowTitle("Simulation complete: " + filename);
     ui->pushButton->setText("View Results");
     results = g;
+    on_pushButton_clicked();
 }
 
 ProgressDialog::~ProgressDialog()
@@ -135,6 +140,7 @@ void ProgressDialog::on_pushButton_clicked(){
     //Else, the simulation is complete.
     else if (ui->pushButton->text() == "View Results"){
         //We now want to export the results for analysis.
+        qDebug() << "Omae wa mo shinderu";
         AnalysisWindow *analysisWindow = new AnalysisWindow(filename, results);
         analysisWindow->show();
         close();

@@ -6,6 +6,8 @@
 class GwentCard
 {
 public:
+    GwentCard();
+
     GwentCard(QString tempName, int tempProvisions, double tempUnconditionalPoints);
 
     //Comparison operator compares unconditionalPoints for overloading.  Returns true if this is less than c.

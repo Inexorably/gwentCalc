@@ -10,8 +10,10 @@
 //https://github.com/Inexorably/Hearthstone-Conquest-Sim/blob/master/simthread.cpp
 
 SimThread::SimThread(const GwentScenario &gs) : pkg(gs){
+    //qDebug() <<"Creating SimThread";
     stopBool = false;
     combos = gs.combos;
+    //qDebug() << combos.size();
 
     //Initalise based on the settings in gwentCalc.set.
     QString data;
@@ -29,7 +31,7 @@ SimThread::SimThread(const GwentScenario &gs) : pkg(gs){
     n = settingsList[2].toInt();
     pChecked = static_cast<bool>(settingsList[3].toInt());
     p = settingsList[4].toDouble();
-
+    //qDebug() <<"SimThread constructor returning";
 }
 /*
 void SimThread::percentChanged(int num){
@@ -73,6 +75,7 @@ void SimThread::run(){
     //Store the simulation results.  Have a member int n which tracks number of simulations, so we can merge the iteration
     //simulation result (n = 1) with the overall storage result (which could be quite large).
     GwentSimResults results;
+    //qDebug() << "Entering run()";
 
     //Can either run based on iterations or based on relative error.
     if (nChecked){
@@ -80,6 +83,7 @@ void SimThread::run(){
         int ticker = n/100;
         //qDebug() << ticker;
         for (int g = 0; g < n; g++){
+            //qDebug() << g << " of " << n;
             //I have no idea what this is for, this is a remnant of old code (see above github link).
             //Avoid crashing.
             QMutex mutex;
@@ -117,6 +121,7 @@ void SimThread::run(){
         for (;;){
             //I have no idea what this is for, this is a remnant of old code (see above github link).
             //Avoid crashing.
+            //Update: This does indeed prevent crashing.
             QMutex mutex;
             mutex.lock();
             if (stopBool)
@@ -153,6 +158,13 @@ void SimThread::run(){
         return;
     }
 
+    //Return if we've broken out of a loop with stopBool, just return before post processing or emitting signals.
+    QMutex mutex;
+    mutex.lock();
+    if (stopBool)
+        return;
+    mutex.unlock();
+
     //Done.
     emit percentChanged(100);
 
@@ -174,6 +186,7 @@ void SimThread::run(){
     emit percentChanged(66);
     results.roundThreeScores = roundThreeScores.points();
     emit percentChanged(100);
+    qDebug() << "A";
 
     //We also post process a bit.  We want to show roundScore/roundTurns vs roundTurns for rounds one, two, and three.
     //Store as a QList<QPointF> for each round.  This will take a little longer because of the division and iteration requirements.
@@ -187,6 +200,7 @@ void SimThread::run(){
 
     //We will update the results to the table now.
     emit setMessageLabel("Post Processing Complete.");
+    qDebug() << "Nani";
     emit simulationComplete(results);
 
 }
@@ -333,7 +347,6 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
     for (size_t i = 0; i < v.size(); ++i){
         temp += v[i].name + ", ";
     }
-    qDebug() << temp;
 }
 
 int SimThread::playRound(GwentGame &game, const int &r1Turns){
@@ -378,6 +391,9 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
                 ++combos[i].occurences;
             }
         }
+        //Don't need to sort if hand is empty.
+        if (game.hand.empty())
+            return score;
 
         //We have ran out of valid combo subsets, and now we play single cards in order of unconditionalProvision.
         //game.hand is still sorted from least to greatest.  Note that cardsPlayed is incremented in the loop condition, not here.
@@ -415,6 +431,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     }
 
     //Conduct mulligans.
+    //qDebug () << "r1 mulligan)";
     mulligan(game, mulliganInt);
 
     //We have now mulliganned.  Play out the cards according to turn length.
@@ -429,6 +446,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     else if (r1Turns > 10){
         r1Turns = 10;
     }
+    //qDebug() << "r1 play";
     scoreR1 += playRound(game, r1Turns);
 
     //**************************************************************************************************************************************
@@ -448,6 +466,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     mulliganInt = 2;
 
     //Conduct mulligans.
+    //qDebug() << "r2 mulligan";
     mulligan(game, mulliganInt);
 
     //We have now mulliganned.  Play out the cards according to turn length.
@@ -462,6 +481,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     else if (r2Turns > 10){
         r2Turns = 10;
     }
+    //qDebug() << "r2 score";
     scoreR2 += playRound(game, r2Turns);
 
     //**************************************************************************************************************************************
@@ -481,12 +501,15 @@ GwentSimResults SimThread::simulate(GwentGame game){
     mulliganInt = 2;
 
     //Conduct mulligans.
+    //qDebug() << "r3 mulligan";
     mulligan(game, mulliganInt);
 
     //We have now mulliganned.  Play out the cards according to turn length.
     //Figure out how long this round will be.
     int r3Turns = 16 - r1Turns - r2Turns;
+    //qDebug() << "r3 score";
     scoreR3 += playRound(game, r3Turns);
+    //qDebug() << "Failure point?";
 
     //**************************************************************************************************************************************
     //************************************************All Rounds Completed.  Compile information and return*********************************

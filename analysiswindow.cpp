@@ -23,6 +23,9 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     //***********************************************************************************
     //qDebug() << "AnalysisWindow::AnalysisWindow(const GwentSimResults &r, QWidget *parent): Entering Post Processing";
 
+    //**************Overall Average Score Label******************************************************
+    ui->scoreLabel->setText(QString::number(r.score()));
+
     //**************Average score vs num turns for each round****************************************
     QLineSeries *seriesroundOneScoresVsTurns = new QLineSeries();
     seriesroundOneScoresVsTurns->append(r.roundOneScoresVsTurns);
@@ -90,13 +93,15 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
         }
         categoriesCombosTimesPlayed << tempComboName;
     }
-    qDebug() << seriesCombosTimesPlayed->count();
+    //qDebug() << seriesCombosTimesPlayed->count();
     QBarCategoryAxis *axisXCombosTimesPlayed = new QBarCategoryAxis();
+    axisXCombosTimesPlayed->setTitleText("Cards in Combo");
     axisXCombosTimesPlayed->append(categoriesCombosTimesPlayed);
     chartCombosTimesPlayed->addAxis(axisXCombosTimesPlayed, Qt::AlignBottom);
     seriesCombosTimesPlayed->attachAxis(axisXCombosTimesPlayed);
 
     QValueAxis *axisYCombosTimesPlayed = new QValueAxis();
+    axisYCombosTimesPlayed->setTitleText("Times Played");
     //axisYCombosTimesPlayed->setRange(0,15);
     chartCombosTimesPlayed->addAxis(axisYCombosTimesPlayed, Qt::AlignLeft);
     seriesCombosTimesPlayed->attachAxis(axisYCombosTimesPlayed);
@@ -104,6 +109,49 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     QChartView *chartViewCombosTimesPlayed = new QChartView(chartCombosTimesPlayed);
     chartViewCombosTimesPlayed->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewCombosTimesPlayed);
+
+    //***********************************Bar Chart - Average value of each combo***************************
+    //Combo occurences / number of iterations * combo value.
+    QBarSet *setCombosAverageValue = new QBarSet("Combos");
+    for (size_t i = 0; i < r.combos.size(); ++i){
+        *setCombosAverageValue << static_cast<double>(r.combos[i].occurences)*r.combos[i].unconditionalPoints/static_cast<double>(r.roundOneScores.count());
+    }
+    QBarSeries *seriesCombosAverageValue = new QBarSeries();
+    seriesCombosAverageValue->append(setCombosAverageValue);
+    QChart *chartCombosAverageValue = new QChart();
+    chartCombosAverageValue->addSeries(seriesCombosAverageValue);
+    chartCombosAverageValue->setTitle("Combo Relative Value");
+    chartCombosAverageValue->setAnimationOptions(QChart::SeriesAnimations);
+    QStringList categoriesCombosAverageValue;
+
+    //Set the category names.
+    for (size_t i = 0; i < r.combos.size(); ++i){
+        //Loop through the cards in the combo, and create a QString containing the combo name.
+        QString tempComboName;
+        for (size_t j = 0; j < r.combos[i].cards.size(); ++j){
+            tempComboName += r.combos[i].cards[j].name;
+            if (j != r.combos[i].cards.size() - 1){
+                tempComboName += ", ";
+            }
+        }
+        categoriesCombosAverageValue << tempComboName;
+    }
+    //qDebug() << seriesCombosAverageValue->count();
+    QBarCategoryAxis *axisXCombosAverageValue = new QBarCategoryAxis();
+    axisXCombosAverageValue->setTitleText("Cards in Combo");
+    axisXCombosAverageValue->append(categoriesCombosAverageValue);
+    chartCombosAverageValue->addAxis(axisXCombosAverageValue, Qt::AlignBottom);
+    seriesCombosAverageValue->attachAxis(axisXCombosAverageValue);
+
+    QValueAxis *axisYCombosAverageValue = new QValueAxis();
+    axisYCombosAverageValue->setTitleText("Times Played / # Simulations * Score");
+    //axisYCombosAverageValue->setRange(0,15);
+    chartCombosAverageValue->addAxis(axisYCombosAverageValue, Qt::AlignLeft);
+    seriesCombosAverageValue->attachAxis(axisYCombosAverageValue);
+
+    QChartView *chartViewCombosAverageValue = new QChartView(chartCombosAverageValue);
+    chartViewCombosAverageValue->setRenderHint(QPainter::Antialiasing);
+    ui->gridLayout->addWidget(chartViewCombosAverageValue);
 
 }
 
