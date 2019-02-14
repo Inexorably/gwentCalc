@@ -478,8 +478,9 @@ GwentSimResults SimThread::simulate(GwentGame game){
     if (r2Turns < 1){
         r2Turns = 1;
     }
-    else if (r2Turns > 10){
-        r2Turns = 10;
+    //TODO: Update this for round extension style cards like ciri.
+    else if (r2Turns > static_cast<int>(game.hand.size())){
+        r2Turns = static_cast<int>(game.hand.size());
     }
     //qDebug() << "r2 score";
     scoreR2 += playRound(game, r2Turns);
@@ -506,7 +507,8 @@ GwentSimResults SimThread::simulate(GwentGame game){
 
     //We have now mulliganned.  Play out the cards according to turn length.
     //Figure out how long this round will be.
-    int r3Turns = 16 - r1Turns - r2Turns;
+    //TODO: Update for round extension cards like Ciri.
+    int r3Turns = static_cast<int>(game.hand.size());
     //qDebug() << "r3 score";
     scoreR3 += playRound(game, r3Turns);
     //qDebug() << "Failure point?";
