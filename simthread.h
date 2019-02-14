@@ -59,6 +59,9 @@ class SimThread :public QThread{
         //***********************Debug related functions**************************************
         void printCards(const std::vector<GwentCard> &v);   //Print all cards to qDebug().
 
+        //***********************Post processing related functions****************************
+        void processRoundRatios(GwentSimResults &r);  //Processes the individual roundScore/roundLength series for each round and modifies the passed r.
+
 
 
 

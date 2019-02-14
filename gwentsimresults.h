@@ -24,6 +24,11 @@ public:
     QList<QPointF> roundOneScores;
     QList<QPointF> roundTwoScores;
     QList<QPointF> roundThreeScores;
+
+    //roundScore/roundTurns vs turn series for each round.
+    QList<QPointF> roundOneRatios;
+    QList<QPointF> roundTwoRatios;
+    QList<QPointF> roundThreeRatios;
 };
 
 Q_DECLARE_METATYPE(GwentSimResults)

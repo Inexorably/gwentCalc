@@ -175,7 +175,9 @@ void SimThread::run(){
     emit percentChanged(100);
 
     //We also post process a bit.  We want to show roundScore/roundTurns vs roundTurns for rounds one, two, and three.
-    //Store as a QList<QPointF> for each round.  The
+    //Store as a QList<QPointF> for each round.  This will take a little longer because of the division and iteration requirements.
+    //All of the QLineSeries are the same length.
+    processRoundRatios(results);
 
     //***************************Post Processing Done**************************************************
 
@@ -183,6 +185,53 @@ void SimThread::run(){
     emit setMessageLabel("Post Processing Complete.");
     emit simulationComplete(results);
 
+}
+
+void SimThread::processRoundRatios(GwentSimResults &r){
+    //Store as a QList<QPointF> for each round.  This will take a little longer because of the division and iteration requirements.
+    //All of the QLineSeries are the same length.
+    emit setMessageLabel("Simulation complete.  Post Processing: Calculating round ratios.");
+    int ticker = r.roundOneScores.count()/100;
+    //For averaged score vs num turns.  See comments in loop.
+    //TODO: Optimise by checking if we are row first / column first in memory.  Probably doesn't matter if random enough.
+    //Probably should have encapsulated such round related stuff in a vector to iterate over.  Would have looked nicer, though this will be nicer to read when using QCharts.
+    double tempRoundOneScore[20][2];
+    double tempRoundTwoScore[20][2];
+    double tempRoundThreeScore[20][2];
+    for (int i = 0; i < r.roundOneScores.count() && !stopBool; ++i){
+        //Calculate simple ratios of points/card for each round.
+        r.roundOneRatios.append(QPointF(r.roundOneScores[i].x(), r.roundOneScores[i].y()/r.roundOneScores[i].x()));
+        r.roundTwoRatios.append(QPointF(r.roundTwoScores[i].x(), r.roundTwoScores[i].y()/r.roundTwoScores[i].x()));
+        r.roundThreeRatios.append(QPointF(r.roundThreeScores[i].x(), r.roundThreeScores[i].y()/r.roundThreeScores[i].x()));
+
+        //We now have QList<QPointF> objects of [x, y] [turns, ratio].
+        //We also want to have small lists of [turns, averaged scores].  This would let us plot numTurns vs averageScore for each round.
+        //We will accomplish this by looping through each r.roundXScores vector.  Create an array double temp[20] = {0} (may as well over allocate turns).
+        //For each iteration, temp[static_cast<int>(r.roundOneScores[i].x())] += r.roundOneScores[i].y();
+        //Have another similar array noting how many items we add into the previous array.
+        //++temp2[....same as above...]; or just use a 2d array.
+        //Note that all the roundXScore vectors are the same length, because one is created each simulate loop iteration.
+        tempRoundOneScore[static_cast<int>(r.roundOneScores[i].x())][1] += r.roundOneScores[i].y();
+        ++tempRoundOneScore[static_cast<int>(r.roundOneScores[i].x())][0];
+        tempRoundTwoScore[static_cast<int>(r.roundTwoScores[i].x())][1] += r.roundTwoScores[i].y();
+        ++tempRoundTwoScore[static_cast<int>(r.roundTwoScores[i].x())][0];
+        tempRoundThreeScore[static_cast<int>(r.roundThreeScores[i].x())][1] += r.roundThreeScores[i].y();
+        ++tempRoundThreeScore[static_cast<int>(r.roundThreeScores[i].x())][0];
+
+        //Update the progress bar.
+        if (i == ticker){
+            ticker += r.roundOneScores.count()/100;
+            emit percentChanged(static_cast<int>(static_cast<qreal>(i)/r.roundOneScores.count()*100));
+        }
+    }
+    //We now have QList<QPointF> objects of [x, y] [turns, ratio].
+    //We also have our 2d temp arrays with [round length in turns][1] == score sum and [round length...][0] == number of occurences that we had this number of turns in the respective round.
+    //So, we now convert this to a QLineSeries for each round with elements [turns, average score].
+
+
+
+
+    emit percentChanged(100);
 }
 
 bool SimThread::isSubset(const std::vector<GwentCard> &sub, const std::vector<GwentCard> &super){

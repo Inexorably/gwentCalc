@@ -19,9 +19,12 @@ AnalysisWindow::AnalysisWindow(const GwentSimResults &r, QWidget *parent) :
     //***********************************************************************************
     //**************Post Processing / Plotting Section***********************************
     //***********************************************************************************
+    qDebug() << "AnalysisWindow::AnalysisWindow(const GwentSimResults &r, QWidget *parent): Entering Post Processing";
 
     //**************Score vs Turns for each round****************************************
     QLineSeries *series = new QLineSeries();
+    qDebug() << r.roundOneRatios.count();
+    series->append(r.roundOneRatios);
 
     QChart *chart = new QChart();
     chart->addSeries(series);
@@ -34,10 +37,9 @@ AnalysisWindow::AnalysisWindow(const GwentSimResults &r, QWidget *parent) :
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
-    QLogValueAxis *axisX = new QLogValueAxis();
+    QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("Iterations");
     axisX->setLabelFormat("%g");
-    axisX->setBase(10.0);
     axisX->setMinorTickCount(-1);
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
