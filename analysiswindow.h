@@ -19,9 +19,16 @@ public:
     AnalysisWindow(const QString &f, const GwentSimResults &r, QWidget *parent = nullptr);
     ~AnalysisWindow();
 
+private slots:
+    void on_actionScore_vs_Round_Length_changed();
+
 private:
     Ui::AnalysisWindow *ui;
     QString filename;
+
+    //Chart members.
+    QChartView *chartViewScoresVsTurns;
+    QChartView *chartViewScoresPerCardVsTurns;
 };
 
 #endif // ANALYSISWINDOW_H

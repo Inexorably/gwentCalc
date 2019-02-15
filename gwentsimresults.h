@@ -40,6 +40,11 @@ public:
     QList<QPointF> roundTwoScoresVsTurns;
     QList<QPointF> roundThreeScoresVsTurns;
 
+    //The derivative of roundOneScoresVsTurns wrt turns is the average value of each card vs turn length.
+    QList<QPointF> roundOneScoresPerCardVsTurns;
+    QList<QPointF> roundTwoScoresPerCardVsTurns;
+    QList<QPointF> roundThreeScoresPerCardVsTurns;
+
 };
 
 Q_DECLARE_METATYPE(GwentSimResults)

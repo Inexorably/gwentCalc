@@ -256,6 +256,18 @@ void SimThread::processRoundRatios(GwentSimResults &r){
             r.roundThreeScoresVsTurns.append(QPointF(i, tempRoundThreeScore[i][1]/tempRoundThreeScore[i][0]));
     }
 
+    //Process the average score per card vs turns (derivative of roundXScoreVsTurns).
+    //Note that the different rounds QLineSeries may be different sizes, so we need to loop through them seperately (can do maxLength(), then same loop, but meh).
+    for (int i = 0; i < r.roundOneScoresVsTurns.count(); ++i){
+        r.roundOneScoresPerCardVsTurns.append(QPointF(r.roundOneScoresVsTurns[i].x(), r.roundOneScoresVsTurns[i].y()/r.roundOneScoresVsTurns[i].x()));
+    }
+    for (int i = 0; i < r.roundTwoScoresVsTurns.count(); ++i){
+        r.roundTwoScoresPerCardVsTurns.append(QPointF(r.roundTwoScoresVsTurns[i].x(), r.roundTwoScoresVsTurns[i].y()/r.roundTwoScoresVsTurns[i].x()));
+    }
+    for (int i = 0; i < r.roundThreeScoresVsTurns.count(); ++i){
+        r.roundThreeScoresPerCardVsTurns.append(QPointF(r.roundThreeScoresVsTurns[i].x(), r.roundThreeScoresVsTurns[i].y()/r.roundThreeScoresVsTurns[i].x()));
+    }
+
 
 
     emit percentChanged(100);
@@ -350,6 +362,13 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
 }
 
 int SimThread::playRound(GwentGame &game, const int &r1Turns){
+    qDebug() << "Entering playRound(), hand: ";
+    QString temp;
+    for (int i = 0; i < game.hand.size(); ++i){
+        temp+= QString::number(game.hand[i].unconditionalPoints);
+        temp+= ", ";
+    }
+    qDebug() << temp;
     //This follows the same trend of mulligans function, where we play out the highest valid subset combos in order.
     //Only adjustment is that if combo.size() > remainingTurns, then we choose the next highest valid subset combo.
     //If not valid combos remain, play out the highest conditional cards in order.
@@ -378,16 +397,19 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
         //Play all valid subset combos (which have combo.cards.size() <= r1Turns) in order from highest to greatest.
         //This loop will continue until no valid combo subsets are left, so if it is not the first cardsPlayed loop iteration then
         //we have already attempted all combos and we can skip this loop.
-        for (size_t i = 0; cardsPlayed != 0 && i < game.combos.size(); ++i){
+        bool comboPlayed = false;
+        for (size_t i = 0; /*cardsPlayed != 0 && */i < game.combos.size(); ++i){
             //If the combo is a valid subset and we have enough turns to play the combo.
             if (game.combos[i].cards.size() <= static_cast<size_t>(r1Turns) && isSubset(game.combos[i].cards, game.hand)){
                 //If the combo is a subset, remove all components from the hand, place them in the graveyard,
+                qDebug () << r1Turns << ": " << game.combos[i].cards.size() << " cards, points: " << game.combos[i].unconditionalPoints;
                 for (size_t j = 0; j < game.combos[i].cards.size(); ++j){
                     game.graveyard.push_back(game.combos[i].cards[j]);
                     removeCard(game.combos[i].cards[j], game.hand);
                 }
+                comboPlayed = true;
                 score += game.combos[i].unconditionalPoints;
-                cardsPlayed += game.combos[i].cards.size();
+                cardsPlayed += game.combos[i].cards.size() - 1; //Do -1 because cardsPlayed will be incremented on end of loop iteration.  TODO: This is bad design.
                 ++combos[i].occurences;
             }
         }
@@ -397,8 +419,11 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
 
         //We have ran out of valid combo subsets, and now we play single cards in order of unconditionalProvision.
         //game.hand is still sorted from least to greatest.  Note that cardsPlayed is incremented in the loop condition, not here.
-        score += game.hand.front().unconditionalPoints;
-        game.hand.erase(game.hand.begin());
+        if (!comboPlayed){
+            qDebug () << r1Turns << ": single card, " << game.hand.back().unconditionalPoints;
+            score += game.hand.back().unconditionalPoints;
+            game.hand.erase(game.hand.end());
+        }
     }
     std::sort(game.hand.begin(), game.hand.end());
     return score;
@@ -414,7 +439,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     //**************************************************************************************************************************************
     //************************************************Round 1*******************************************************************************
     //**************************************************************************************************************************************
-
+    qDebug() << "simulate: Entering round 1";
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);
@@ -452,7 +477,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     //**************************************************************************************************************************************
     //************************************************Round 2*******************************************************************************
     //**************************************************************************************************************************************
-
+    qDebug() << "simulate: Entering round 2";
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);
@@ -488,7 +513,7 @@ GwentSimResults SimThread::simulate(GwentGame game){
     //**************************************************************************************************************************************
     //************************************************Round 2*******************************************************************************
     //**************************************************************************************************************************************
-
+    qDebug() << "simulate: Entering round 3";
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);

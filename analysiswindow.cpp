@@ -37,36 +37,78 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     seriesroundThreeScoresVsTurns->append(r.roundThreeScoresVsTurns);
     seriesroundThreeScoresVsTurns->setName("Round Three");
 
-    QChart *chart = new QChart();
-    chart->addSeries(seriesroundOneScoresVsTurns);
-    chart->addSeries(seriesroundTwoScoresVsTurns);
-    chart->addSeries(seriesroundThreeScoresVsTurns);
+    QChart *chartScoresVsTurns = new QChart();
+    chartScoresVsTurns->addSeries(seriesroundOneScoresVsTurns);
+    chartScoresVsTurns->addSeries(seriesroundTwoScoresVsTurns);
+    chartScoresVsTurns->addSeries(seriesroundThreeScoresVsTurns);
 
-    QValueAxis *axisY = new QValueAxis();
-    axisY->setTitleText("Average Score");
-    axisY->setLabelFormat("%i");
-    axisY->setTickCount(10);
-    axisY->setMinorTickCount(-1);
-    chart->addAxis(axisY, Qt::AlignLeft);
-    seriesroundOneScoresVsTurns->attachAxis(axisY);
+    QValueAxis *axisYScoresVsTurns = new QValueAxis();
+    axisYScoresVsTurns->setTitleText("Average Score");
+    axisYScoresVsTurns->setLabelFormat("%i");
+    axisYScoresVsTurns->setTickCount(10);
+    axisYScoresVsTurns->setMinorTickCount(-1);
+    chartScoresVsTurns->addAxis(axisYScoresVsTurns, Qt::AlignLeft);
+    seriesroundOneScoresVsTurns->attachAxis(axisYScoresVsTurns);
 
-    QValueAxis *axisX = new QValueAxis();
-    axisX->setTitleText("Number of Turns");
-    axisX->setLabelFormat("%g");
-    axisX->setMinorTickCount(-1);
-    chart->addAxis(axisX, Qt::AlignBottom);
-    seriesroundOneScoresVsTurns->attachAxis(axisX);
+    QValueAxis *axisXScoresVsTurns = new QValueAxis();
+    axisXScoresVsTurns->setTitleText("Number of Turns");
+    axisXScoresVsTurns->setLabelFormat("%g");
+    axisXScoresVsTurns->setMinorTickCount(-1);
+    chartScoresVsTurns->addAxis(axisXScoresVsTurns, Qt::AlignBottom);
+    seriesroundOneScoresVsTurns->attachAxis(axisXScoresVsTurns);
 
     // Same formatting
-    chart->setBackgroundVisible(false);
-    chart->setMargins(QMargins(0,0,0,0));
-    chart->layout()->setContentsMargins(0,0,0,0);
-    chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
-    chart->setPlotAreaBackgroundVisible(true);
-    chart->setTitle("Score vs Round Length");
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    ui->gridLayout->addWidget(chartView);
+    chartScoresVsTurns->setBackgroundVisible(false);
+    chartScoresVsTurns->setMargins(QMargins(0,0,0,0));
+    chartScoresVsTurns->layout()->setContentsMargins(0,0,0,0);
+    chartScoresVsTurns->setPlotAreaBackgroundBrush(QBrush(Qt::white));
+    chartScoresVsTurns->setPlotAreaBackgroundVisible(true);
+    chartScoresVsTurns->setTitle("Score vs Round Length");
+    chartViewScoresVsTurns = new QChartView(chartScoresVsTurns);
+    chartViewScoresVsTurns->setRenderHint(QPainter::Antialiasing);
+    ui->gridLayout->addWidget(chartViewScoresVsTurns);
+
+    //**************Average score per card vs num turns for each round****************************************
+    QLineSeries *seriesroundOneScoresPerCardVsTurns = new QLineSeries();
+    seriesroundOneScoresPerCardVsTurns->append(r.roundOneScoresPerCardVsTurns);
+    seriesroundOneScoresPerCardVsTurns->setName("Round One");
+    QLineSeries *seriesroundTwoScoresPerCardVsTurns = new QLineSeries();
+    seriesroundTwoScoresPerCardVsTurns->append(r.roundTwoScoresPerCardVsTurns);
+    seriesroundTwoScoresPerCardVsTurns->setName("Round Two");
+    QLineSeries *seriesroundThreeScoresPerCardVsTurns = new QLineSeries();
+    seriesroundThreeScoresPerCardVsTurns->append(r.roundThreeScoresPerCardVsTurns);
+    seriesroundThreeScoresPerCardVsTurns->setName("Round Three");
+
+    QChart *chartScoresPerCardVsTurns = new QChart();
+    chartScoresPerCardVsTurns->addSeries(seriesroundOneScoresPerCardVsTurns);
+    chartScoresPerCardVsTurns->addSeries(seriesroundTwoScoresPerCardVsTurns);
+    chartScoresPerCardVsTurns->addSeries(seriesroundThreeScoresPerCardVsTurns);
+
+    QValueAxis *axisYScoresPerCardVsTurns = new QValueAxis();
+    axisYScoresPerCardVsTurns->setTitleText("Average Score per Card");
+    axisYScoresPerCardVsTurns->setLabelFormat("%i");
+    axisYScoresPerCardVsTurns->setTickCount(10);
+    axisYScoresPerCardVsTurns->setMinorTickCount(-1);
+    chartScoresPerCardVsTurns->addAxis(axisYScoresPerCardVsTurns, Qt::AlignLeft);
+    seriesroundOneScoresPerCardVsTurns->attachAxis(axisYScoresPerCardVsTurns);
+
+    QValueAxis *axisXScoresPerCardVsTurns = new QValueAxis();
+    axisXScoresPerCardVsTurns->setTitleText("Number of Turns");
+    axisXScoresPerCardVsTurns->setLabelFormat("%g");
+    axisXScoresPerCardVsTurns->setMinorTickCount(-1);
+    chartScoresPerCardVsTurns->addAxis(axisXScoresPerCardVsTurns, Qt::AlignBottom);
+    seriesroundOneScoresPerCardVsTurns->attachAxis(axisXScoresPerCardVsTurns);
+
+    // Same formatting
+    chartScoresPerCardVsTurns->setBackgroundVisible(false);
+    chartScoresPerCardVsTurns->setMargins(QMargins(0,0,0,0));
+    chartScoresPerCardVsTurns->layout()->setContentsMargins(0,0,0,0);
+    chartScoresPerCardVsTurns->setPlotAreaBackgroundBrush(QBrush(Qt::white));
+    chartScoresPerCardVsTurns->setPlotAreaBackgroundVisible(true);
+    chartScoresPerCardVsTurns->setTitle("Average Card Value vs Round Length");
+    chartViewScoresPerCardVsTurns = new QChartView(chartScoresPerCardVsTurns);
+    chartViewScoresPerCardVsTurns->setRenderHint(QPainter::Antialiasing);
+    ui->gridLayout->addWidget(chartViewScoresPerCardVsTurns);
 
     //***********************************Bar Chart - Times each combo was played*************************************
     QBarSet *setCombosTimesPlayed = new QBarSet("Combos");
@@ -158,4 +200,11 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
 AnalysisWindow::~AnalysisWindow()
 {
     delete ui;
+}
+
+void AnalysisWindow::on_actionScore_vs_Round_Length_changed(){
+    if (ui->actionScore_vs_Round_Length->isChecked())
+        chartViewScoresVsTurns->show();
+    else
+        chartViewScoresVsTurns->hide();
 }
