@@ -22,12 +22,6 @@ public:
 private slots:
     void on_actionScore_vs_Round_Length_changed();
 
-    void on_actionScore_per_Card_vs_Round_Length_changed();
-
-    void on_combosTimesPlayed_changed();
-
-    void on_actionAverage_Combo_Value_changed();
-
 private:
     Ui::AnalysisWindow *ui;
     QString filename;
@@ -35,8 +29,6 @@ private:
     //Chart members.
     QChartView *chartViewScoresVsTurns;
     QChartView *chartViewScoresPerCardVsTurns;
-    QChartView *chartViewCombosTimesPlayed;
-    QChartView *chartViewCombosAverageValue;
 };
 
 #endif // ANALYSISWINDOW_H
