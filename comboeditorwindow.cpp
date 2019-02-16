@@ -374,7 +374,7 @@ void ComboEditorWindow::on_actionRun_triggered(){
     ProgressDialog *progressBar = new ProgressDialog(filename, deck, combos);
     //Connect the signals to allow progressBar to close this window if closeParentWindow (global bool) is true.
     qDebug() << "Connecting close signals / slots";
-    connect(progressBar, SIGNAL(closeParent()), this, SLOT(close()));
+    //connect(progressBar, SIGNAL(closeParent()), this, SLOT(close()));
     progressBar->setModal(true);
     progressBar->exec();
 }
