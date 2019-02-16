@@ -24,7 +24,13 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
     //*****************Settings creation on first time run**********
     QFile inSettings(SETTINGSFILENAME);
 
+    //Set globals that should be initialized based on the settings file.
     if (inSettings.open(QFile::ReadOnly)){
+        QString data;
+        QStringList settingsList;
+        data = inSettings.readAll();
+        settingsList = data.split("\n");
+        closeParentWindow = static_cast<bool>(settingsList[9].toInt());
         inSettings.close();
     }
     else{
@@ -43,7 +49,7 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
          * bool vary round
          * bool vary round length
         */
-        QString settings = "1\n0\n5000\n1\n0.005\n6\n4\n1\n3";
+        QString settings = "1\n0\n5000\n1\n0.005\n6\n4\n1\n3\n1";
         if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&outSettings);
             out << settings;
@@ -110,9 +116,10 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
         passedFilename = openName;
     }
 
-    //this->hide();
     ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), passedFilename, cardList);
     comboEditor->show();
+    if (closeParentWindow)
+        this->close();
 
 }
 

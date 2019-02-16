@@ -372,7 +372,9 @@ void ComboEditorWindow::on_actionRun_triggered(){
     //Preprocessing has been completed, and now the simulations will be ran.  This should occur on a worker thread to avoid crashing the gui thread.
     //Also occurs in ProgressDialog so that we can show progress bar.
     ProgressDialog *progressBar = new ProgressDialog(filename, deck, combos);
+    //Connect the signals to allow progressBar to close this window if closeParentWindow (global bool) is true.
+    qDebug() << "Connecting close signals / slots";
+    connect(progressBar, SIGNAL(closeParent()), this, SLOT(close()));
     progressBar->setModal(true);
     progressBar->exec();
-
 }
