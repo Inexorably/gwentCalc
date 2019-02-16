@@ -18,5 +18,6 @@ const double ALLOWEDFLOATERROR = 0.0001; //When comparing doubles to int.
 
 
 static QString currentDeckFilename;
+static bool closeParentWindow = false;
 
 #endif // GLOBALS_H

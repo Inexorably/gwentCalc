@@ -53,6 +53,9 @@ private:
     //qreal xMin;   //Don't need xMin, doesnt change.
     qreal yMin;
 
+signals:
+    void closeParent();
+
 };
 
 #endif // PROGRESSDIALOG_H

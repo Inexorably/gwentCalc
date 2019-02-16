@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>456</width>
+    <height>393</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,14 +23,20 @@
    <property name="geometry">
     <rect>
      <x>210</x>
-     <y>250</y>
-     <width>168</width>
-     <height>23</height>
+     <y>300</y>
+     <width>169</width>
+     <height>27</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QPushButton" name="okButton">
+      <property name="maximumSize">
+       <size>
+        <width>80</width>
+        <height>25</height>
+       </size>
+      </property>
       <property name="text">
        <string>OK</string>
       </property>
@@ -38,6 +44,12 @@
     </item>
     <item>
      <widget class="QPushButton" name="cancelButton">
+      <property name="maximumSize">
+       <size>
+        <width>80</width>
+        <height>25</height>
+       </size>
+      </property>
       <property name="text">
        <string>Cancel</string>
       </property>
@@ -50,8 +62,8 @@
     <rect>
      <x>20</x>
      <y>31</y>
-     <width>298</width>
-     <height>211</height>
+     <width>348</width>
+     <height>261</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -210,6 +222,16 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="closeParentWindowCheckBox">
+      <property name="text">
+       <string>Close parent window when moving between windows</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

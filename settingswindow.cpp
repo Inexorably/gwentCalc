@@ -43,6 +43,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->r3SpinBox->setValue(16-settingsList[5].toInt()-settingsList[6].toInt());
     ui->varyRoundCheckBox->setChecked(static_cast<bool>(settingsList[7].toInt()));
     ui->varyRoundSpinBox->setValue(settingsList[8].toInt());
+    ui->closeParentWindowCheckBox->setChecked(static_cast<bool>(settingsList[9].toInt()));
+    closeParentWindow = static_cast<bool>(settingsList[9].toInt());
 
     //Enable / disable interdependant widgets such as nIterations / percent.
     ui->nIterationsSpinBox->setEnabled(ui->nIterationsCheckBox->isChecked());
@@ -77,7 +79,8 @@ void SettingsWindow::on_okButton_clicked(){
     settings += QString::number(ui->r1SpinBox->value())+"\n";
     settings += QString::number(ui->r2SpinBox->value())+"\n";
     settings += QString::number(static_cast<int>(ui->varyRoundCheckBox->isChecked()))+"\n";
-    settings += QString::number(ui->varyRoundSpinBox->value());
+    settings += QString::number(ui->varyRoundSpinBox->value())+"\n";
+    settings += QString::number(static_cast<int>(ui->closeParentWindowCheckBox->isChecked()));
 
 
     if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)){

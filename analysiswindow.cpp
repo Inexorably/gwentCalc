@@ -148,7 +148,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartCombosTimesPlayed->addAxis(axisYCombosTimesPlayed, Qt::AlignLeft);
     seriesCombosTimesPlayed->attachAxis(axisYCombosTimesPlayed);
 
-    QChartView *chartViewCombosTimesPlayed = new QChartView(chartCombosTimesPlayed);
+    chartViewCombosTimesPlayed = new QChartView(chartCombosTimesPlayed);
     chartViewCombosTimesPlayed->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewCombosTimesPlayed);
 
@@ -191,7 +191,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartCombosAverageValue->addAxis(axisYCombosAverageValue, Qt::AlignLeft);
     seriesCombosAverageValue->attachAxis(axisYCombosAverageValue);
 
-    QChartView *chartViewCombosAverageValue = new QChartView(chartCombosAverageValue);
+    chartViewCombosAverageValue = new QChartView(chartCombosAverageValue);
     chartViewCombosAverageValue->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewCombosAverageValue);
 
@@ -207,4 +207,25 @@ void AnalysisWindow::on_actionScore_vs_Round_Length_changed(){
         chartViewScoresVsTurns->show();
     else
         chartViewScoresVsTurns->hide();
+}
+
+void AnalysisWindow::on_actionScore_per_Card_vs_Round_Length_changed(){
+    if (ui->actionScore_per_Card_vs_Round_Length->isChecked())
+        chartViewScoresPerCardVsTurns->show();
+    else
+        chartViewScoresPerCardVsTurns->hide();
+}
+
+void AnalysisWindow::on_combosTimesPlayed_changed(){
+    if (ui->combosTimesPlayed->isChecked())
+        chartViewCombosTimesPlayed->show();
+    else
+        chartViewCombosTimesPlayed->hide();
+}
+
+void AnalysisWindow::on_actionAverage_Combo_Value_changed(){
+    if (ui->actionAverage_Combo_Value->isChecked())
+        chartViewCombosAverageValue->show();
+    else
+        chartViewCombosAverageValue->hide();
 }
