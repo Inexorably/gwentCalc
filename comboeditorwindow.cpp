@@ -373,8 +373,17 @@ void ComboEditorWindow::on_actionRun_triggered(){
     //Also occurs in ProgressDialog so that we can show progress bar.
     ProgressDialog *progressBar = new ProgressDialog(filename, deck, combos);
     //Connect the signals to allow progressBar to close this window if closeParentWindow (global bool) is true.
-    qDebug() << "Connecting close signals / slots";
-    //connect(progressBar, SIGNAL(closeParent()), this, SLOT(close()));
     progressBar->setModal(true);
     progressBar->exec();
+    QFile inSettings(SETTINGSFILENAME);
+    if (inSettings.open(QFile::ReadOnly)){
+        QString data;
+        QStringList settingsList;
+        data = inSettings.readAll();
+        settingsList = data.split("\n");
+        inSettings.close();
+        if (settingsList[9] == "1"){
+            this->close();
+        }
+    }
 }

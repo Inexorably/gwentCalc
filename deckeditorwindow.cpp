@@ -30,7 +30,6 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
         QStringList settingsList;
         data = inSettings.readAll();
         settingsList = data.split("\n");
-        //closeParentWindow = static_cast<bool>(settingsList[9].toInt());
         inSettings.close();
     }
     else{
@@ -118,8 +117,24 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
 
     ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), passedFilename, cardList);
     comboEditor->show();
-    //if (closeParentWindow)
-        //this->close();
+    //Global static not working.
+    //if (closeParentWindow){
+    //    qDebug() << "bool is true";
+    //    this->close();
+    //}
+    QFile inSettings(SETTINGSFILENAME);
+    if (inSettings.open(QFile::ReadOnly)){
+        QString data;
+        QStringList settingsList;
+        data = inSettings.readAll();
+        settingsList = data.split("\n");
+        inSettings.close();
+        qDebug() << QString::number(settingsList[9].toInt());
+        if (settingsList[9] == "1"){
+            this->close();
+        }
+    }
+
 
 }
 

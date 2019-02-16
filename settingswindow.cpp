@@ -46,7 +46,6 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->varyRoundCheckBox->setChecked(static_cast<bool>(settingsList[7].toInt()));
     ui->varyRoundSpinBox->setValue(settingsList[8].toInt());
     ui->closeParentWindowCheckBox->setChecked(static_cast<bool>(settingsList[9].toInt()));
-    //closeParentWindow = static_cast<bool>(settingsList[9].toInt());
 
     //Enable / disable interdependant widgets such as nIterations / percent.
     ui->nIterationsSpinBox->setEnabled(ui->nIterationsCheckBox->isChecked());
