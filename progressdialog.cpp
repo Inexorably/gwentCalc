@@ -30,10 +30,10 @@ ProgressDialog::ProgressDialog(const QString &f, const std::vector<GwentCard> &d
     ui->setupUi(this);
 
     //Close parent window if needed.
-    if (closeParentWindow){
-        qDebug() << "Attempting to close combo window";
-        emit closeParent();
-    }
+    //if (closeParentWindow){
+    //    qDebug() << "Attempting to close combo window";
+    //    emit closeParent();
+    //}
 
     //Disable resize.
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);

@@ -121,6 +121,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartCombosTimesPlayed->addSeries(seriesCombosTimesPlayed);
     chartCombosTimesPlayed->setTitle("Combo Occurences (Times Played)");
     chartCombosTimesPlayed->setAnimationOptions(QChart::SeriesAnimations);
+    chartCombosTimesPlayed->legend()->setVisible(false);
     QStringList categoriesCombosTimesPlayed;
 
     //Set the category names.
@@ -164,6 +165,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartCombosAverageValue->addSeries(seriesCombosAverageValue);
     chartCombosAverageValue->setTitle("Combo Relative Value");
     chartCombosAverageValue->setAnimationOptions(QChart::SeriesAnimations);
+    chartCombosAverageValue->legend()->setVisible(false);
     QStringList categoriesCombosAverageValue;
 
     //Set the category names.

@@ -26,6 +26,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     if (infile.open(QFile::ReadOnly)){
         data = infile.readAll();
         settingsList = data.split("\n");
+        qDebug() << "Settings length: " << settingsList.size();
+        qDebug() << settingsList[9];
         infile.close();
     }
     else {
@@ -44,7 +46,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->varyRoundCheckBox->setChecked(static_cast<bool>(settingsList[7].toInt()));
     ui->varyRoundSpinBox->setValue(settingsList[8].toInt());
     ui->closeParentWindowCheckBox->setChecked(static_cast<bool>(settingsList[9].toInt()));
-    closeParentWindow = static_cast<bool>(settingsList[9].toInt());
+    //closeParentWindow = static_cast<bool>(settingsList[9].toInt());
 
     //Enable / disable interdependant widgets such as nIterations / percent.
     ui->nIterationsSpinBox->setEnabled(ui->nIterationsCheckBox->isChecked());

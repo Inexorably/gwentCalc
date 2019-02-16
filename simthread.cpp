@@ -258,14 +258,18 @@ void SimThread::processRoundRatios(GwentSimResults &r){
 
     //Process the average score per card vs turns (derivative of roundXScoreVsTurns).
     //Note that the different rounds QLineSeries may be different sizes, so we need to loop through them seperately (can do maxLength(), then same loop, but meh).
+    //TODO: Is casting float as int to compare to int safe in bool?  Should < error be used instead?
     for (int i = 0; i < r.roundOneScoresVsTurns.count(); ++i){
-        r.roundOneScoresPerCardVsTurns.append(QPointF(r.roundOneScoresVsTurns[i].x(), r.roundOneScoresVsTurns[i].y()/r.roundOneScoresVsTurns[i].x()));
+        if (static_cast<int>((r.roundOneScoresVsTurns[i].x())) != 0)
+            r.roundOneScoresPerCardVsTurns.append(QPointF(r.roundOneScoresVsTurns[i].x(), r.roundOneScoresVsTurns[i].y()/r.roundOneScoresVsTurns[i].x()));
     }
     for (int i = 0; i < r.roundTwoScoresVsTurns.count(); ++i){
-        r.roundTwoScoresPerCardVsTurns.append(QPointF(r.roundTwoScoresVsTurns[i].x(), r.roundTwoScoresVsTurns[i].y()/r.roundTwoScoresVsTurns[i].x()));
+        if (static_cast<int>(r.roundTwoScoresVsTurns[i].x()) != 0)
+            r.roundTwoScoresPerCardVsTurns.append(QPointF(r.roundTwoScoresVsTurns[i].x(), r.roundTwoScoresVsTurns[i].y()/r.roundTwoScoresVsTurns[i].x()));
     }
     for (int i = 0; i < r.roundThreeScoresVsTurns.count(); ++i){
-        r.roundThreeScoresPerCardVsTurns.append(QPointF(r.roundThreeScoresVsTurns[i].x(), r.roundThreeScoresVsTurns[i].y()/r.roundThreeScoresVsTurns[i].x()));
+        if (static_cast<int>(r.roundThreeScoresVsTurns[i].x()) != 0)
+            r.roundThreeScoresPerCardVsTurns.append(QPointF(r.roundThreeScoresVsTurns[i].x(), r.roundThreeScoresVsTurns[i].y()/r.roundThreeScoresVsTurns[i].x()));
     }
 
 
@@ -363,11 +367,11 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
 
 int SimThread::playRound(GwentGame &game, const int &r1Turns){
     //qDebug() << "Entering playRound(), hand: ";
-    QString temp;
+    /*QString temp;
     for (int i = 0; i < game.hand.size(); ++i){
         temp+= QString::number(game.hand[i].unconditionalPoints);
         temp+= ", ";
-    }
+    }*/
     //qDebug() << temp;
     //This follows the same trend of mulligans function, where we play out the highest valid subset combos in order.
     //Only adjustment is that if combo.size() > remainingTurns, then we choose the next highest valid subset combo.

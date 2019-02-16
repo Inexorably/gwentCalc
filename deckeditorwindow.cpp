@@ -30,7 +30,7 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
         QStringList settingsList;
         data = inSettings.readAll();
         settingsList = data.split("\n");
-        closeParentWindow = static_cast<bool>(settingsList[9].toInt());
+        //closeParentWindow = static_cast<bool>(settingsList[9].toInt());
         inSettings.close();
     }
     else{
@@ -118,8 +118,8 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
 
     ComboEditorWindow *comboEditor = new ComboEditorWindow(this->getDeck(), passedFilename, cardList);
     comboEditor->show();
-    if (closeParentWindow)
-        this->close();
+    //if (closeParentWindow)
+        //this->close();
 
 }
 
