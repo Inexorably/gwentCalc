@@ -43,7 +43,8 @@ SOURCES += \
     gwentgame.cpp \
     gwentsimresults.cpp \
     chartwindow.cpp \
-    analysiswindow.cpp
+    analysiswindow.cpp \
+    gwentconditional.cpp
 
 HEADERS += \
         deckeditorwindow.h \
@@ -60,7 +61,8 @@ HEADERS += \
     gwentgame.h \
     gwentsimresults.h \
     chartwindow.h \
-    analysiswindow.h
+    analysiswindow.h \
+    gwentconditional.h
 
 FORMS += \
         deckeditorwindow.ui \

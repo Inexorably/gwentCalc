@@ -129,7 +129,7 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
         data = inSettings.readAll();
         settingsList = data.split("\n");
         inSettings.close();
-        qDebug() << QString::number(settingsList[9].toInt());
+        //qDebug() << QString::number(settingsList[9].toInt());
         if (settingsList[9] == "1"){
             this->close();
         }

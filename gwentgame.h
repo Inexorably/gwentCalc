@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "gwentcard.h"
 #include "gwentscenario.h"
+#include "gwentconditional.h"
 
 #include <vector>
 

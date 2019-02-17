@@ -26,8 +26,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     if (infile.open(QFile::ReadOnly)){
         data = infile.readAll();
         settingsList = data.split("\n");
-        qDebug() << "Settings length: " << settingsList.size();
-        qDebug() << settingsList[9];
+        //qDebug() << "Settings length: " << settingsList.size();
+        //qDebug() << settingsList[9];
         infile.close();
     }
     else {

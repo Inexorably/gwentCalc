@@ -10,3 +10,13 @@ anti-combos -- example: witchers, requires only one in hand.
 	this can be done by having a mulligan variable on the gwentcard level
 	0 to disable or 1 to enable.  if a vector of cards is empty, always mulligan (roach).
 	if vector of cards is not empty, mulligan if any of the cards in the vector is in hand.
+	can also accomplish by doing as combos with negatie value
+	
+	
+-------------------------------------------------------------------------------------
+
+Doing now:
+
+Change combo to score function
+
+then move single cards to combo
