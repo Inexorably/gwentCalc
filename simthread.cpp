@@ -288,7 +288,7 @@ bool SimThread::isSubset(const std::vector<GwentCard> &sub, const std::vector<Gw
     for (size_t i = 0; i < sub.size(); ++i){
         //For each member of the subset, check if it exists in the superset.  If it does not exist in the super set, return false.
         for (size_t j = 0; j < super.size(); ++j){
-            //Once we that sub[i] exists in super, we continue to the next ++i.
+            //Once we know that sub[i] exists in super, we continue to the next ++i.
             if (sub[i].name == super[j].name){
                 break;
             }
@@ -368,7 +368,7 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
 }
 
 int SimThread::playRound(GwentGame &game, const int &r1Turns){
-    bool showqDebug = true;
+    bool showqDebug = false;
     if (showqDebug)
         qDebug() << "Entering playRound(), hand: ";
     QString temp;
@@ -399,7 +399,11 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
     //I am retarded.  Just check all combos that are valid subsets (combos are ordered from greatest to least).  Remove from game.hand until no more valid subsets exist.
     //If game.hand.empty(), exist mulligan phase.
     //If at least one element left in game.hand, mulligan the first card in hand (ordered from least to most unconditionalPoints), increment usedMulligans.  Re-enter loop if mulligans remain.
-    for (int cardsPlayed = 0; cardsPlayed < r1Turns; ++cardsPlayed){
+    for (int cardsPlayed = 0; cardsPlayed < r1Turns; /*++cardsPlayed*/){
+        if (showqDebug){
+            qDebug() << "cards played: " << cardsPlayed << ", turns: " << r1Turns;
+        }
+
         //If hand is empty, break.
         if (game.hand.empty()){
             break;
@@ -423,8 +427,9 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
                     removeCard(game.combos[i].cards[j], game.hand);
                 }
                 score += game.combos[i].calculateValue();
-                cardsPlayed += game.combos[i].cards.size() - 1; //Do -1 because cardsPlayed will be incremented on end of loop iteration.  TODO: This is bad design.
+                cardsPlayed += game.combos[i].cards.size();
                 ++combos[i].occurences;
+                break;
             }
         }
         //Don't need to sort if hand is empty.
