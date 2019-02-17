@@ -1,7 +1,7 @@
 #include "gwentcardcombo.h"
 
 bool GwentCardCombo::operator<(const GwentCardCombo &c) const{
-    return unconditionalPoints<c.unconditionalPoints;
+    return calculateValue()<c.calculateValue();
 }
 
 GwentCardCombo::GwentCardCombo(){
@@ -10,7 +10,7 @@ GwentCardCombo::GwentCardCombo(){
 }
 
 //For now, we start with just returning unconditionalPoints, so that we can swap out all the unconditionalPoints calls for calculateValue calls while holding the results constant.
-double GwentCardCombo::calculateValue(const GwentConditional &c, const int &turns) const{
+double GwentCardCombo::calculateValue() const{
     return unconditionalPoints;
 
 }

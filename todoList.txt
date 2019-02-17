@@ -12,6 +12,8 @@ anti-combos -- example: witchers, requires only one in hand.
 	if vector of cards is not empty, mulligan if any of the cards in the vector is in hand.
 	can also accomplish by doing as combos with negatie value
 	
+fix rng in static simthread functions
+	
 	
 -------------------------------------------------------------------------------------
 
@@ -20,3 +22,15 @@ Doing now:
 Change combo to score function
 
 then move single cards to combo
+
+
+We actually need to give turn length information and conditional information to the GwentCardcombo objects, as sorting uses
+the <operator which only has access to the member variables to compare.
+
+Fixing the play function which seems to be only playing single cards.
+
+Oh shit.  Our random function is being seeded the same everytime.
+
+all the random functions are fucked (all 3).  not seeding to random value, same order execution everytime.
+
+round lengths in turns are being calculated incorectly

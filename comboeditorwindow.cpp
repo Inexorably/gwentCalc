@@ -359,6 +359,17 @@ void ComboEditorWindow::on_actionRun_triggered(){
         combos.push_back(tempCombo);
         //qDebug() << "combos.size(): " << combos.size();
     }
+
+    //We add all single cards to the combo file so that we can just loop through the combo object for mulligan and play functions and don't have to handle both
+    //combo and single card cases.
+    for (size_t i = 0; i < deck.size(); ++i){
+        GwentCardCombo temp;
+        temp.cards.push_back(deck[i]);
+        temp.unconditionalPoints = deck[i].unconditionalPoints;
+        combos.push_back(temp);
+    }
+
+
     //qDebug() << "Entering post processing";
 
     //TODO: When accounting for more forms of conditional points (ie bloodthirst), add them to the gwentCardCombo and gwentCard classes.

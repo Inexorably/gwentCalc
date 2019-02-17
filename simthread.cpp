@@ -43,13 +43,14 @@ void SimThread::stop(){
 }
 
 void SimThread::shuffle(std::vector<GwentCard> &v){
-    static auto rng = std::default_random_engine {};
+    static auto rng = std::mt19937(std::random_device{}());
     std::shuffle(std::begin(v), std::end(v), rng);
 }
 
 bool SimThread::trueWithProbability(const double &prob){
-    static std::mt19937 rand_engine;
+    static std::mt19937 rand_engine(std::random_device{}());
     static std::bernoulli_distribution d(prob);
+    //qDebug() << "trueWithProbability: " << d(rand_engine);
     return d(rand_engine);
 
 }
@@ -60,6 +61,7 @@ int SimThread::randomInt(const double &min, const double &max){
     static std::uniform_int_distribution<int> dist;
 
     dist.param(std::uniform_int_distribution<int>::param_type(static_cast<int>(min), static_cast<int>(max)));
+    //qDebug() << "randomInt: " << dist(twister) << ", between: " << min << ", " << max;
     return dist(twister);
 }
 
@@ -329,7 +331,7 @@ void SimThread::mulligan(GwentGame &game, const int &initialMulligans){
 
         //Remove all combo subsets from the game.hand superset.
         for (size_t i = 0; i < game.combos.size(); ++i){
-            if (isSubset(game.combos[i].cards, game.hand)){
+            if (game.combos[i].cards.size() > 1 && isSubset(game.combos[i].cards, game.hand)){
                 //If the combo is a subset, remove all components from the hand, and store them temporarily in the comboPiecesInHand vector.
                 for (size_t j = 0; j < game.combos[i].cards.size(); ++j){
                     comboPiecesInHand.push_back(game.combos[i].cards[j]);
@@ -366,13 +368,19 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
 }
 
 int SimThread::playRound(GwentGame &game, const int &r1Turns){
-    //qDebug() << "Entering playRound(), hand: ";
-    /*QString temp;
-    for (int i = 0; i < game.hand.size(); ++i){
+    bool showqDebug = true;
+    if (showqDebug)
+        qDebug() << "Entering playRound(), hand: ";
+    QString temp;
+    for (size_t i = 0; i < game.hand.size(); ++i){
+        temp += game.hand[i].name + " ";
         temp+= QString::number(game.hand[i].unconditionalPoints);
         temp+= ", ";
-    }*/
-    //qDebug() << temp;
+    }
+    if (showqDebug){
+        qDebug() << temp;
+        qDebug() << "turns: " << r1Turns;
+    }
     //This follows the same trend of mulligans function, where we play out the highest valid subset combos in order.
     //Only adjustment is that if combo.size() > remainingTurns, then we choose the next highest valid subset combo.
     //If not valid combos remain, play out the highest conditional cards in order.
@@ -384,6 +392,8 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
 
     //Can't play with an empty hand.
     if (game.hand.empty()){
+        if (showqDebug)
+            qDebug() << "A Turns: " << r1Turns << ", " << "Score: " << score;
         return score;
     }
     //I am retarded.  Just check all combos that are valid subsets (combos are ordered from greatest to least).  Remove from game.hand until no more valid subsets exist.
@@ -401,40 +411,44 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
         //Play all valid subset combos (which have combo.cards.size() <= r1Turns) in order from highest to greatest.
         //This loop will continue until no valid combo subsets are left, so if it is not the first cardsPlayed loop iteration then
         //we have already attempted all combos and we can skip this loop.
-        bool comboPlayed = false;
         for (size_t i = 0; /*cardsPlayed != 0 && */i < game.combos.size(); ++i){
             //If the combo is a valid subset and we have enough turns to play the combo.
             if (game.combos[i].cards.size() <= static_cast<size_t>(r1Turns) && isSubset(game.combos[i].cards, game.hand)){
+                if (showqDebug)
+                    qDebug() << "Valid combo found :" << game.combos[i].cards.size() << ", cih: " << game.hand.size() << ", value: " << game.combos[i].calculateValue();
                 //If the combo is a subset, remove all components from the hand, place them in the graveyard,
                 //qDebug () << r1Turns << ": " << game.combos[i].cards.size() << " cards, points: " << game.combos[i].unconditionalPoints;
                 for (size_t j = 0; j < game.combos[i].cards.size(); ++j){
                     game.graveyard.push_back(game.combos[i].cards[j]);
                     removeCard(game.combos[i].cards[j], game.hand);
                 }
-                comboPlayed = true;
-                score += game.combos[i].unconditionalPoints;
+                score += game.combos[i].calculateValue();
                 cardsPlayed += game.combos[i].cards.size() - 1; //Do -1 because cardsPlayed will be incremented on end of loop iteration.  TODO: This is bad design.
                 ++combos[i].occurences;
             }
         }
         //Don't need to sort if hand is empty.
-        if (game.hand.empty())
+        if (game.hand.empty()){
+            if (showqDebug){
+                qDebug() << "B Turns: " << r1Turns << ", " << "Score: " << score;
+                qDebug() << "Hand size: " << game.hand.size();
+            }
             return score;
-
+        }
         //We have ran out of valid combo subsets, and now we play single cards in order of unconditionalProvision.
         //game.hand is still sorted from least to greatest.  Note that cardsPlayed is incremented in the loop condition, not here.
-        if (!comboPlayed){
-            //qDebug () << r1Turns << ": single card, " << game.hand.back().unconditionalPoints;
-            score += game.hand.back().unconditionalPoints;
-            game.hand.erase(game.hand.end());
-        }
     }
     std::sort(game.hand.begin(), game.hand.end());
+    if (showqDebug)
+        qDebug() << "C Turns: " << r1Turns << ", " << "Score: " << score;
     return score;
 }
 
 GwentSimResults SimThread::simulate(GwentGame game){
+    bool showqDebug = false;
     //Initialise the struct holding our results for this simulation.
+    if (showqDebug)
+        qDebug() << "***************Entered simulate*******************";
     GwentSimResults results;
     int scoreR1 = 0;
     int scoreR2 = 0;
@@ -443,7 +457,8 @@ GwentSimResults SimThread::simulate(GwentGame game){
     //**************************************************************************************************************************************
     //************************************************Round 1*******************************************************************************
     //**************************************************************************************************************************************
-    //qDebug() << "simulate: Entering round 1";
+    if (showqDebug)
+        qDebug() << "1 simulate: Entering round 1";
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);
@@ -460,14 +475,19 @@ GwentSimResults SimThread::simulate(GwentGame game){
     }
 
     //Conduct mulligans.
-    //qDebug () << "r1 mulligan)";
+    if (showqDebug)
+        qDebug () << "1 r1 mulligan hand size: " << game.hand.size();
     mulligan(game, mulliganInt);
+    if (showqDebug)
+        qDebug() << "1 post mulligan hand size: " << game.hand.size();
 
     //We have now mulliganned.  Play out the cards according to turn length.
     //Figure out how long this round will be.
     int r1Turns = game.r1BaseTurns;
     if (game.turnVariationBool){
         r1Turns += randomInt(-1*game.turnVariationInt, game.turnVariationInt);
+        if (showqDebug)
+            qDebug() << "1 Setting turns as: " << r1Turns;
     }
     if (r1Turns < 3){
         r1Turns = 3;
@@ -476,12 +496,17 @@ GwentSimResults SimThread::simulate(GwentGame game){
         r1Turns = 10;
     }
     //qDebug() << "r1 play";
+    if (showqDebug)
+        qDebug() << "1 pre play hand size: " << game.hand.size();
     scoreR1 += playRound(game, r1Turns);
+    if (showqDebug)
+        qDebug() << "1 post play hand size: " << game.hand.size();
 
     //**************************************************************************************************************************************
     //************************************************Round 2*******************************************************************************
     //**************************************************************************************************************************************
-    //qDebug() << "simulate: Entering round 2";
+    if (showqDebug)
+        qDebug() << "2 simulate: Entering round 2";
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);
@@ -496,13 +521,19 @@ GwentSimResults SimThread::simulate(GwentGame game){
 
     //Conduct mulligans.
     //qDebug() << "r2 mulligan";
+    if (showqDebug)
+        qDebug () << "2 r2 mulligan hand size: " << game.hand.size();
     mulligan(game, mulliganInt);
+    if (showqDebug)
+        qDebug() << "2 post mulligan hand size: " << game.hand.size();
 
     //We have now mulliganned.  Play out the cards according to turn length.
     //Figure out how long this round will be.
     int r2Turns = game.r2BaseTurns;
     if (game.turnVariationBool){
         r2Turns += randomInt(-1*game.turnVariationInt, game.turnVariationInt);
+        if (showqDebug)
+            qDebug() << "2 Setting turns as: " << r2Turns;
     }
     if (r2Turns < 1){
         r2Turns = 1;
@@ -512,12 +543,17 @@ GwentSimResults SimThread::simulate(GwentGame game){
         r2Turns = static_cast<int>(game.hand.size());
     }
     //qDebug() << "r2 score";
+    if (showqDebug)
+        qDebug() << "2 pre play hand size: " << game.hand.size();
     scoreR2 += playRound(game, r2Turns);
+    if (showqDebug)
+        qDebug() << "2 post play hand size: " << game.hand.size();
 
     //**************************************************************************************************************************************
-    //************************************************Round 2*******************************************************************************
+    //************************************************Round 3*******************************************************************************
     //**************************************************************************************************************************************
-    //qDebug() << "simulate: Entering round 3";
+    if (showqDebug)
+        qDebug() << "3 simulate: Entering round 3";
     //Shuffle the deck before drawing first 10 cards.  Preferable to have rng based functions in simthread class so we can
     //use static random objects and avoid expensive rng object construction on each creation and destruction by the copy constructor in simul loop.
     shuffle(game.deck);
@@ -532,14 +568,24 @@ GwentSimResults SimThread::simulate(GwentGame game){
 
     //Conduct mulligans.
     //qDebug() << "r3 mulligan";
+    if (showqDebug)
+        qDebug () << "3 r3 mulligan hand size: " << game.hand.size();
     mulligan(game, mulliganInt);
+    if (showqDebug)
+        qDebug() << "3 post mulligan hand size: " << game.hand.size();
 
     //We have now mulliganned.  Play out the cards according to turn length.
     //Figure out how long this round will be.
     //TODO: Update for round extension cards like Ciri.
     int r3Turns = static_cast<int>(game.hand.size());
+    if (showqDebug)
+        qDebug() << "3 Setting turns as: " << r3Turns;
     //qDebug() << "r3 score";
+    if (showqDebug)
+        qDebug() << "3 pre play hand size: " << game.hand.size();
     scoreR3 += playRound(game, r3Turns);
+    if (showqDebug)
+        qDebug() << "3 post play hand size: " << game.hand.size();
     //qDebug() << "Failure point?";
 
     //**************************************************************************************************************************************
@@ -548,6 +594,12 @@ GwentSimResults SimThread::simulate(GwentGame game){
 
     //Store individual round score information by appending the the QLineSeries member variables.
     //We don't store this in a GwentSimResults
+    if (showqDebug)
+        qDebug() << "A turns: " << r1Turns << ", score: " << scoreR1;
+    if (showqDebug)
+        qDebug() << "B turns: " << r2Turns << ", score: " << scoreR2;
+    if (showqDebug)
+        qDebug() << "C turns: " << r3Turns << ", score: " << scoreR3;
     roundOneScores.append(static_cast<qreal>(r1Turns), static_cast<qreal>(scoreR1));
     roundTwoScores.append(static_cast<qreal>(r2Turns), static_cast<qreal>(scoreR2));
     roundThreeScores.append(static_cast<qreal>(r3Turns), static_cast<qreal>(scoreR3));

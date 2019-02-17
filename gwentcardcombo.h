@@ -19,7 +19,10 @@ public:
     //Calculate the current value of the combo.  Factors to consider are field (such as bloodthirst) and turns left (such as dot like weather / other points over time).
     //The bloodthirst (and other similar) settings will be stored in the GwentConditional object.
     //We also need to take the turns in a round in order to figure out how to value dot effects.
-    double calculateValue(const GwentConditional &c, const int &turns) const;
+    //We actually need to store these values in the GwentCardCombo object so that the comparison operator can accurately compare the objects (we can't pass arguments to <).
+    double calculateValue() const;
+    GwentConditional conditions;
+    int turns;
 
     //Comparison operator to sort by unconditionalPoints value.
     bool operator<(const GwentCardCombo &c) const;

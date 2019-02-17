@@ -113,7 +113,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     //***********************************Bar Chart - Times each combo was played*************************************
     QBarSet *setCombosTimesPlayed = new QBarSet("Combos");
     for (size_t i = 0; i < r.combos.size(); ++i){
-        *setCombosTimesPlayed << r.combos[i].occurences;
+        if (r.combos[i].cards.size() > 1)
+            *setCombosTimesPlayed << r.combos[i].occurences;
     }
     QBarSeries *seriesCombosTimesPlayed = new QBarSeries();
     seriesCombosTimesPlayed->append(setCombosTimesPlayed);
@@ -126,15 +127,17 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
 
     //Set the category names.
     for (size_t i = 0; i < r.combos.size(); ++i){
-        //Loop through the cards in the combo, and create a QString containing the combo name.
-        QString tempComboName;
-        for (size_t j = 0; j < r.combos[i].cards.size(); ++j){
-            tempComboName += r.combos[i].cards[j].name;
-            if (j != r.combos[i].cards.size() - 1){
-                tempComboName += ", ";
+        if (r.combos[i].cards.size() > 1){
+            //Loop through the cards in the combo, and create a QString containing the combo name.
+            QString tempComboName;
+            for (size_t j = 0; j < r.combos[i].cards.size(); ++j){
+                tempComboName += r.combos[i].cards[j].name;
+                if (j != r.combos[i].cards.size() - 1){
+                    tempComboName += ", ";
+                }
             }
+            categoriesCombosTimesPlayed << tempComboName;
         }
-        categoriesCombosTimesPlayed << tempComboName;
     }
     //qDebug() << seriesCombosTimesPlayed->count();
     QBarCategoryAxis *axisXCombosTimesPlayed = new QBarCategoryAxis();
@@ -157,7 +160,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     //Combo occurences / number of iterations * combo value.
     QBarSet *setCombosAverageValue = new QBarSet("Combos");
     for (size_t i = 0; i < r.combos.size(); ++i){
-        *setCombosAverageValue << static_cast<double>(r.combos[i].occurences)*r.combos[i].unconditionalPoints/static_cast<double>(r.roundOneScores.count());
+        if (r.combos[i].cards.size() > 1)
+            *setCombosAverageValue << static_cast<double>(r.combos[i].occurences)*r.combos[i].unconditionalPoints/static_cast<double>(r.roundOneScores.count());
     }
     QBarSeries *seriesCombosAverageValue = new QBarSeries();
     seriesCombosAverageValue->append(setCombosAverageValue);
@@ -170,15 +174,17 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
 
     //Set the category names.
     for (size_t i = 0; i < r.combos.size(); ++i){
-        //Loop through the cards in the combo, and create a QString containing the combo name.
-        QString tempComboName;
-        for (size_t j = 0; j < r.combos[i].cards.size(); ++j){
-            tempComboName += r.combos[i].cards[j].name;
-            if (j != r.combos[i].cards.size() - 1){
-                tempComboName += ", ";
+        if (r.combos[i].cards.size() > 1){
+            //Loop through the cards in the combo, and create a QString containing the combo name.
+            QString tempComboName;
+            for (size_t j = 0; j < r.combos[i].cards.size(); ++j){
+                tempComboName += r.combos[i].cards[j].name;
+                if (j != r.combos[i].cards.size() - 1){
+                    tempComboName += ", ";
+                }
             }
+            categoriesCombosAverageValue << tempComboName;
         }
-        categoriesCombosAverageValue << tempComboName;
     }
     //qDebug() << seriesCombosAverageValue->count();
     QBarCategoryAxis *axisXCombosAverageValue = new QBarCategoryAxis();
