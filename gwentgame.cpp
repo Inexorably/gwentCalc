@@ -13,8 +13,21 @@ GwentGame::GwentGame(const GwentScenario &pkg){
 
     if (infile.open(QFile::ReadOnly)){
         data = infile.readAll();
-        settingsList = data.split("\n");
+        settingsList = data.split("\n");        
         infile.close();
+
+        //Set the conditions member.
+        //Blood thirst / damaged enemies condition settings.
+        conditions.damagedEnemies[1] = settingsList[10].toDouble();
+        conditions.damagedEnemies[2] = settingsList[11].toDouble();
+        conditions.damagedEnemies[3] = settingsList[12].toDouble();
+        conditions.damagedEnemies[0] = 1.0-conditions.damagedEnemies[1]-conditions.damagedEnemies[2]-conditions.damagedEnemies[3];
+    }
+
+    //Set combo conditions member equal to this->conditions.  We set the conditions on each combo member so that we can use the information
+    //in combo's < operator (which can only access combo member variables).
+    for (size_t i = 0; i < this->combos.size(); ++i){
+        combos[i].conditions = this->conditions;
     }
 
     r1BaseTurns = (settingsList[5].toInt());

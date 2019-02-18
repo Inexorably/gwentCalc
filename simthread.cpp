@@ -71,6 +71,9 @@ void SimThread::run(){
 
     //Create the base GwentGame to reload every loop / simulation iteration, and sort the combos vector for efficiency reasons in the simul function.
     GwentGame baseGame = GwentGame(pkg);
+
+    //Apply the conditional settings to the game (such as bloodthirst / number of damaged enemies).
+
     std::sort(pkg.combos.begin(), pkg.combos.end());
     std::reverse(pkg.combos.begin(), pkg.combos.end());    //Order from greatest to least.
 

@@ -32,6 +32,8 @@ public:
     int r2BaseTurns;
     bool turnVariationBool;
     int turnVariationInt;
+
+    GwentConditional conditions;
 };
 
 #endif // GWENTGAME_H

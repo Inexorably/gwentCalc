@@ -40,9 +40,9 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
         QFile outSettings(SETTINGSFILENAME);
         //Settings are seperated by newlines.
         /*bool multithread default 1
-         *bool run n iterations default 0
-         *int n iterations default 5000
-         *bool run until error default 1
+         *bool run n iterations default 1
+         *int n iterations default 50000
+         *bool run until error default 0
          *double error default .005 PERCENT
          * int r1 length
          * int r2 length
@@ -53,7 +53,7 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
          * double bloodthirst 2 chance
          * double bloodthirst 3 chance
         */
-        QString settings = "1\n0\n5000\n1\n0.005\n6\n4\n1\n3\n1\n20\n50\n20";
+        QString settings = "1\n1\n50000\n0\n0.005\n6\n4\n1\n3\n1\n20\n50\n20";
         if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&outSettings);
             out << settings;
