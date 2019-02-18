@@ -10,6 +10,8 @@
 #include "simthread.h"
 #include "progressdialog.h"
 
+#include <algorithm>
+
 #include <QDialog>
 #include <QMainWindow>
 #include <QToolBar>

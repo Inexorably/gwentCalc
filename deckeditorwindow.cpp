@@ -113,7 +113,7 @@ void DeckEditorWindow::on_spawnComboWindowButton_clicked(){
             infile.close();
         }
 
-        //Order (see save function) is combo, value, deck.
+        //Order (see save function) is combo, value, deck, damagedValues.
         importCsvToTable(*ui->deckTableWidget, fileList[2]);
         this->setWindowTitle(DECKBUILDERWINDOWTITLE + fileList[2]);
         currentDeckFilename = fileList[2];
@@ -258,7 +258,7 @@ void DeckEditorWindow::loadCards(){
         //We are now in a row separated by | chars.
         rowData = tempCardList[i].split("|");
         ui->cardSelectionComboBox->addItem(rowData[0]);
-        cardList.push_back(GwentCard(rowData[0], rowData[1].toInt(), rowData[2].toDouble()));
+        cardList.push_back(GwentCard(rowData[0], rowData[1].toInt(), rowData[2].toDouble(), rowData[3].toDouble(), rowData[4].toDouble(), rowData[5].toDouble()));
     }
 }
 

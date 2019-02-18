@@ -11,6 +11,7 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
 
     //Add the cards in the deck.
     cardsInDeck = deck;
+    std::sort(deck.begin(), deck.end());
     allCards = passedCards;
 
     //On startup, add the cards in the deck currently to the comboBox.
@@ -24,6 +25,8 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
     filename.chop(4);   //Remove the extension from the filename.
     ui->valueTableWidget->setColumnCount(1);
     ui->valueTableWidget->setRowCount(1);
+    ui->damagedTableWidget->setColumnCount(3);
+    ui->damagedTableWidget->setRowCount(1);
 
     //The user needs to be able to click the first cell to add a card.
     ui->comboTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -32,6 +35,7 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
 
     //Set the card combo table widget to stretch.
     ui->comboTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->damagedTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     //If the filetype (last 4 chars) of the passedFilename variable is .gwc, then we can load information based on that gwc file.
     if (passedFilename.right(4) == ".gwc"){
@@ -48,6 +52,7 @@ ComboEditorWindow::ComboEditorWindow(std::vector<QString> deck, QString passedFi
         //Order (see save function) is combo, value, deck.
         importCsvToTable(*ui->comboTableWidget, fileList[0]);
         importCsvToTable(*ui->valueTableWidget, fileList[1]);
+        importCsvToTable(*ui->damagedTableWidget, fileList[3]);
     }
 
     //Fix label position.
@@ -107,8 +112,9 @@ void ComboEditorWindow::on_addComboButton_clicked(){
     //We now add the selected card (combo box) to the selected cell.
     ui->comboTableWidget->setItem(row, col, new QTableWidgetItem(ui->comboCardSelectionComboBox->currentText()));
 
-    //Update number of rows in provision value.
+    //Update number of rows in other tables.
     ui->valueTableWidget->setRowCount(ui->comboTableWidget->rowCount());
+    ui->damagedTableWidget->setRowCount(ui->comboTableWidget->rowCount());
 }
 
 void ComboEditorWindow::on_removeComboButton_clicked(){
@@ -156,6 +162,7 @@ void ComboEditorWindow::on_removeComboButton_clicked(){
 
             //We also remove the corresponding row in the value table.
             ui->valueTableWidget->removeRow(row);
+            ui->damagedTableWidget->removeRow(row);
             --row;
         }
     }
@@ -177,6 +184,9 @@ void ComboEditorWindow::on_removeComboButton_clicked(){
 
     //Delete the bottom member of the combo values.
     ui->valueTableWidget->setItem(ui->valueTableWidget->rowCount()-1, 0, new QTableWidgetItem(""));
+    for (int i = 0; i < ui->valueTableWidget->columnCount(); ++i){
+        ui->damagedTableWidget->setItem(ui->valueTableWidget->rowCount()-1, i, new QTableWidgetItem(""));
+    }
 }
 
 void ComboEditorWindow::on_actionSave_triggered(){
@@ -185,8 +195,9 @@ void ComboEditorWindow::on_actionSave_triggered(){
     //Save the combo table first, then the value table.
     exportTableToCsv(*ui->comboTableWidget, filename+EXTENSIONCOMBO);
     exportTableToCsv(*ui->valueTableWidget, filename+EXTENSIONVALUE);
+    exportTableToCsv(*ui->damagedTableWidget, filename+EXTENSIONDAMAGED);
 
-    QString textData = filename+EXTENSIONCOMBO + "\n" + filename+EXTENSIONVALUE + "\n" + filename+EXTENSIONDECK;
+    QString textData = filename+EXTENSIONCOMBO + "\n" + filename+EXTENSIONVALUE + "\n" + filename+EXTENSIONDECK + "\n" + filename+EXTENSIONDAMAGED;
 
     //Write to the .gwc file which tracks all files.
     QFile outfile(filename+EXTENSIONSET);
@@ -219,8 +230,9 @@ void ComboEditorWindow::on_actionSave_as_triggered(){
     //Copy the other files from the ui widgets.
     exportTableToCsv(*ui->comboTableWidget, filename+EXTENSIONCOMBO);
     exportTableToCsv(*ui->valueTableWidget, filename+EXTENSIONVALUE);
+    exportTableToCsv(*ui->damagedTableWidget, filename+EXTENSIONDAMAGED);
 
-    QString textData = filename+EXTENSIONCOMBO + "\n" + filename+EXTENSIONVALUE + "\n" + filename+EXTENSIONDECK;
+    QString textData = filename+EXTENSIONCOMBO + "\n" + filename+EXTENSIONVALUE + "\n" + filename+EXTENSIONDECK + "\n" + filename+EXTENSIONDAMAGED;
 
     //Write to the .gwc file which tracks all files.
     QFile outfile(filename+EXTENSIONSET);
@@ -257,6 +269,7 @@ void ComboEditorWindow::on_actionOpen_triggered(){
     //Order (see save function) is combo, value, deck.
     importCsvToTable(*ui->comboTableWidget, fileList[0]);
     importCsvToTable(*ui->valueTableWidget, fileList[1]);
+    importCsvToTable(*ui->damagedTableWidget, fileList[3]);
 
 }
 
@@ -266,10 +279,14 @@ void ComboEditorWindow::on_actionNew_triggered(){
     ui->valueTableWidget->setRowCount(1);
     ui->comboTableWidget->setRowCount(1);
     ui->comboTableWidget->setColumnCount(1);
+    ui->damagedTableWidget->setColumnCount(1);
 
     //Clear the items at 0,0 in each table.
     ui->valueTableWidget->setItem(0, 0, new QTableWidgetItem(""));
     ui->comboTableWidget->setItem(0, 0, new QTableWidgetItem(""));
+    for (int i = 0; i < ui->damagedTableWidget->columnCount(); ++i){
+        ui->damagedTableWidget->setItem(0, i, new QTableWidgetItem(""));
+    }
 
     //Force the user to save new file as.
     on_actionSave_as_triggered();
@@ -366,6 +383,9 @@ void ComboEditorWindow::on_actionRun_triggered(){
         GwentCardCombo temp;
         temp.cards.push_back(deck[i]);
         temp.unconditionalPoints = deck[i].unconditionalPoints;
+        for (int j = 0; j < 4; ++j){
+            temp.damagedValues[j] = deck[i].damagedValues[j];
+        }
         combos.push_back(temp);
     }
 

@@ -4,6 +4,7 @@
 #include "gwentcard.h"
 #include "gwentconditional.h"
 
+#include <QDebug>
 
 #include <vector>
 
@@ -32,6 +33,9 @@ public:
 
     //An int to track the occurences of a specific combo so that we can show the results in the results window.
     int occurences;
+
+    //The additional points of value that a combo gets for each damaged enemy (0, 1, 2, 3).  Note: damagedValues[0] = 0.
+    double damagedValues[4];
 };
 
 #endif // GWENTCARDCOMBO_H

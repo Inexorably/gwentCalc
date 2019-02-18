@@ -34,6 +34,8 @@ private slots:
 
     void on_varyRoundCheckBox_clicked();
 
+    void on_bloodThirst1SpinBox_valueChanged(double arg1);
+
 private:
     Ui::SettingsWindow *ui;
 };

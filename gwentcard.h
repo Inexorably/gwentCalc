@@ -8,7 +8,10 @@ class GwentCard
 public:
     GwentCard();
 
-    GwentCard(QString tempName, int tempProvisions, double tempUnconditionalPoints);
+    GwentCard(const QString &tempName, const int &tempProvisions, const double &tempUnconditionalPoints);
+
+    //Creating a new constructor to load the damagedValues array.
+    GwentCard(const QString &tempName, const int &tempProvisions, const double &tempUnconditionalPoints, const double &damaged1, const double &damaged2, const double &damaged3);
 
     //Comparison operator compares unconditionalPoints for overloading.  Returns true if this is less than c.
     bool operator<(const GwentCard &c);
@@ -18,8 +21,8 @@ public:
     double unconditionalPoints; //Points that are not conditional (ie dependant on things, like bloodlust).
 
     //Probability distributions (in decimal, NOT PERCENT) for number of damaged enemies.
-    //Example: damagedValue[0] is value for 0 enemies, and 3 is for 3 enemies.
-    double damagedValue[4];
+    //Example: damagedValues[0] is value for 0 enemies, and 3 is for 3 enemies.
+    double damagedValues[4];
 };
 
 #endif // GWENTCARD_H

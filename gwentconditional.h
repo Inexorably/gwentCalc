@@ -7,7 +7,7 @@ class GwentConditional
 public:
     GwentConditional();
 
-    //Probability distributions (in decimal, NOT PERCENT) for number of damaged enemies.
+    //Probability distributions (in PERCENT) for number of damaged enemies.
     //Example: damagedEnemies[0] is probability for 0 enemies, and 3 is for 3 enemies.
     double damagedEnemies[4];
 };

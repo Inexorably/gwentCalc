@@ -7,10 +7,16 @@ bool GwentCardCombo::operator<(const GwentCardCombo &c) const{
 GwentCardCombo::GwentCardCombo(){
     occurences = 0;
     unconditionalPoints = 0;
+    for (int i = 0; i < 4; ++i)
+        damagedValues[i] = 0;
 }
 
 //For now, we start with just returning unconditionalPoints, so that we can swap out all the unconditionalPoints calls for calculateValue calls while holding the results constant.
 double GwentCardCombo::calculateValue() const{
-    return unconditionalPoints;
-
+    double temp = unconditionalPoints;
+    //Bloodthirst
+    for (int i = 1; i < 4; ++i){
+        temp += damagedValues[i]*conditions.damagedEnemies[i]/100;
+    }
+    return temp;
 }

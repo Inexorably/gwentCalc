@@ -74,6 +74,7 @@ void SimThread::run(){
 
     //Apply the conditional settings to the game (such as bloodthirst / number of damaged enemies).
 
+
     std::sort(pkg.combos.begin(), pkg.combos.end());
     std::reverse(pkg.combos.begin(), pkg.combos.end());    //Order from greatest to least.
 
