@@ -152,6 +152,8 @@ void SettingsWindow::on_bloodThirst1SpinBox_valueChanged(double arg1){
     ui->bloodThirst0SpinBox->setValue(100.0-ui->bloodThirst1SpinBox->value()-ui->bloodThirst2SpinBox->value()-ui->bloodThirst3SpinBox->value());
     //Set the maximum and minimums of each box to current+-bloodThirstSpinBox0->value.
     //Set minimums.
+    //This gets stuck when 0SpinBox == 0.
+    ///*
     if (ui->bloodThirst1SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
         ui->bloodThirst1SpinBox->setMaximum(ui->bloodThirst1SpinBox->value()+ui->bloodThirst0SpinBox->value());
     }
@@ -170,6 +172,7 @@ void SettingsWindow::on_bloodThirst1SpinBox_valueChanged(double arg1){
     else{
         ui->bloodThirst3SpinBox->setMaximum(100);
     }
+    /*
     if (ui->bloodThirst1SpinBox->value()-ui->bloodThirst0SpinBox->value() > 0){
         ui->bloodThirst1SpinBox->setMinimum(ui->bloodThirst1SpinBox->value()-ui->bloodThirst0SpinBox->value());
     }
@@ -188,5 +191,63 @@ void SettingsWindow::on_bloodThirst1SpinBox_valueChanged(double arg1){
     else{
         ui->bloodThirst3SpinBox->setMinimum(0);
     }
+    */
+}
 
+void SettingsWindow::on_bloodThirst2SpinBox_valueChanged(double arg1){
+    //Silence unused variable warning.
+    (void)arg1;
+
+    ui->bloodThirst0SpinBox->setValue(100.0-ui->bloodThirst1SpinBox->value()-ui->bloodThirst2SpinBox->value()-ui->bloodThirst3SpinBox->value());
+    //Set the maximum and minimums of each box to current+-bloodThirstSpinBox0->value.
+    //Set minimums.
+    //This gets stuck when 0SpinBox == 0.
+    ///*
+    if (ui->bloodThirst1SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
+        ui->bloodThirst1SpinBox->setMaximum(ui->bloodThirst1SpinBox->value()+ui->bloodThirst0SpinBox->value());
+    }
+    else{
+        ui->bloodThirst1SpinBox->setMaximum(100);
+    }
+    if (ui->bloodThirst2SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
+        ui->bloodThirst2SpinBox->setMaximum(ui->bloodThirst2SpinBox->value()+ui->bloodThirst0SpinBox->value());
+    }
+    else{
+        ui->bloodThirst2SpinBox->setMaximum(100);
+    }
+    if (ui->bloodThirst3SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
+        ui->bloodThirst3SpinBox->setMaximum(ui->bloodThirst3SpinBox->value()+ui->bloodThirst0SpinBox->value());
+    }
+    else{
+        ui->bloodThirst3SpinBox->setMaximum(100);
+    }
+}
+
+void SettingsWindow::on_bloodThirst3SpinBox_valueChanged(double arg1){
+    //Silence unused variable warning.
+    (void)arg1;
+
+    ui->bloodThirst0SpinBox->setValue(100.0-ui->bloodThirst1SpinBox->value()-ui->bloodThirst2SpinBox->value()-ui->bloodThirst3SpinBox->value());
+    //Set the maximum and minimums of each box to current+-bloodThirstSpinBox0->value.
+    //Set minimums.
+    //This gets stuck when 0SpinBox == 0.
+    ///*
+    if (ui->bloodThirst1SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
+        ui->bloodThirst1SpinBox->setMaximum(ui->bloodThirst1SpinBox->value()+ui->bloodThirst0SpinBox->value());
+    }
+    else{
+        ui->bloodThirst1SpinBox->setMaximum(100);
+    }
+    if (ui->bloodThirst2SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
+        ui->bloodThirst2SpinBox->setMaximum(ui->bloodThirst2SpinBox->value()+ui->bloodThirst0SpinBox->value());
+    }
+    else{
+        ui->bloodThirst2SpinBox->setMaximum(100);
+    }
+    if (ui->bloodThirst3SpinBox->value()+ui->bloodThirst0SpinBox->value() < 100){
+        ui->bloodThirst3SpinBox->setMaximum(ui->bloodThirst3SpinBox->value()+ui->bloodThirst0SpinBox->value());
+    }
+    else{
+        ui->bloodThirst3SpinBox->setMaximum(100);
+    }
 }

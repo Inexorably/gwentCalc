@@ -36,6 +36,10 @@ private slots:
 
     void on_bloodThirst1SpinBox_valueChanged(double arg1);
 
+    void on_bloodThirst2SpinBox_valueChanged(double arg1);
+
+    void on_bloodThirst3SpinBox_valueChanged(double arg1);
+
 private:
     Ui::SettingsWindow *ui;
 };
