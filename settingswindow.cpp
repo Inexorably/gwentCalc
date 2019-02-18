@@ -46,6 +46,14 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     ui->varyRoundCheckBox->setChecked(static_cast<bool>(settingsList[7].toInt()));
     ui->varyRoundSpinBox->setValue(settingsList[8].toInt());
     ui->closeParentWindowCheckBox->setChecked(static_cast<bool>(settingsList[9].toInt()));
+    ui->bloodThirst1SpinBox->setValue(settingsList[10].toDouble());
+    qDebug() << "a";
+    ui->bloodThirst2SpinBox->setValue(settingsList[11].toDouble());
+    qDebug() << "b";
+    ui->bloodThirst3SpinBox->setValue(settingsList[12].toDouble());
+    qDebug() << "c";
+    //Note that blood thirst zero probability is dependant on the other blood thirst values (100 - all other values, we are in % not decimal).
+    ui->bloodThirst0SpinBox->setValue(100.0-settingsList[10].toDouble()-settingsList[11].toDouble()-settingsList[12].toDouble());
 
     //Enable / disable interdependant widgets such as nIterations / percent.
     ui->nIterationsSpinBox->setEnabled(ui->nIterationsCheckBox->isChecked());
@@ -81,7 +89,10 @@ void SettingsWindow::on_okButton_clicked(){
     settings += QString::number(ui->r2SpinBox->value())+"\n";
     settings += QString::number(static_cast<int>(ui->varyRoundCheckBox->isChecked()))+"\n";
     settings += QString::number(ui->varyRoundSpinBox->value())+"\n";
-    settings += QString::number(static_cast<int>(ui->closeParentWindowCheckBox->isChecked()));
+    settings += QString::number(static_cast<int>(ui->closeParentWindowCheckBox->isChecked()))+"\n";
+    settings += QString::number(ui->bloodThirst1SpinBox->value())+"\n";
+    settings += QString::number(ui->bloodThirst2SpinBox->value())+"\n";
+    settings += QString::number(ui->bloodThirst3SpinBox->value());
 
 
     if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)){

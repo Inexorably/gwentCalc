@@ -33,6 +33,7 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
         inSettings.close();
     }
     else{
+        qDebug() << "Creating .set";
         //Need to create the settings file as this is the first run and no settings file exists.
         //Write to csv file.
         //Forr some reason, if we don't specify the directory, this will save in the build folder, not in \debug.
@@ -47,8 +48,12 @@ DeckEditorWindow::DeckEditorWindow(QWidget *parent) :
          * int r2 length
          * bool vary round
          * bool vary round length
+         * bool closeparentwindow?
+         * double bloodthirst 1 chance
+         * double bloodthirst 2 chance
+         * double bloodthirst 3 chance
         */
-        QString settings = "1\n0\n5000\n1\n0.005\n6\n4\n1\n3\n1";
+        QString settings = "1\n0\n5000\n1\n0.005\n6\n4\n1\n3\n1\n20\n50\n20";
         if(outSettings.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             QTextStream out(&outSettings);
             out << settings;
