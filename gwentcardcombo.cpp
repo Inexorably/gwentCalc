@@ -18,5 +18,11 @@ double GwentCardCombo::calculateValue() const{
     for (int i = 1; i < 4; ++i){
         temp += damagedValues[i]*conditions.damagedEnemies[i]/100;
     }
+    //Value per turn
+    temp += turnsLeft*valuePerTurn;
+    if (temp > 100){
+        qDebug() << temp;
+        qDebug() << cards.size();
+    }
     return temp;
 }

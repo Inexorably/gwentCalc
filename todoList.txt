@@ -1,5 +1,3 @@
-add dot to combos.calculateValue
-	
 anti-combos -- example: witchers, requires only one in hand.
 	can extend to cards like roach which want to sit in deck.
 	this can be done by having a mulligan variable on the gwentcard level
@@ -13,8 +11,18 @@ record each time a card is mulliganed, and display the most mulliganed cards
 	
 -------------------------------------------------------------------------------------
 
+doing:
+
+set max and min on the line drawings so that we can see the results better
 
 --------------------------------------------------------------------------------------
+
+done?
+
+dot
+
+
+-----------------------------------------------------------------------------------
 
 on hold:
 

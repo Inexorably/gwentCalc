@@ -375,6 +375,15 @@ void ComboEditorWindow::on_actionRun_triggered(){
         }
         //qDebug() << "Assigning unconditional points";
         tempCombo.unconditionalPoints = ui->valueTableWidget->item(row, 0)->text().toDouble();
+        //qDebug() << "damaged";
+        //Assign damaged values.
+        for (int j = 1; j < 4; ++j){
+            tempCombo.damagedValues[j] = ui->damagedTableWidget->item(row, j-1)->text().toDouble();
+        }
+        //qDebug() << "vpt";
+        //Assign value per turn.
+        tempCombo.valuePerTurn = ui->valuePerTurnTableWidget->item(row, 0)->text().toDouble();
+        //qDebug() << "xxx";
 
         //qDebug() << "Entering name loop";
         for (int col = 0; col < ui->comboTableWidget->columnCount(); ++col){
@@ -406,11 +415,13 @@ void ComboEditorWindow::on_actionRun_triggered(){
         for (int j = 0; j < 4; ++j){
             temp.damagedValues[j] = deck[i].damagedValues[j];
         }
+        temp.valuePerTurn = deck[i].valuePerTurn;
+        qDebug() << "ComboEditorWindow::on_actionRun_triggered(): " << deck[i].valuePerTurn;
         combos.push_back(temp);
     }
 
 
-    //qDebug() << "Entering post processing";
+    qDebug() << "Entering post processing";
 
     //TODO: When accounting for more forms of conditional points (ie bloodthirst), add them to the gwentCardCombo and gwentCard classes.
 

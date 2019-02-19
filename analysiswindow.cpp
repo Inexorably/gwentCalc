@@ -55,6 +55,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     axisXScoresVsTurns->setLabelFormat("%g");
     axisXScoresVsTurns->setMinorTickCount(-1);
     chartScoresVsTurns->addAxis(axisXScoresVsTurns, Qt::AlignBottom);
+    axisXScoresVsTurns->setMin(0);
+    axisXScoresVsTurns->setMax(10);
     seriesroundOneScoresVsTurns->attachAxis(axisXScoresVsTurns);
 
     // Same formatting

@@ -317,6 +317,17 @@ void SimThread::removeCard(const GwentCard &c, std::vector<GwentCard> &v){
 
 //Note: Garauntee that combos are sorted in order from greatest to least.
 void SimThread::mulligan(GwentGame &game, const int &initialMulligans){
+    //Track how many turns are left so that we can find the value of value per turn cards.
+    int turnsLeft = static_cast<int>(game.hand.size());
+    //Set the turn left on all combos.
+    for (size_t t = 0; t < game.combos.size(); ++t){
+        game.combos[t].turnsLeft = turnsLeft;
+    }
+    for (size_t tt = 0; tt < game.hand.size(); ++tt){
+        game.hand[tt].turnsLeft = turnsLeft;
+    }
+
+
     //Sort the combos.  TODO: Combo sort inefficient?
     std::sort(game.combos.begin(), game.combos.end());
     std::reverse(game.combos.begin(), game.combos.end());
@@ -325,6 +336,7 @@ void SimThread::mulligan(GwentGame &game, const int &initialMulligans){
     if (game.deck.empty() || game.hand.empty()){
         return;
     }
+
     //I am retarded.  Just check all combos that are valid subsets (combos are ordered from greatest to least).  Remove from game.hand until no more valid subsets exist.
     //If game.hand.empty(), exist mulligan phase.
     //If at least one element left in game.hand, mulligan the first card in hand (ordered from least to most unconditionalPoints), increment usedMulligans.  Re-enter loop if mulligans remain.
@@ -341,6 +353,20 @@ void SimThread::mulligan(GwentGame &game, const int &initialMulligans){
                     comboPiecesInHand.push_back(game.combos[i].cards[j]);
                     removeCard(game.combos[i].cards[j], game.hand);
                 }
+                //Lower the remaining turns so that value per turn cards become less valuable, then re-sort the hand in case of combo order value changes.
+                --turnsLeft;
+                //Update turns left before resorting because sorting is ordered by value which is turn dependant.
+                for (size_t t = 0; t < game.combos.size(); ++t){
+                    game.combos[t].turnsLeft = turnsLeft;
+                }
+                for (size_t tt = 0; tt < game.hand.size(); ++tt){
+                    game.hand[tt].turnsLeft = turnsLeft;
+                }
+                //Ensure hand is least to greatest, and that combos are too.
+                std::sort(game.hand.begin(), game.hand.end());
+                std::sort(game.combos.begin(), game.combos.end());
+                std::reverse(game.combos.begin(), game.combos.end());
+
             }
         }
         //All valid combo subsets have been removed from the superset game.hand.  Make sure that game.hand is not empty.
@@ -372,6 +398,16 @@ void SimThread::printCards(const std::vector<GwentCard> &v){
 }
 
 int SimThread::playRound(GwentGame &game, const int &r1Turns){
+    //Track how many turns are left so that we can find the value of value per turn cards.
+    int turnsLeft = r1Turns;
+    //Set the turn left on all combos.
+    for (size_t t = 0; t < game.combos.size(); ++t){
+        game.combos[t].turnsLeft = turnsLeft;
+    }
+    for (size_t tt = 0; tt < game.hand.size(); ++tt){
+        game.hand[tt].turnsLeft = turnsLeft;
+    }
+
     bool showqDebug = false;
     if (showqDebug)
         qDebug() << "Entering playRound(), hand: ";
@@ -433,6 +469,18 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
                 score += game.combos[i].calculateValue();
                 cardsPlayed += game.combos[i].cards.size();
                 ++combos[i].occurences;
+                //Update the turnsLeft in the hand and combos.  Then sort.
+                //Set the turn left on all combos.
+                --turnsLeft;
+                for (size_t t = 0; t < game.combos.size(); ++t){
+                    game.combos[t].turnsLeft = turnsLeft;
+                }
+                for (size_t tt = 0; tt < game.hand.size(); ++tt){
+                    game.hand[tt].turnsLeft = turnsLeft;
+                }
+                std::sort(game.hand.begin(), game.hand.end());
+                std::sort(game.combos.begin(), game.combos.end());
+                std::reverse(game.combos.begin(), game.combos.end());
                 break;
             }
         }

@@ -23,7 +23,7 @@ public:
     //We actually need to store these values in the GwentCardCombo object so that the comparison operator can accurately compare the objects (we can't pass arguments to <).
     double calculateValue() const;
     GwentConditional conditions;
-    int turns;
+    int turnsLeft;
 
     //Comparison operator to sort by unconditionalPoints value.
     bool operator<(const GwentCardCombo &c) const;
@@ -36,6 +36,9 @@ public:
 
     //The additional points of value that a combo gets for each damaged enemy (0, 1, 2, 3).  Note: damagedValues[0] = 0.
     double damagedValues[4];
+
+    //Value per turn
+    double valuePerTurn;
 };
 
 #endif // GWENTCARDCOMBO_H
