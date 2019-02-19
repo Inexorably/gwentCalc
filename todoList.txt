@@ -1,9 +1,4 @@
-Change mulligan and play functions to call a score() function on the GwentCard and GwentCardCombo level.
-	score should take the game object as an argument, as well as # turns left in round.
-	bloodthirst, dot
-	to avoid handling the single card case and combo case, should likely change design such that all single cards are added to the combos object
-	this will let the play function sort only based on score, and dont have to have case structures to handle comparing single cards to combos.
-		if we do this, we need to modify the combo bar charts to only add items where the size of the combo.cards is greater than one.
+add dot to combos.calculateValue
 	
 anti-combos -- example: witchers, requires only one in hand.
 	can extend to cards like roach which want to sit in deck.
@@ -16,13 +11,8 @@ fix rng in static simthread functions
 
 record each time a card is mulliganed, and display the most mulliganed cards
 	
-make the distribution of bloodthirst balance eachother (add up to 100)
-	
 -------------------------------------------------------------------------------------
 
-Doing now:
-
-just added front end of bloodthirst distribution
 
 --------------------------------------------------------------------------------------
 
