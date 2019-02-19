@@ -1,0 +1,17 @@
+release/main.o
+release/deckeditorwindow.o
+release/comboeditorwindow.o
+release/utilities.o
+release/settingswindow.o
+release/gwentcard.o
+release/gwentcardcombo.o
+release/dialog.o
+release/simthread.o
+release/progressdialog.o
+release/gwentscenario.o
+release/moc_deckeditorwindow.o
+release/moc_comboeditorwindow.o
+release/moc_settingswindow.o
+release/moc_dialog.o
+release/moc_simthread.o
+release/moc_progressdialog.o
