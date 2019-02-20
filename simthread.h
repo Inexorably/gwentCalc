@@ -39,7 +39,7 @@ class SimThread :public QThread{
         bool multithread;
         GwentScenario pkg;  //Bundled deck and combo information.
         std::vector<GwentCardCombo> combos; //So we can track the occurences of each combo over the lifetime of the SimThread object (over entire simulation).
-
+        std::vector<GwentCard> individualTracker;   //Track variables such as card.timesPlayed or timesMulliganed that should be stored on a card level rather than a combo level.
         //*************************Helper Variables for storing GwentSimResults related info***
         QLineSeries roundOneScores; //x == number of rounds, y == score.  Updated in the playRound function.
         QLineSeries roundTwoScores; //Not copied in the merge function, because that would mean we copy full length series every merge call (every sim loop iteration).

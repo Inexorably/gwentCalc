@@ -21,6 +21,9 @@ public:
     int n;
     int scoreSum;   //Division is expensive, so we don't want to do (n*scoreSum+i.n*i.scoreSum)/(n+i.n) every loop iteration.  We can just make the division a function to be called whenever we need it.
 
+    //Track factors on a card not combo level -- such as card.timesPlayed and card.timesMulliganed.
+    std::vector<GwentCard> individualTracker;
+
     //Store a copy of the combo vector which has been updated on the .occurences level.  Don't process the QBarCharts in SimThread because requires deep copy because of pointers.
     std::vector<GwentCardCombo> combos;
 

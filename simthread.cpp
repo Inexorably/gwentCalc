@@ -83,6 +83,22 @@ void SimThread::run(){
     GwentSimResults results;
     //qDebug() << "Entering run()";
 
+    //Initialise the individualTracker vector.  This should be copies of the deck without duplicates.
+    individualTracker = baseGame.deck;
+    //Remove duplicates.
+    for (size_t i = 0; i < individualTracker.size(); ++i){
+        for (size_t j = 0; j < individualTracker.size(); ++j){
+            if (individualTracker[i].name == individualTracker[j].name && i != j){
+                //If it is a duplicate, remove it.
+                individualTracker.erase(individualTracker.begin()+static_cast<int>(j));
+                --i;
+                break;
+            }
+        }
+    }
+    //All duplicates have been removed.
+    //qDebug() << individualTracker.size();
+
     //Can either run based on iterations or based on relative error.
     if (nChecked){
         //Update the progress bar every 1%.
@@ -179,6 +195,10 @@ void SimThread::run(){
     //Let the user know we need to post process.
     emit setMessageLabel("Simulation complete.  Post Processing: ");
     emit hideLabel();
+
+    //Record the individual card information such as card.timesPlayed and card.timesMulliganed.
+    //qDebug() << "x: " << individualTracker.size();
+    results.individualTracker = individualTracker;
 
 
     //Compile needed data into results to submit to the progressDialog class in the main thread.
@@ -377,6 +397,13 @@ void SimThread::mulligan(GwentGame &game, const int &initialMulligans){
         //Mulligan the first card in hand, and increment usedMulligans (in loop condition now).
         //Take the card out of hand, draw a card, put the card back in deck and shuffle.  Add the comboPiecesInHand back into game.hand, and clear().
         GwentCard temp = game.hand.front();
+        //Note on the individualTimesMulliganed vector that this card was mulliganed.
+        for (size_t i = 0; i < individualTracker.size(); ++i){
+            if (individualTracker[i].name == temp.name){
+                ++individualTracker[i].timesMulliganed;
+            }
+        }
+        //End: Note on the individualTimesMulliganed vector that this card was mulliganed.
         game.hand.erase(game.hand.begin());
         game.draw(1);
         game.deck.push_back(temp);
@@ -464,6 +491,13 @@ int SimThread::playRound(GwentGame &game, const int &r1Turns){
                 //qDebug () << r1Turns << ": " << game.combos[i].cards.size() << " cards, points: " << game.combos[i].unconditionalPoints;
                 for (size_t j = 0; j < game.combos[i].cards.size(); ++j){
                     game.graveyard.push_back(game.combos[i].cards[j]);
+                    //Note on the individualTracker vector that this card was played.
+                    for (size_t ii = 0; ii < individualTracker.size(); ++ii){
+                        if (individualTracker[ii].name == game.combos[i].cards[j].name){
+                            ++individualTracker[ii].timesPlayed;
+                        }
+                    }
+                    //End: Note on the individualTracker vector that this card was played.
                     removeCard(game.combos[i].cards[j], game.hand);
                 }
                 score += game.combos[i].calculateValue();

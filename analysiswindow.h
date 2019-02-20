@@ -2,6 +2,9 @@
 #define ANALYSISWINDOW_H
 
 #include "gwentsimresults.h"
+#include "gwentcard.h"
+
+#include <algorithm>
 
 #include <QMainWindow>
 #include <QDebug>
@@ -16,7 +19,7 @@ class AnalysisWindow : public QMainWindow
 
 public:
     explicit AnalysisWindow(QWidget *parent = nullptr);
-    AnalysisWindow(const QString &f, const GwentSimResults &r, QWidget *parent = nullptr);
+    AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *parent = nullptr); //&r non const so we can modify individualTracker.
     ~AnalysisWindow();
 
 private slots:
@@ -28,6 +31,10 @@ private slots:
 
     void on_actionAverage_Combo_Value_changed();
 
+    void on_actionTimes_Card_Mulliganed_changed();
+
+    void on_actionTimes_Card_Played_changed();
+
 private:
     Ui::AnalysisWindow *ui;
     QString filename;
@@ -37,6 +44,25 @@ private:
     QChartView *chartViewScoresPerCardVsTurns;
     QChartView *chartViewCombosTimesPlayed;
     QChartView *chartViewCombosAverageValue;
+    QChartView *chartViewIndividualTimesMulliganed;
+    QChartView *chartViewIndividualTimesPlayed;
+
+    //Sorting functions for results.individualTracker.
+    //https://stackoverflow.com/questions/1380463/sorting-a-vector-of-custom-objects.  Used this because I already overloaded <.
+    struct compareTimesMulliganed{
+        inline bool operator() (GwentCard &a, GwentCard &b){
+            return a.timesMulliganed < b.timesMulliganed;
+        }
+    };
+    struct compareTimesPlayed{
+        inline bool operator() (GwentCard &a, GwentCard &b){
+            return a.timesPlayed < b.timesPlayed;
+        }
+    };
+
+    //Temp bubble sort.  TODO: Remove?  Obselete.
+    void sortByIndividualTimesPlayed(std::vector<GwentCard> &v);
+
 };
 
 #endif // ANALYSISWINDOW_H

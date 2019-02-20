@@ -4,10 +4,16 @@ anti-combos -- example: witchers, requires only one in hand.
 	0 to disable or 1 to enable.  if a vector of cards is empty, always mulligan (roach).
 	if vector of cards is not empty, mulligan if any of the cards in the vector is in hand.
 	can also accomplish by doing as combos with negatie value
-	
-fix rng in static simthread functions
 
-record each time a card is mulliganed, and display the most mulliganed cards
+	should do this with having an anticombo table next to the combo table and making a isNotSubset function.
+
+save settings for analysis window
+
+save plots / data in analysis window
+	
+phantom data in rounds 2 and 3 in the line charts -- does not show with .back().rx()?
+
+force all plots to be equal height in analysis window
 	
 -------------------------------------------------------------------------------------
 
@@ -20,6 +26,7 @@ set max and min on the line drawings so that we can see the results better
 done?
 
 dot
+record each time a card is mulliganed, and display the most mulliganed cards
 
 
 -----------------------------------------------------------------------------------

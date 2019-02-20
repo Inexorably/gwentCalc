@@ -46,7 +46,7 @@
      <x>0</x>
      <y>0</y>
      <width>1121</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -62,6 +62,8 @@
     <addaction name="actionScore_per_Card_vs_Round_Length"/>
     <addaction name="combosTimesPlayed"/>
     <addaction name="actionAverage_Combo_Value"/>
+    <addaction name="actionTimes_Card_Mulliganed"/>
+    <addaction name="actionTimes_Card_Played"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -72,7 +74,7 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Score vs Round Length</string>
@@ -83,7 +85,7 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Score per Card vs Round Length</string>
@@ -94,7 +96,7 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Combo Occurrences</string>
@@ -105,10 +107,32 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Average Combo Value</string>
+   </property>
+  </action>
+  <action name="actionTimes_Card_Mulliganed">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Times Card Mulliganed</string>
+   </property>
+  </action>
+  <action name="actionTimes_Card_Played">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Times Card Played</string>
    </property>
   </action>
  </widget>

@@ -30,6 +30,10 @@ public:
     //Points per turn
     double valuePerTurn;
     int turnsLeft;
+
+    //Tracking times played and mulliganed.
+    int timesPlayed;
+    int timesMulliganed;
 };
 
 #endif // GWENTCARD_H

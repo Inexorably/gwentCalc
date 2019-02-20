@@ -259,7 +259,7 @@ void DeckEditorWindow::loadCards(){
         rowData = tempCardList[i].split("|");
         ui->cardSelectionComboBox->addItem(rowData[0]);
         cardList.push_back(GwentCard(rowData[0], rowData[1].toInt(), rowData[2].toDouble(), rowData[3].toDouble(), rowData[4].toDouble(), rowData[5].toDouble(), rowData[6].toDouble()));
-        qDebug() << "DeckEditorWindow::loadCards(): " << rowData[6].toDouble();
+        //qDebug() << "DeckEditorWindow::loadCards(): " << rowData[6].toDouble();
     }
 }
 

@@ -10,7 +10,7 @@ AnalysisWindow::AnalysisWindow(QWidget *parent) :
 
 }
 
-AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidget *parent) :
+AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::AnalysisWindow)
 {
@@ -37,6 +37,19 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     seriesroundThreeScoresVsTurns->append(r.roundThreeScoresVsTurns);
     seriesroundThreeScoresVsTurns->setName("Round Three");
 
+    //Find the min and max to scale the axis.
+    qreal yMax = std::max(r.roundOneScoresVsTurns.back().ry(), r.roundTwoScoresVsTurns.back().ry());
+    yMax = std::max(yMax, r.roundThreeScoresVsTurns.back().ry());
+    qreal xMax = std::max(r.roundOneScoresVsTurns.back().rx(), r.roundTwoScoresVsTurns.back().rx());
+    xMax = std::max(xMax, r.roundThreeScoresVsTurns.back().rx());
+    qreal yMin = std::min(r.roundOneScoresVsTurns.front().ry(), r.roundTwoScoresVsTurns.front().ry());
+    yMin = std::min(yMin, r.roundThreeScoresVsTurns.front().ry());
+    qreal xMin = std::min(r.roundOneScoresVsTurns.front().rx(), r.roundTwoScoresVsTurns.front().rx());
+    xMin = std::min(xMin, r.roundThreeScoresVsTurns.front().rx());
+
+    //qDebug() << "nani: " << r.roundThreeScoresVsTurns.back().rx();
+
+
     QChart *chartScoresVsTurns = new QChart();
     chartScoresVsTurns->addSeries(seriesroundOneScoresVsTurns);
     chartScoresVsTurns->addSeries(seriesroundTwoScoresVsTurns);
@@ -47,6 +60,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     axisYScoresVsTurns->setLabelFormat("%i");
     axisYScoresVsTurns->setTickCount(10);
     axisYScoresVsTurns->setMinorTickCount(-1);
+    axisYScoresVsTurns->setMax(yMax);
+    axisYScoresVsTurns->setMin(yMin);
     chartScoresVsTurns->addAxis(axisYScoresVsTurns, Qt::AlignLeft);
     seriesroundOneScoresVsTurns->attachAxis(axisYScoresVsTurns);
 
@@ -55,8 +70,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     axisXScoresVsTurns->setLabelFormat("%g");
     axisXScoresVsTurns->setMinorTickCount(-1);
     chartScoresVsTurns->addAxis(axisXScoresVsTurns, Qt::AlignBottom);
-    axisXScoresVsTurns->setMin(0);
-    axisXScoresVsTurns->setMax(10);
+    axisXScoresVsTurns->setMax(xMax);
+    axisXScoresVsTurns->setMin(xMin);
     seriesroundOneScoresVsTurns->attachAxis(axisXScoresVsTurns);
 
     // Same formatting
@@ -69,6 +84,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartViewScoresVsTurns = new QChartView(chartScoresVsTurns);
     chartViewScoresVsTurns->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewScoresVsTurns);
+    chartViewScoresVsTurns->hide();
 
     //**************Average score per card vs num turns for each round****************************************
     QLineSeries *seriesroundOneScoresPerCardVsTurns = new QLineSeries();
@@ -81,6 +97,16 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     seriesroundThreeScoresPerCardVsTurns->append(r.roundThreeScoresPerCardVsTurns);
     seriesroundThreeScoresPerCardVsTurns->setName("Round Three");
 
+    //Find the min and max to scale the axis.
+    yMax = std::max(r.roundOneScoresPerCardVsTurns.back().ry(), r.roundTwoScoresPerCardVsTurns.back().ry());
+    yMax = std::max(yMax, r.roundThreeScoresPerCardVsTurns.back().ry());
+    xMax = std::max(r.roundOneScoresPerCardVsTurns.back().rx(), r.roundTwoScoresPerCardVsTurns.back().rx());
+    xMax = std::max(xMax, r.roundThreeScoresPerCardVsTurns.back().rx());
+    yMin = std::min(r.roundOneScoresPerCardVsTurns.front().ry(), r.roundTwoScoresPerCardVsTurns.front().ry());
+    yMin = std::min(yMin, r.roundThreeScoresPerCardVsTurns.front().ry());
+    xMin = std::min(r.roundOneScoresPerCardVsTurns.front().rx(), r.roundTwoScoresPerCardVsTurns.front().rx());
+    xMin = std::min(xMin, r.roundThreeScoresPerCardVsTurns.front().rx());
+
     QChart *chartScoresPerCardVsTurns = new QChart();
     chartScoresPerCardVsTurns->addSeries(seriesroundOneScoresPerCardVsTurns);
     chartScoresPerCardVsTurns->addSeries(seriesroundTwoScoresPerCardVsTurns);
@@ -91,6 +117,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     axisYScoresPerCardVsTurns->setLabelFormat("%i");
     axisYScoresPerCardVsTurns->setTickCount(10);
     axisYScoresPerCardVsTurns->setMinorTickCount(-1);
+    axisYScoresPerCardVsTurns->setMax(yMax);
+    axisYScoresPerCardVsTurns->setMin(yMin);
     chartScoresPerCardVsTurns->addAxis(axisYScoresPerCardVsTurns, Qt::AlignLeft);
     seriesroundOneScoresPerCardVsTurns->attachAxis(axisYScoresPerCardVsTurns);
 
@@ -98,6 +126,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     axisXScoresPerCardVsTurns->setTitleText("Number of Turns");
     axisXScoresPerCardVsTurns->setLabelFormat("%g");
     axisXScoresPerCardVsTurns->setMinorTickCount(-1);
+    axisXScoresPerCardVsTurns->setMax(xMax);
+    axisXScoresPerCardVsTurns->setMin(xMin);
     chartScoresPerCardVsTurns->addAxis(axisXScoresPerCardVsTurns, Qt::AlignBottom);
     seriesroundOneScoresPerCardVsTurns->attachAxis(axisXScoresPerCardVsTurns);
 
@@ -111,6 +141,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartViewScoresPerCardVsTurns = new QChartView(chartScoresPerCardVsTurns);
     chartViewScoresPerCardVsTurns->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewScoresPerCardVsTurns);
+    chartViewScoresPerCardVsTurns->hide();
 
     //***********************************Bar Chart - Times each combo was played*************************************
     QBarSet *setCombosTimesPlayed = new QBarSet("Combos");
@@ -157,6 +188,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartViewCombosTimesPlayed = new QChartView(chartCombosTimesPlayed);
     chartViewCombosTimesPlayed->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewCombosTimesPlayed);
+    chartViewCombosTimesPlayed->hide();
 
     //***********************************Bar Chart - Average value of each combo***************************
     //Combo occurences / number of iterations * combo value.
@@ -204,12 +236,115 @@ AnalysisWindow::AnalysisWindow(const QString &f, const GwentSimResults &r, QWidg
     chartViewCombosAverageValue = new QChartView(chartCombosAverageValue);
     chartViewCombosAverageValue->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewCombosAverageValue);
+    chartViewCombosAverageValue->hide();
 
+    //***********************************Bar Chart - Times mulliganed***************************
+    //How many cards to display.
+    size_t numDisplay = r.individualTracker.size();
+
+    //Sort the individualTracker for plotting.
+    std::sort(r.individualTracker.begin(), r.individualTracker.end(), [ ]( const GwentCard& lhs, const GwentCard& rhs )
+    {
+        return lhs.timesMulliganed > rhs.timesMulliganed;
+    });
+
+    //Combo occurences / number of iterations * combo value.
+    QBarSet *setIndividualTimesMulliganed = new QBarSet("Cards");
+    //qDebug() << "r: " << r.individualTracker.size();
+    for (size_t i = 0; i < r.individualTracker.size() && i < numDisplay; ++i){
+        *setIndividualTimesMulliganed << r.individualTracker[i].timesMulliganed;
+        //qDebug() << r.individualTracker[i].timesMulliganed;
+    }
+    QBarSeries *seriesIndividualTimesMulliganed = new QBarSeries();
+    seriesIndividualTimesMulliganed->append(setIndividualTimesMulliganed);
+    QChart *chartIndividualTimesMulliganed = new QChart();
+    chartIndividualTimesMulliganed->addSeries(seriesIndividualTimesMulliganed);
+    chartIndividualTimesMulliganed->setTitle("Times Mulliganed");
+    chartIndividualTimesMulliganed->setAnimationOptions(QChart::SeriesAnimations);
+    chartIndividualTimesMulliganed->legend()->setVisible(false);
+    QStringList categoriesIndividualTimesMulliganed;
+
+    //Set the category names.
+    for (size_t i = 0; i < r.individualTracker.size() && i < numDisplay; ++i){
+        categoriesIndividualTimesMulliganed << r.individualTracker[i].name;
+        //qDebug() << r.individualTracker[i].name;
+    }
+
+    //qDebug() << seriesIndividualTimesMulliganed->count();
+    QBarCategoryAxis *axisXIndividualTimesMulliganed = new QBarCategoryAxis();
+    axisXIndividualTimesMulliganed->setTitleText("Cards");
+    axisXIndividualTimesMulliganed->append(categoriesIndividualTimesMulliganed);
+    chartIndividualTimesMulliganed->addAxis(axisXIndividualTimesMulliganed, Qt::AlignBottom);
+    seriesIndividualTimesMulliganed->attachAxis(axisXIndividualTimesMulliganed);
+
+    QValueAxis *axisYIndividualTimesMulliganed = new QValueAxis();
+    axisYIndividualTimesMulliganed->setTitleText("Times Mulliganed");
+    //axisYIndividualTimesMulliganed->setRange(0,15);
+    chartIndividualTimesMulliganed->addAxis(axisYIndividualTimesMulliganed, Qt::AlignLeft);
+    seriesIndividualTimesMulliganed->attachAxis(axisYIndividualTimesMulliganed);
+
+    chartViewIndividualTimesMulliganed = new QChartView(chartIndividualTimesMulliganed);
+    chartViewIndividualTimesMulliganed->setRenderHint(QPainter::Antialiasing);
+    ui->gridLayout->addWidget(chartViewIndividualTimesMulliganed);
+
+    //***********************************Bar Chart - Times played***************************
+    //Sort the individualTracker for plotting.
+    std::sort(r.individualTracker.begin(), r.individualTracker.end(), [ ]( const GwentCard& lhs, const GwentCard& rhs )
+    {
+        return lhs.timesPlayed < rhs.timesPlayed;
+    });
+
+    //Combo occurences / number of iterations * combo value.
+    QBarSet *setIndividualTimesPlayed = new QBarSet("Cards");
+    //qDebug() << "r: " << r.individualTracker.size();
+    for (size_t i = 0; i < r.individualTracker.size() && i < numDisplay; ++i){
+        *setIndividualTimesPlayed << r.individualTracker[i].timesPlayed;
+        //qDebug() << r.individualTracker[i].timesPlayed;
+    }
+    QBarSeries *seriesIndividualTimesPlayed = new QBarSeries();
+    seriesIndividualTimesPlayed->append(setIndividualTimesPlayed);
+    QChart *chartIndividualTimesPlayed = new QChart();
+    chartIndividualTimesPlayed->addSeries(seriesIndividualTimesPlayed);
+    chartIndividualTimesPlayed->setTitle("Times Played");
+    chartIndividualTimesPlayed->setAnimationOptions(QChart::SeriesAnimations);
+    chartIndividualTimesPlayed->legend()->setVisible(false);
+    QStringList categoriesIndividualTimesPlayed;
+
+    //Set the category names.
+    for (size_t i = 0; i < r.individualTracker.size() && i < numDisplay; ++i){
+        categoriesIndividualTimesPlayed << r.individualTracker[i].name;
+        //qDebug() << r.individualTracker[i].name;
+    }
+
+    //qDebug() << seriesIndividualTimesPlayed->count();
+    QBarCategoryAxis *axisXIndividualTimesPlayed = new QBarCategoryAxis();
+    axisXIndividualTimesPlayed->setTitleText("Cards");
+    axisXIndividualTimesPlayed->append(categoriesIndividualTimesPlayed);
+    chartIndividualTimesPlayed->addAxis(axisXIndividualTimesPlayed, Qt::AlignBottom);
+    seriesIndividualTimesPlayed->attachAxis(axisXIndividualTimesPlayed);
+
+    QValueAxis *axisYIndividualTimesPlayed = new QValueAxis();
+    axisYIndividualTimesPlayed->setTitleText("Times Played");
+    //axisYIndividualTimesPlayed->setRange(0,15);
+    chartIndividualTimesPlayed->addAxis(axisYIndividualTimesPlayed, Qt::AlignLeft);
+    seriesIndividualTimesPlayed->attachAxis(axisYIndividualTimesPlayed);
+
+    chartViewIndividualTimesPlayed = new QChartView(chartIndividualTimesPlayed);
+    chartViewIndividualTimesPlayed->setRenderHint(QPainter::Antialiasing);
+    ui->gridLayout->addWidget(chartViewIndividualTimesPlayed);
 }
 
-AnalysisWindow::~AnalysisWindow()
-{
+AnalysisWindow::~AnalysisWindow(){
     delete ui;
+}
+//TODO: Delete?  Unused now.
+void AnalysisWindow::sortByIndividualTimesPlayed(std::vector<GwentCard> &a){
+    for (size_t i = 1; i < a.size(); ++i){
+        for (size_t j = 0; j < a.size() - 1; ++j) {
+            if (a[j].timesPlayed > a[i].timesPlayed)
+                std::swap(a[j], a[i]);
+        }
+    }
 }
 
 void AnalysisWindow::on_actionScore_vs_Round_Length_changed(){
@@ -238,4 +373,18 @@ void AnalysisWindow::on_actionAverage_Combo_Value_changed(){
         chartViewCombosAverageValue->show();
     else
         chartViewCombosAverageValue->hide();
+}
+
+void AnalysisWindow::on_actionTimes_Card_Mulliganed_changed(){
+    if (ui->actionTimes_Card_Mulliganed->isChecked())
+        chartViewIndividualTimesMulliganed->show();
+    else
+        chartViewIndividualTimesMulliganed->hide();
+}
+
+void AnalysisWindow::on_actionTimes_Card_Played_changed(){
+    if (ui->actionTimes_Card_Played->isChecked())
+        chartViewIndividualTimesPlayed->show();
+    else
+        chartViewIndividualTimesPlayed->hide();
 }

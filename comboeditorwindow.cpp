@@ -416,12 +416,12 @@ void ComboEditorWindow::on_actionRun_triggered(){
             temp.damagedValues[j] = deck[i].damagedValues[j];
         }
         temp.valuePerTurn = deck[i].valuePerTurn;
-        qDebug() << "ComboEditorWindow::on_actionRun_triggered(): " << deck[i].valuePerTurn;
+        //qDebug() << "ComboEditorWindow::on_actionRun_triggered(): " << deck[i].valuePerTurn;
         combos.push_back(temp);
     }
 
 
-    qDebug() << "Entering post processing";
+    //qDebug() << "Entering post processing";
 
     //TODO: When accounting for more forms of conditional points (ie bloodthirst), add them to the gwentCardCombo and gwentCard classes.
 
