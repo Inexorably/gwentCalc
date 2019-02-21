@@ -8,6 +8,7 @@
 
 #include <QMainWindow>
 #include <QDebug>
+#include <QPointF>
 
 namespace Ui {
 class AnalysisWindow;

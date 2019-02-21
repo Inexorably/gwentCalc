@@ -47,6 +47,19 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     qreal xMin = std::min(r.roundOneScoresVsTurns.front().rx(), r.roundTwoScoresVsTurns.front().rx());
     xMin = std::min(xMin, r.roundThreeScoresVsTurns.front().rx());
 
+    //We are having phantom results in roundTwoScoresVsTurns and three?
+    qDebug() << "Round 1";
+    for (int i = 0; i < r.roundOneScoresVsTurns.size(); ++i){
+        qDebug() << r.roundOneScoresVsTurns[i].rx() <<", " << r.roundOneScoresVsTurns[i].ry();
+    }
+    qDebug() << "Round 2";
+    for (int i = 0; i < r.roundTwoScoresVsTurns.size(); ++i){
+        qDebug() << r.roundTwoScoresVsTurns[i].rx() <<", " << r.roundTwoScoresVsTurns[i].ry();
+    }
+    qDebug() << "Round 3";
+    for (int i = 0; i < r.roundThreeScoresVsTurns.size(); ++i){
+        qDebug() << r.roundThreeScoresVsTurns[i].rx() <<", " << r.roundThreeScoresVsTurns[i].ry();
+    }
     //qDebug() << "nani: " << r.roundThreeScoresVsTurns.back().rx();
 
 
@@ -64,6 +77,9 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     axisYScoresVsTurns->setMin(yMin);
     chartScoresVsTurns->addAxis(axisYScoresVsTurns, Qt::AlignLeft);
     seriesroundOneScoresVsTurns->attachAxis(axisYScoresVsTurns);
+    seriesroundTwoScoresVsTurns->attachAxis(axisYScoresVsTurns);
+    seriesroundThreeScoresVsTurns->attachAxis(axisYScoresVsTurns);
+
 
     QValueAxis *axisXScoresVsTurns = new QValueAxis();
     axisXScoresVsTurns->setTitleText("Number of Turns");
@@ -73,6 +89,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     axisXScoresVsTurns->setMax(xMax);
     axisXScoresVsTurns->setMin(xMin);
     seriesroundOneScoresVsTurns->attachAxis(axisXScoresVsTurns);
+    seriesroundTwoScoresVsTurns->attachAxis(axisXScoresVsTurns);
+    seriesroundThreeScoresVsTurns->attachAxis(axisXScoresVsTurns);
 
     // Same formatting
     chartScoresVsTurns->setBackgroundVisible(false);
@@ -85,6 +103,7 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     chartViewScoresVsTurns->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(chartViewScoresVsTurns);
     chartViewScoresVsTurns->hide();
+
 
     //**************Average score per card vs num turns for each round****************************************
     QLineSeries *seriesroundOneScoresPerCardVsTurns = new QLineSeries();
@@ -121,6 +140,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     axisYScoresPerCardVsTurns->setMin(yMin);
     chartScoresPerCardVsTurns->addAxis(axisYScoresPerCardVsTurns, Qt::AlignLeft);
     seriesroundOneScoresPerCardVsTurns->attachAxis(axisYScoresPerCardVsTurns);
+    seriesroundTwoScoresPerCardVsTurns->attachAxis(axisYScoresPerCardVsTurns);
+    seriesroundThreeScoresPerCardVsTurns->attachAxis(axisYScoresPerCardVsTurns);
 
     QValueAxis *axisXScoresPerCardVsTurns = new QValueAxis();
     axisXScoresPerCardVsTurns->setTitleText("Number of Turns");
@@ -130,6 +151,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     axisXScoresPerCardVsTurns->setMin(xMin);
     chartScoresPerCardVsTurns->addAxis(axisXScoresPerCardVsTurns, Qt::AlignBottom);
     seriesroundOneScoresPerCardVsTurns->attachAxis(axisXScoresPerCardVsTurns);
+    seriesroundTwoScoresPerCardVsTurns->attachAxis(axisXScoresPerCardVsTurns);
+    seriesroundThreeScoresPerCardVsTurns->attachAxis(axisXScoresPerCardVsTurns);
 
     // Same formatting
     chartScoresPerCardVsTurns->setBackgroundVisible(false);

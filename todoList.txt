@@ -11,15 +11,11 @@ save settings for analysis window
 
 save plots / data in analysis window
 	
-phantom data in rounds 2 and 3 in the line charts -- does not show with .back().rx()?
-
-force all plots to be equal height in analysis window
-	
 -------------------------------------------------------------------------------------
 
 doing:
 
-set max and min on the line drawings so that we can see the results better
+
 
 --------------------------------------------------------------------------------------
 
@@ -34,7 +30,7 @@ record each time a card is mulliganed, and display the most mulliganed cards
 on hold:
 
 technically rng being seeded the same shouldn't matter? still fix.
-
 Oh shit.  Our random function is being seeded the same everytime.
-
 all the random functions are fucked (all 3).  not seeding to random value, same order execution everytime.
+
+force all plots to be equal height in analysis window

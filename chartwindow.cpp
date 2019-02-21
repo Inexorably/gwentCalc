@@ -7,19 +7,24 @@ ChartWindow::ChartWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    series = new QLineSeries();
-    for (int i = 1; i < 10; i++)
-        series->append(i,i);
+    series1 = new QLineSeries();
+    series2 = new QLineSeries();
+    for (int i = 1; i < 10; i++){
+        series1->append(i,i);
+        series2->append(i+1,i+1);
+    }
 
     chart = new QChart();
-    chart->addSeries(series);
+    chart->addSeries(series1);
+    chart->addSeries(series2);
 
     QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("Data point");
     axisX->setLabelFormat("%i");
-    axisX->setTickCount(series->count());
+    axisX->setTickCount(series1->count());
     chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
+    series1->attachAxis(axisX);
+    series2->attachAxis(axisX);
 
     QLogValueAxis *axisY = new QLogValueAxis();
     axisY->setTitleText("Values");
@@ -27,7 +32,8 @@ ChartWindow::ChartWindow(QWidget *parent) :
     axisY->setBase(8.0);
     axisY->setMinorTickCount(-1);
     chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
+    series1->attachAxis(axisY);
+    series2->attachAxis(axisY);
 
     // Same formatting
     chart->setBackgroundVisible(false);
@@ -46,8 +52,8 @@ ChartWindow::~ChartWindow()
 }
 
 void ChartWindow::on_pushButton_clicked(){
-    series->append(11,11);
-    qDebug() << series->count();
+    series1->append(11,11);
+    qDebug() << series1->count();
     //chart->axisX()->setMax(12);
     chart->axes(Qt::Horizontal).back()->setMax(12);
     //chart->axisY()->setMax(12);
