@@ -27,8 +27,8 @@ When running the simulation, real time base score results are given to make you 
 
 Times mulliganed and played are tracked on individual card level too.
 
-![analysis3](https://cdn.discordapp.com/attachments/97095214153338880/547664544412073986/unknown.png?raw=true "analysis")
+![analysis3](https://i.imgur.com/XG2a8oj.png?raw=true "analysis")
 
-![analysis4](https://cdn.discordapp.com/attachments/97095214153338880/547664604042362880/unknown.png?raw=true "analysis")
+![analysis4](https://i.imgur.com/m3TBtJY.png?raw=true "analysis")
 
 Comparisons by round are recorded.
