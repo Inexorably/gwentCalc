@@ -11,6 +11,8 @@ save settings for analysis window
 
 save plots / data in analysis window
 	
+min / max on the line charts is not garaunteed to be min / max on the first or last point.  See the image at: https://camo.githubusercontent.com/b7180dc49d5bc1e966c64345fcb0b609dfbe7249/68747470733a2f2f692e696d6775722e636f6d2f6d335442744a592e706e673f7261773d74727565
+on the read me.
 -------------------------------------------------------------------------------------
 
 doing:

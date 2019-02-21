@@ -38,6 +38,8 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     seriesroundThreeScoresVsTurns->setName("Round Three");
 
     //Find the min and max to scale the axis.
+    //TODO: create own std::max function which checks all members of x, y.  Maybe returns qreal[4].
+    //This is because min is not garaunteed to be at front().  See readme.
     qreal yMax = std::max(r.roundOneScoresVsTurns.back().ry(), r.roundTwoScoresVsTurns.back().ry());
     yMax = std::max(yMax, r.roundThreeScoresVsTurns.back().ry());
     qreal xMax = std::max(r.roundOneScoresVsTurns.back().rx(), r.roundTwoScoresVsTurns.back().rx());
