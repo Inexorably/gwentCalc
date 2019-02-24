@@ -38,16 +38,10 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     seriesroundThreeScoresVsTurns->setName("Round Three");
 
     //Find the min and max to scale the axis.
-    //TODO: create own std::max function which checks all members of x, y.  Maybe returns qreal[4].
-    //This is because min is not garaunteed to be at front().  See readme.
-    qreal yMax = std::max(r.roundOneScoresVsTurns.back().ry(), r.roundTwoScoresVsTurns.back().ry());
-    yMax = std::max(yMax, r.roundThreeScoresVsTurns.back().ry());
-    qreal xMax = std::max(r.roundOneScoresVsTurns.back().rx(), r.roundTwoScoresVsTurns.back().rx());
-    xMax = std::max(xMax, r.roundThreeScoresVsTurns.back().rx());
-    qreal yMin = std::min(r.roundOneScoresVsTurns.front().ry(), r.roundTwoScoresVsTurns.front().ry());
-    yMin = std::min(yMin, r.roundThreeScoresVsTurns.front().ry());
-    qreal xMin = std::min(r.roundOneScoresVsTurns.front().rx(), r.roundTwoScoresVsTurns.front().rx());
-    xMin = std::min(xMin, r.roundThreeScoresVsTurns.front().rx());
+    qreal yMax = maxY(r.roundOneScoresVsTurns, r.roundTwoScoresVsTurns, r.roundThreeScoresVsTurns);
+    qreal xMax = maxX(r.roundOneScoresVsTurns, r.roundTwoScoresVsTurns, r.roundThreeScoresVsTurns);
+    qreal yMin = minY(r.roundOneScoresVsTurns, r.roundTwoScoresVsTurns, r.roundThreeScoresVsTurns);
+    qreal xMin = minY(r.roundOneScoresVsTurns, r.roundTwoScoresVsTurns, r.roundThreeScoresVsTurns);
 
     //We are having phantom results in roundTwoScoresVsTurns and three?
     qDebug() << "Round 1";
@@ -119,14 +113,11 @@ AnalysisWindow::AnalysisWindow(const QString &f, GwentSimResults &r, QWidget *pa
     seriesroundThreeScoresPerCardVsTurns->setName("Round Three");
 
     //Find the min and max to scale the axis.
-    yMax = std::max(r.roundOneScoresPerCardVsTurns.back().ry(), r.roundTwoScoresPerCardVsTurns.back().ry());
-    yMax = std::max(yMax, r.roundThreeScoresPerCardVsTurns.back().ry());
-    xMax = std::max(r.roundOneScoresPerCardVsTurns.back().rx(), r.roundTwoScoresPerCardVsTurns.back().rx());
-    xMax = std::max(xMax, r.roundThreeScoresPerCardVsTurns.back().rx());
-    yMin = std::min(r.roundOneScoresPerCardVsTurns.front().ry(), r.roundTwoScoresPerCardVsTurns.front().ry());
-    yMin = std::min(yMin, r.roundThreeScoresPerCardVsTurns.front().ry());
-    xMin = std::min(r.roundOneScoresPerCardVsTurns.front().rx(), r.roundTwoScoresPerCardVsTurns.front().rx());
-    xMin = std::min(xMin, r.roundThreeScoresPerCardVsTurns.front().rx());
+    yMax = maxY(r.roundOneScoresPerCardVsTurns, r.roundTwoScoresPerCardVsTurns, r.roundThreeScoresPerCardVsTurns);
+    xMax = maxX(r.roundOneScoresPerCardVsTurns, r.roundTwoScoresPerCardVsTurns, r.roundThreeScoresPerCardVsTurns);
+    yMin = minY(r.roundOneScoresPerCardVsTurns, r.roundTwoScoresPerCardVsTurns, r.roundThreeScoresPerCardVsTurns);
+    xMin = minY(r.roundOneScoresPerCardVsTurns, r.roundTwoScoresPerCardVsTurns, r.roundThreeScoresPerCardVsTurns);
+    qDebug() << yMax << ", " << xMax << ", " << yMin << ", " << xMin;
 
     QChart *chartScoresPerCardVsTurns = new QChart();
     chartScoresPerCardVsTurns->addSeries(seriesroundOneScoresPerCardVsTurns);
@@ -412,4 +403,132 @@ void AnalysisWindow::on_actionTimes_Card_Played_changed(){
         chartViewIndividualTimesPlayed->show();
     else
         chartViewIndividualTimesPlayed->hide();
+}
+
+qreal AnalysisWindow::maxY(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c){
+    qreal ra = a[0].x();
+    for (int i = 0; i < a.size(); ++i){
+        if (a[i].y() > ra){
+            ra = a[i].y();
+        }
+    }
+    qreal rb = b[0].x();
+    for (int i = 0; i < b.size(); ++i){
+        if (b[i].y() > rb){
+            rb = b[i].y();
+        }
+    }
+    qreal rc = c[0].x();
+    for (int i = 0; i < c.size(); ++i){
+        if (c[i].y() > rc){
+            rc = c[i].y();
+        }
+    }
+    if (ra > rb){
+        if (ra > rc){
+            return ra;
+        }
+        return rc;
+    }
+    if (rb > rc){
+        return rb;
+    }
+    return rc;
+    //return static_cast<qreal>(std::max(ra, rb, rc));
+}
+
+qreal AnalysisWindow::maxX(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c){
+    qreal ra = a[0].x();
+    for (int i = 0; i < a.size(); ++i){
+        if (a[i].x() > ra){
+            ra = a[i].x();
+        }
+    }
+    qreal rb = b[0].x();
+    for (int i = 0; i < b.size(); ++i){
+        if (b[i].x() > rb){
+            rb = b[i].x();
+        }
+    }
+    qreal rc = c[0].x();
+    for (int i = 0; i < c.size(); ++i){
+        if (c[i].x() > rc){
+            rc = c[i].x();
+        }
+    }
+    if (ra > rb){
+        if (ra > rc){
+            return ra;
+        }
+        return rc;
+    }
+    if (rb > rc){
+        return rb;
+    }
+    return rc;
+    //return static_cast<qreal>(std::max(ra, rb, rc));
+}
+
+qreal AnalysisWindow::minY(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c){
+    qreal ra = a[0].x();
+    for (int i = 0; i < a.size(); ++i){
+        if (a[i].y() < ra){
+            ra = a[i].y();
+        }
+    }
+    qreal rb = b[0].x();
+    for (int i = 0; i < b.size(); ++i){
+        if (b[i].y() < rb){
+            rb = b[i].y();
+        }
+    }
+    qreal rc = c[0].x();
+    for (int i = 0; i < c.size(); ++i){
+        if (c[i].y() < rc){
+            rc = c[i].y();
+        }
+    }
+    if (ra < rb){
+        if (ra < rc){
+            return ra;
+        }
+        return rc;
+    }
+    if (rb < rc){
+        return rb;
+    }
+    return rc;
+    //return static_cast<qreal>(std::min(ra, rb, rc));
+}
+
+qreal AnalysisWindow::minX(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c){
+    qreal ra = a[0].x();
+    for (int i = 0; i < a.size(); ++i){
+        if (a[i].x() < ra){
+            ra = a[i].x();
+        }
+    }
+    qreal rb = b[0].x();
+    for (int i = 0; i < b.size(); ++i){
+        if (b[i].x() < rb){
+            rb = b[i].x();
+        }
+    }
+    qreal rc = c[0].x();
+    for (int i = 0; i < c.size(); ++i){
+        if (c[i].x() < rc){
+            rc = c[i].x();
+        }
+    }
+    if (ra < rb){
+        if (ra < rc){
+            return ra;
+        }
+        return rc;
+    }
+    if (rb < rc){
+        return rb;
+    }
+    return rc;
+    //return static_cast<qreal>(std::min(ra, rb, rc));
 }

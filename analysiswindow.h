@@ -64,6 +64,11 @@ private:
     //Temp bubble sort.  TODO: Remove?  Obselete.
     void sortByIndividualTimesPlayed(std::vector<GwentCard> &v);
 
+    qreal maxY(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c);
+    qreal maxX(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c);
+    qreal minY(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c);
+    qreal minX(const QList<QPointF> &a, const QList<QPointF> &b, const QList<QPointF> &c);
+
 };
 
 #endif // ANALYSISWINDOW_H
